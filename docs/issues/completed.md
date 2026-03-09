@@ -5,3 +5,4 @@
 | # | Title | Phase | Status |
 |---|-------|-------|--------|
 | 0001 | [Create users table and schema](0001-create-users-table.md) | Milestone 2 — GitHub Authentication | `complete` |
+| 0002 | [User model with encryption and scopes](0002-user-model.md) | Milestone 2 — GitHub Authentication | `complete` |

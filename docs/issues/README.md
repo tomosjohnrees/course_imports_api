@@ -2,7 +2,6 @@
 
 | # | Title | Phase | Status |
 |---|-------|-------|--------|
-| 0002 | [User model with encryption and scopes](0002-user-model.md) | Milestone 2 — GitHub Authentication | `todo` |
 | 0003 | [OmniAuth GitHub configuration and SessionsController](0003-omniauth-sessions-controller.md) | Milestone 2 — GitHub Authentication | `todo` |
 | 0004 | [Authentication UI — sign in and sign out flow](0004-authentication-ui.md) | Milestone 2 — GitHub Authentication | `todo` |
 | 0005 | [Deploy and verify GitHub authentication in production](0005-deploy-authentication.md) | Milestone 2 — GitHub Authentication | `todo` |

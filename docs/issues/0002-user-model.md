@@ -19,21 +19,21 @@ Build the `User` model with Active Record Encryption for the GitHub token, a `fi
 ## Acceptance criteria
 
 ### Functionality
-- [ ] `User` model exists with appropriate validations (presence of `github_id`, `github_username`)
-- [ ] `find_or_create_from_omniauth` creates a new user when none exists for the given `github_id`
-- [ ] `find_or_create_from_omniauth` updates existing user attributes (username, avatar, token) on subsequent logins
-- [ ] `banned` scope returns only banned users
-- [ ] `banned?` method works correctly
+- [x] `User` model exists with appropriate validations (presence of `github_id`, `github_username`)
+- [x] `find_or_create_from_omniauth` creates a new user when none exists for the given `github_id`
+- [x] `find_or_create_from_omniauth` updates existing user attributes (username, avatar, token) on subsequent logins
+- [x] `banned` scope returns only banned users
+- [x] `banned?` method works correctly
 
 ### Security
-- [ ] `github_token` is encrypted at rest via Active Record Encryption
-- [ ] `github_token` is not included in default serialisation or `inspect` output
+- [x] `github_token` is encrypted at rest via Active Record Encryption
+- [x] `github_token` is not included in default serialisation or `inspect` output
 
 ### Performance
-- [ ] `find_or_create_from_omniauth` uses the indexed `github_id` column for lookups
+- [x] `find_or_create_from_omniauth` uses the indexed `github_id` column for lookups
 
 ### Testing
-- [ ] Model tests cover `find_or_create_from_omniauth` for both new and returning users
-- [ ] Model tests verify encryption is active on `github_token`
-- [ ] Model tests cover the `banned` scope and `banned?` method
-- [ ] Model tests cover validation errors for missing required fields
+- [x] Model tests cover `find_or_create_from_omniauth` for both new and returning users
+- [x] Model tests verify encryption is active on `github_token`
+- [x] Model tests cover the `banned` scope and `banned?` method
+- [x] Model tests cover validation errors for missing required fields
