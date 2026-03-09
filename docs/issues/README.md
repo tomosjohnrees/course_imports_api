@@ -1,0 +1,23 @@
+# Issues
+
+| # | Title | Phase | Status |
+|---|-------|-------|--------|
+| 0001 | [Create users table and schema](0001-create-users-table.md) | Milestone 2 — GitHub Authentication | `todo` |
+| 0002 | [User model with encryption and scopes](0002-user-model.md) | Milestone 2 — GitHub Authentication | `todo` |
+| 0003 | [OmniAuth GitHub configuration and SessionsController](0003-omniauth-sessions-controller.md) | Milestone 2 — GitHub Authentication | `todo` |
+| 0004 | [Authentication UI — sign in and sign out flow](0004-authentication-ui.md) | Milestone 2 — GitHub Authentication | `todo` |
+| 0005 | [Deploy and verify GitHub authentication in production](0005-deploy-authentication.md) | Milestone 2 — GitHub Authentication | `todo` |
+| 0006 | [Create courses and validation_attempts tables](0006-create-courses-tables.md) | Milestone 3 — Course Submission & Validation | `todo` |
+| 0007 | [Course and ValidationAttempt models](0007-course-validation-models.md) | Milestone 3 — Course Submission & Validation | `todo` |
+| 0008 | [GitHub API client](0008-github-api-client.md) | Milestone 3 — Course Submission & Validation | `todo` |
+| 0009 | [Course validation service](0009-course-validation-service.md) | Milestone 3 — Course Submission & Validation | `todo` |
+| 0010 | [Course validation job with Turbo Stream broadcast](0010-course-validation-job.md) | Milestone 3 — Course Submission & Validation | `todo` |
+| 0011 | [CoursesController for submission and management](0011-courses-controller.md) | Milestone 3 — Course Submission & Validation | `todo` |
+| 0012 | [Rack-attack rate limiting for course submissions](0012-rack-attack-rate-limiting.md) | Milestone 3 — Course Submission & Validation | `todo` |
+| 0013 | [Course submission and status UI with Turbo Streams](0013-course-submission-status-ui.md) | Milestone 3 — Course Submission & Validation | `todo` |
+| 0014 | [Deploy and verify course submission flow in production](0014-deploy-course-submission.md) | Milestone 3 — Course Submission & Validation | `todo` |
+| 0015 | [Course index page with pagination](0015-course-index-pagination.md) | Milestone 4 — Browse & Search | `todo` |
+| 0016 | [Full-text search with PostgreSQL tsvector](0016-full-text-search.md) | Milestone 4 — Browse & Search | `todo` |
+| 0017 | [Tag filtering and tag cloud](0017-tag-filtering.md) | Milestone 4 — Browse & Search | `todo` |
+| 0018 | [Public course detail page](0018-course-detail-page.md) | Milestone 4 — Browse & Search | `todo` |
+| 0019 | [UI polish, responsive layout, and meta tags](0019-ui-polish-responsive-meta.md) | Milestone 4 — Browse & Search | `todo` |
