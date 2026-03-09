@@ -19,17 +19,17 @@ Create the database migration for the `users` table that stores GitHub OAuth use
 ## Acceptance criteria
 
 ### Functionality
-- [ ] `users` table exists with all specified columns and correct types/nullability
-- [ ] `github_id` has a unique index
-- [ ] `banned` column defaults to `false` and is non-nullable
-- [ ] Migration runs cleanly up and down (`rails db:migrate` and `rails db:rollback`)
+- [x] `users` table exists with all specified columns and correct types/nullability
+- [x] `github_id` has a unique index
+- [x] `banned` column defaults to `false` and is non-nullable
+- [x] Migration runs cleanly up and down (`rails db:migrate` and `rails db:rollback`)
 
 ### Security
-- [ ] Active Record Encryption keys are configured in `credentials.yml` (not committed in plaintext)
-- [ ] `github_token` column can store encrypted values (string type with sufficient length)
+- [x] Active Record Encryption keys are configured in `credentials.yml` (not committed in plaintext)
+- [x] `github_token` column can store encrypted values (string type with sufficient length)
 
 ### Performance
-- [ ] Unique index on `github_id` ensures fast lookups during OAuth callback
+- [x] Unique index on `github_id` ensures fast lookups during OAuth callback
 
 ### Testing
-- [ ] Migration can be verified by running `rails db:migrate` and inspecting the schema
+- [x] Migration can be verified by running `rails db:migrate` and inspecting the schema
