@@ -20,21 +20,21 @@ Wire up GitHub OAuth using OmniAuth so users can sign in and sign out. This incl
 ## Acceptance criteria
 
 ### Functionality
-- [ ] Visiting the OmniAuth path redirects to GitHub's OAuth consent screen
-- [ ] GitHub callback creates or updates a user and sets `session[:user_id]`
-- [ ] Sign out clears the session and redirects to the home page
-- [ ] `current_user` returns the signed-in user or `nil`
-- [ ] `authenticate_user!` redirects unauthenticated users to the sign-in page
-- [ ] `user_signed_in?` is available as a view helper
-- [ ] Banned users are signed out and shown an appropriate message
+- [x] Visiting the OmniAuth path redirects to GitHub's OAuth consent screen
+- [x] GitHub callback creates or updates a user and sets `session[:user_id]`
+- [x] Sign out clears the session and redirects to the home page
+- [x] `current_user` returns the signed-in user or `nil`
+- [x] `authenticate_user!` redirects unauthenticated users to the sign-in page
+- [x] `user_signed_in?` is available as a view helper
+- [x] Banned users are signed out and shown an appropriate message
 
 ### Security
-- [ ] OmniAuth routes are protected against CSRF attacks
-- [ ] GitHub client ID and secret are stored in Rails credentials, not in code or environment files committed to git
-- [ ] Session fixation is prevented by resetting the session on sign-in
+- [x] OmniAuth routes are protected against CSRF attacks
+- [x] GitHub client ID and secret are stored in Rails credentials, not in code or environment files committed to git
+- [x] Session fixation is prevented by resetting the session on sign-in
 
 ### Performance
-- [ ] User lookup during callback uses the indexed `github_id` column
+- [x] User lookup during callback uses the indexed `github_id` column
 
 ### Testing
 - [ ] Controller tests cover the OAuth callback for new and returning users
