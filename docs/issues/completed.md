@@ -27,3 +27,4 @@
 | # | Title | Phase | Status |
 |---|-------|-------|--------|
 | 0015 | [Course index page with pagination](0015-course-index-pagination.md) | Milestone 4 — Browse & Search | `complete` |
+| 0016 | [Full-text search with PostgreSQL tsvector](0016-full-text-search.md) | Milestone 4 — Browse & Search | `complete` |

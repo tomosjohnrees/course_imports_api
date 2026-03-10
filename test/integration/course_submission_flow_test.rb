@@ -167,4 +167,30 @@ class CourseSubmissionFlowTest < ActionDispatch::IntegrationTest
     assert_select "span.bg-yellow-100", text: "Pending"
     assert_select "p", text: "dashstatus-owner/dashstatus-repo"
   end
+
+  test "search flow finds approved course and shows no results for unmatched query" do
+    Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/flow-srch/elixir-course",
+      github_owner: "flow-srch",
+      github_repo: "elixir-course",
+      title: "Elixir Programming",
+      description: "Functional programming with Elixir and OTP",
+      status: "approved"
+    )
+
+    get courses_path
+    assert_response :success
+    assert_select "input[name='q']"
+
+    get courses_path, params: { q: "elixir" }
+    assert_response :success
+    assert_select "a", text: "Elixir Programming"
+    assert_select "input[name='q'][value='elixir']"
+
+    get courses_path, params: { q: "nonexistentxyzterm" }
+    assert_response :success
+    assert_select "p", /No courses found for/
+    assert_select "a", text: "Clear search"
+  end
 end

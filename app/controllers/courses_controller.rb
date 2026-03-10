@@ -4,10 +4,10 @@ class CoursesController < ApplicationController
   before_action :authenticate_user!, except: %i[index show]
 
   def index
-    @pagy, @courses = pagy(
-      Course.publicly_visible.includes(:user).order(created_at: :desc),
-      limit: 20
-    )
+    @search_query = params[:q]
+    scope = Course.publicly_visible.search(@search_query).includes(:user)
+    scope = scope.order(created_at: :desc) if @search_query.blank?
+    @pagy, @courses = pagy(scope, limit: 20)
   end
 
   def dashboard

@@ -261,4 +261,113 @@ class CourseTest < ActiveSupport::TestCase
     assert_not course.valid?
     assert_includes course.errors[:user], "must exist"
   end
+
+  test "search scope returns all records when query is blank" do
+    course1 = Course.create!(@valid_attributes.merge(
+      title: "Ruby Fundamentals", github_owner: "search-blank1", github_repo: "ruby-fund",
+      github_repo_url: "https://github.com/search-blank1/ruby-fund", status: "approved"
+    ))
+    course2 = Course.create!(@valid_attributes.merge(
+      title: "Python Basics", github_owner: "search-blank2", github_repo: "python-basics",
+      github_repo_url: "https://github.com/search-blank2/python-basics", status: "approved"
+    ))
+
+    result = Course.search(nil)
+    assert_includes result, course1
+    assert_includes result, course2
+  end
+
+  test "search scope returns all records when query is empty string" do
+    course = Course.create!(@valid_attributes.merge(
+      title: "Ruby Fundamentals", github_owner: "search-empty1", github_repo: "ruby-fund",
+      github_repo_url: "https://github.com/search-empty1/ruby-fund", status: "approved"
+    ))
+
+    result = Course.search("")
+    assert_includes result, course
+  end
+
+  test "search scope matches courses by title" do
+    matching = Course.create!(@valid_attributes.merge(
+      title: "Advanced Ruby Programming", github_owner: "search-title1", github_repo: "adv-ruby",
+      github_repo_url: "https://github.com/search-title1/adv-ruby", status: "approved"
+    ))
+    non_matching = Course.create!(@valid_attributes.merge(
+      title: "Python for Beginners", github_owner: "search-title2", github_repo: "python-begin",
+      github_repo_url: "https://github.com/search-title2/python-begin", status: "approved"
+    ))
+
+    result = Course.search("ruby")
+    assert_includes result, matching
+    assert_not_includes result, non_matching
+  end
+
+  test "search scope matches courses by description" do
+    matching = Course.create!(@valid_attributes.merge(
+      title: "Web Course", description: "Learn JavaScript and modern frameworks",
+      github_owner: "search-desc1", github_repo: "web-course",
+      github_repo_url: "https://github.com/search-desc1/web-course", status: "approved"
+    ))
+    non_matching = Course.create!(@valid_attributes.merge(
+      title: "Data Course", description: "Statistics and data analysis",
+      github_owner: "search-desc2", github_repo: "data-course",
+      github_repo_url: "https://github.com/search-desc2/data-course", status: "approved"
+    ))
+
+    result = Course.search("javascript")
+    assert_includes result, matching
+    assert_not_includes result, non_matching
+  end
+
+  test "search scope ranks title matches higher than description matches" do
+    title_match = Course.create!(@valid_attributes.merge(
+      title: "Kubernetes Deployment Guide", description: "A general course",
+      github_owner: "search-rank1", github_repo: "k8s-guide",
+      github_repo_url: "https://github.com/search-rank1/k8s-guide", status: "approved"
+    ))
+    desc_match = Course.create!(@valid_attributes.merge(
+      title: "General DevOps", description: "Includes kubernetes container orchestration",
+      github_owner: "search-rank2", github_repo: "devops-course",
+      github_repo_url: "https://github.com/search-rank2/devops-course", status: "approved"
+    ))
+
+    result = Course.search("kubernetes").to_a
+    assert_equal title_match, result.first
+  end
+
+  test "search scope returns empty relation for non-matching query" do
+    Course.create!(@valid_attributes.merge(
+      title: "Ruby Programming", github_owner: "search-nomatch1", github_repo: "ruby-prog",
+      github_repo_url: "https://github.com/search-nomatch1/ruby-prog", status: "approved"
+    ))
+
+    result = Course.search("nonexistentxyzterm")
+    assert_empty result
+  end
+
+  test "search scope chains with publicly_visible" do
+    approved_match = Course.create!(@valid_attributes.merge(
+      title: "Approved Rails Course", github_owner: "search-chain1", github_repo: "rails-course",
+      github_repo_url: "https://github.com/search-chain1/rails-course", status: "approved"
+    ))
+    pending_match = Course.create!(@valid_attributes.merge(
+      title: "Pending Rails Course", github_owner: "search-chain2", github_repo: "rails-pending",
+      github_repo_url: "https://github.com/search-chain2/rails-pending", status: "pending"
+    ))
+
+    result = Course.publicly_visible.search("rails")
+    assert_includes result, approved_match
+    assert_not_includes result, pending_match
+  end
+
+  test "search scope handles special characters safely" do
+    Course.create!(@valid_attributes.merge(
+      title: "Normal Course", github_owner: "search-special1", github_repo: "normal-course",
+      github_repo_url: "https://github.com/search-special1/normal-course", status: "approved"
+    ))
+
+    assert_nothing_raised do
+      Course.search("'; DROP TABLE courses; --").to_a
+    end
+  end
 end

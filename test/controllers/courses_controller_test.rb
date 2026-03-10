@@ -1048,6 +1048,208 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
     assert_select "code", "topics/"
   end
 
+  # --- index search ---
+
+  test "index search returns matching approved courses" do
+    Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/srch-owner/ruby-course",
+      github_owner: "srch-owner",
+      github_repo: "ruby-course",
+      title: "Ruby Fundamentals",
+      status: "approved"
+    )
+    Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/srch-owner/python-course",
+      github_owner: "srch-owner",
+      github_repo: "python-course",
+      title: "Python Basics",
+      status: "approved"
+    )
+
+    get courses_path, params: { q: "ruby" }
+    assert_response :success
+    assert_select "a", text: "Ruby Fundamentals"
+    assert_select "a", { text: "Python Basics", count: 0 }
+  end
+
+  test "index search matches courses by description" do
+    Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/srch-desc/web-course",
+      github_owner: "srch-desc",
+      github_repo: "web-course",
+      title: "Web Development",
+      description: "Learn JavaScript and React",
+      status: "approved"
+    )
+
+    get courses_path, params: { q: "javascript" }
+    assert_response :success
+    assert_select "a", text: "Web Development"
+  end
+
+  test "index search only returns approved courses" do
+    Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/srch-status/approved-srch",
+      github_owner: "srch-status",
+      github_repo: "approved-srch",
+      title: "Approved Rails Course",
+      status: "approved"
+    )
+    Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/srch-status/pending-srch",
+      github_owner: "srch-status",
+      github_repo: "pending-srch",
+      title: "Pending Rails Course",
+      status: "pending"
+    )
+
+    get courses_path, params: { q: "rails" }
+    assert_response :success
+    assert_select "a", text: "Approved Rails Course"
+    assert_select "a", { text: "Pending Rails Course", count: 0 }
+  end
+
+  test "index search preserves query in search field" do
+    get courses_path, params: { q: "ruby" }
+    assert_response :success
+    assert_select "input[name='q'][value='ruby']"
+  end
+
+  test "index search with blank query returns all approved courses" do
+    Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/srch-blank/course-a",
+      github_owner: "srch-blank",
+      github_repo: "course-a",
+      title: "Course Alpha",
+      status: "approved"
+    )
+    Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/srch-blank/course-b",
+      github_owner: "srch-blank",
+      github_repo: "course-b",
+      title: "Course Beta",
+      status: "approved"
+    )
+
+    get courses_path, params: { q: "" }
+    assert_response :success
+    assert_select "a", text: "Course Alpha"
+    assert_select "a", text: "Course Beta"
+  end
+
+  test "index search shows no results message when search has no matches" do
+    get courses_path, params: { q: "nonexistentxyzterm" }
+    assert_response :success
+    assert_select "p", /No courses found for "nonexistentxyzterm"/
+  end
+
+  test "index search no results shows clear search link" do
+    get courses_path, params: { q: "nonexistentxyzterm" }
+    assert_response :success
+    assert_select "a[href='#{courses_path}']", text: "Clear search"
+  end
+
+  test "index without search query shows default empty state" do
+    get courses_path
+    assert_response :success
+    assert_select "p", /No courses have been approved yet/
+  end
+
+  test "index search form is present on the page" do
+    get courses_path
+    assert_response :success
+    assert_select "form[action='#{courses_path}'][method='get']" do
+      assert_select "input[name='q'][type='search']"
+      assert_select "input[type='submit'][value='Search']"
+    end
+  end
+
+  test "index without search query orders by created_at desc" do
+    Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/srch-order/old-repo",
+      github_owner: "srch-order",
+      github_repo: "old-repo",
+      title: "Old Course",
+      status: "approved",
+      created_at: 2.days.ago
+    )
+    Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/srch-order/new-repo",
+      github_owner: "srch-order",
+      github_repo: "new-repo",
+      title: "New Course",
+      status: "approved",
+      created_at: 1.hour.ago
+    )
+
+    get courses_path
+    assert_response :success
+    response_body = @response.body
+    new_pos = response_body.index("New Course")
+    old_pos = response_body.index("Old Course")
+    assert new_pos < old_pos, "New course should appear before old course without search"
+  end
+
+  test "index search orders results by relevance" do
+    Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/srch-rel/desc-match",
+      github_owner: "srch-rel",
+      github_repo: "desc-match",
+      title: "General Programming",
+      description: "Includes some docker container topics",
+      status: "approved"
+    )
+    Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/srch-rel/title-match",
+      github_owner: "srch-rel",
+      github_repo: "title-match",
+      title: "Docker Containers Masterclass",
+      description: "A comprehensive guide",
+      status: "approved"
+    )
+
+    get courses_path, params: { q: "docker" }
+    assert_response :success
+    response_body = @response.body
+    title_pos = response_body.index("Docker Containers Masterclass")
+    desc_pos = response_body.index("General Programming")
+    assert title_pos < desc_pos, "Title match should appear before description match"
+  end
+
+  test "index search handles special characters safely" do
+    get courses_path, params: { q: "'; DROP TABLE courses; --" }
+    assert_response :success
+  end
+
+  test "index search combines with pagination" do
+    21.times do |i|
+      Course.create!(
+        user: @user,
+        github_repo_url: "https://github.com/srch-page/srch-repo-#{i}",
+        github_owner: "srch-page",
+        github_repo: "srch-repo-#{i}",
+        title: "Searchable Course #{i}",
+        description: "This is a searchable programming course",
+        status: "approved"
+      )
+    end
+
+    get courses_path, params: { q: "searchable" }
+    assert_response :success
+    assert_select "a[href*='page=']"
+  end
+
   # --- routing ---
 
   test "routes GET /courses/new to courses#new" do
