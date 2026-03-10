@@ -2,7 +2,6 @@
 
 | # | Title | Phase | Status |
 |---|-------|-------|--------|
-| 0013 | [Course submission and status UI with Turbo Streams](0013-course-submission-status-ui.md) | Milestone 3 — Course Submission & Validation | `todo` |
 | 0015 | [Course index page with pagination](0015-course-index-pagination.md) | Milestone 4 — Browse & Search | `todo` |
 | 0016 | [Full-text search with PostgreSQL tsvector](0016-full-text-search.md) | Milestone 4 — Browse & Search | `todo` |
 | 0017 | [Tag filtering and tag cloud](0017-tag-filtering.md) | Milestone 4 — Browse & Search | `todo` |

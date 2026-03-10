@@ -45,4 +45,14 @@ end
 
 class ActionDispatch::IntegrationTest
   include OmniAuthTestHelper
+
+  setup do
+    Rack::Attack.cache.store.clear
+    Rack::Attack.reset!
+  end
+
+  teardown do
+    Rack::Attack.cache.store.clear
+    Rack::Attack.reset!
+  end
 end

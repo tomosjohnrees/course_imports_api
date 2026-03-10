@@ -1,9 +1,16 @@
 module Course::Validatable
   extend ActiveSupport::Concern
 
+  InvalidTransition = Class.new(StandardError)
+
   def submit_for_validation!
-    return false unless pending? || failed?
+    raise InvalidTransition, "Can only submit pending or failed courses for validation" unless pending? || failed?
     CourseValidationJob.perform_later(id)
+  end
+
+  def resubmit!
+    raise InvalidTransition, "Only failed courses can be resubmitted" unless failed?
+    submit_for_validation!
   end
 
   def run_validation!(github_client: nil)

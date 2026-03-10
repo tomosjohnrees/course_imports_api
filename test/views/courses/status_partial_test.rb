@@ -22,43 +22,57 @@ class StatusPartialTest < ActionView::TestCase
     render partial: "courses/status", locals: { course: course }
 
     assert_select "#course_#{course.id}"
-    assert_select ".status-badge.status-pending", text: "Pending"
+    assert_select "span.bg-yellow-100", text: "Pending"
   end
 
   test "renders approved status badge" do
     course = build_course(status: "approved")
     render partial: "courses/status", locals: { course: course }
 
-    assert_select ".status-badge.status-approved", text: "Approved"
+    assert_select "span.bg-green-100", text: "Approved"
   end
 
   test "renders validating status badge" do
     course = build_course(status: "validating")
     render partial: "courses/status", locals: { course: course }
 
-    assert_select ".status-badge.status-validating", text: "Validating"
+    assert_select "span.bg-blue-100"
   end
 
   test "renders failed status with validation error" do
     course = build_course(status: "failed", validation_error: "Repository is private")
     render partial: "courses/status", locals: { course: course }
 
-    assert_select ".status-badge.status-failed", text: "Failed"
-    assert_select ".validation-error", text: "Repository is private"
+    assert_select "span.bg-red-100", text: "Failed"
+    assert_select "p.text-red-700", text: "Repository is private"
   end
 
   test "does not render validation error for failed course without error message" do
     course = build_course(status: "failed", validation_error: nil)
     render partial: "courses/status", locals: { course: course }
 
-    assert_select ".status-badge.status-failed", text: "Failed"
-    assert_select ".validation-error", count: 0
+    assert_select "span.bg-red-100", text: "Failed"
+    assert_select "p.text-red-700", count: 0
   end
 
   test "does not render validation error for non-failed statuses" do
     course = build_course(status: "approved")
     render partial: "courses/status", locals: { course: course }
 
-    assert_select ".validation-error", count: 0
+    assert_select "p.text-red-700", count: 0
+  end
+
+  test "renders removed status badge" do
+    course = build_course(status: "removed")
+    render partial: "courses/status", locals: { course: course }
+
+    assert_select "span.bg-gray-100", text: "Removed"
+  end
+
+  test "renders status heading" do
+    course = build_course(status: "pending")
+    render partial: "courses/status", locals: { course: course }
+
+    assert_select "h2", text: "Status"
   end
 end

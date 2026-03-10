@@ -118,7 +118,7 @@ class CourseValidationJobTest < ActiveSupport::TestCase
     %i[validating approved removed].each do |status|
       @course.update!(status: status)
       assert_no_enqueued_jobs do
-        assert_equal false, @course.submit_for_validation!
+        assert_raises(Course::Validatable::InvalidTransition) { @course.submit_for_validation! }
       end
     end
   end

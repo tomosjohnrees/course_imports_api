@@ -1,0 +1,38 @@
+<% content_for(:title, "My Courses") %>
+
+<div class="w-full max-w-3xl mx-auto">
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="text-2xl font-bold text-gray-900">My Courses</h1>
+    <%= link_to "Submit Course", new_course_path, class: "px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-700 transition-colors" %>
+  </div>
+
+  <% if @courses.any? %>
+    <div class="space-y-3">
+      <% @courses.each do |course| %>
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 flex items-center justify-between gap-4">
+          <div class="min-w-0 flex-1">
+            <%= link_to course.title, course, class: "text-base font-medium text-gray-900 hover:text-gray-700 truncate block" %>
+            <p class="text-sm text-gray-500 truncate"><%= course.github_owner %>/<%= course.github_repo %></p>
+          </div>
+
+          <div class="flex items-center gap-3 shrink-0">
+            <%= status_badge(course) %>
+
+            <% unless course.removed? %>
+              <%= button_to "Remove", course, method: :delete, class: "text-sm text-red-600 hover:text-red-800 font-medium transition-colors cursor-pointer", data: { turbo_confirm: "Are you sure you want to remove this course?" } %>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="mt-6">
+      <%== pagy_nav(@pagy) if @pagy.pages > 1 %>
+    </div>
+  <% else %>
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-8 text-center">
+      <p class="text-gray-600 mb-4">You haven't submitted any courses yet.</p>
+      <%= link_to "Submit your first course", new_course_path, class: "text-gray-900 font-medium hover:text-gray-700" %>
+    </div>
+  <% end %>
+</div>
