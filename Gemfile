@@ -28,7 +28,7 @@ gem "faraday", "~> 2.0"
 
 gem "rack-attack", "~> 6.7"
 
-gem "pagy", "~> 9.0"
+gem "pagy", "~> 43.3"
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
