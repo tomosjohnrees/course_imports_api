@@ -6,7 +6,7 @@ class User < ApplicationRecord
 
   scope :banned, -> { where(banned: true) }
 
-  self.filter_attributes += [:github_token]
+  self.filter_attributes += [ :github_token ]
 
   def self.find_or_create_from_omniauth(auth_hash)
     user = find_or_initialize_by(github_id: auth_hash["uid"].to_s)
