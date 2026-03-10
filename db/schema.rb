@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_10_085511) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_10_103051) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -25,6 +25,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_10_085511) do
     t.datetime "last_validated_at"
     t.integer "load_count", default: 0
     t.integer "repo_size_kb"
+    t.virtual "search_vector", type: :tsvector, as: "(setweight(to_tsvector('english'::regconfig, (COALESCE(title, ''::character varying))::text), 'A'::\"char\") || setweight(to_tsvector('english'::regconfig, COALESCE(description, ''::text)), 'B'::\"char\"))", stored: true
     t.string "status", default: "pending", null: false
     t.string "tags", default: [], array: true
     t.string "title", null: false
@@ -34,6 +35,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_10_085511) do
     t.text "validation_error"
     t.string "version"
     t.index ["github_owner", "github_repo"], name: "index_courses_on_github_owner_and_github_repo", unique: true
+    t.index ["search_vector"], name: "index_courses_on_search_vector", using: :gin
     t.index ["status"], name: "index_courses_on_status"
     t.index ["tags"], name: "index_courses_on_tags", using: :gin
     t.index ["user_id"], name: "index_courses_on_user_id"

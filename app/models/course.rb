@@ -6,6 +6,12 @@ class Course < ApplicationRecord
   enum :status, { pending: "pending", validating: "validating", approved: "approved", failed: "failed", removed: "removed" }, validate: true
 
   scope :publicly_visible, -> { approved }
+  scope :search, ->(query) {
+    return all if query.blank?
+
+    where("search_vector @@ websearch_to_tsquery('english', ?)", query)
+      .order(Arel.sql(sanitize_sql_array([ "ts_rank(search_vector, websearch_to_tsquery('english', ?)) DESC", query ])))
+  }
 
   belongs_to :user
   has_many :validation_attempts, dependent: :destroy

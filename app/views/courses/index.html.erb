@@ -6,6 +6,13 @@
     <p class="mt-1 text-sm text-gray-500">Discover community-submitted courses from GitHub</p>
   </div>
 
+  <%= form_with url: courses_path, method: :get, class: "mb-6" do |f| %>
+    <div class="flex gap-2">
+      <%= f.search_field :q, value: @search_query, placeholder: "Search courses…", class: "flex-1 rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 placeholder-gray-400 focus:border-gray-500 focus:ring-1 focus:ring-gray-500 focus:outline-none" %>
+      <%= f.submit "Search", class: "rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700 cursor-pointer" %>
+    </div>
+  <% end %>
+
   <% if @courses.any? %>
     <div class="space-y-4">
       <% @courses.each do |course| %>
@@ -46,8 +53,13 @@
     </div>
   <% else %>
     <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
-      <p class="text-gray-600 mb-2">No courses have been approved yet.</p>
-      <p class="text-sm text-gray-500">Be the first to <%= link_to "submit a course", new_course_path, class: "text-gray-900 font-medium hover:text-gray-700" %>!</p>
+      <% if @search_query.present? %>
+        <p class="text-gray-600 mb-2">No courses found for "<%= @search_query %>".</p>
+        <p class="text-sm text-gray-500"><%= link_to "Clear search", courses_path, class: "text-gray-900 font-medium hover:text-gray-700" %></p>
+      <% else %>
+        <p class="text-gray-600 mb-2">No courses have been approved yet.</p>
+        <p class="text-sm text-gray-500">Be the first to <%= link_to "submit a course", new_course_path, class: "text-gray-900 font-medium hover:text-gray-700" %>!</p>
+      <% end %>
     </div>
   <% end %>
 </div>

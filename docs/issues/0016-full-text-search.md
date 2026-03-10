@@ -20,21 +20,21 @@ Add full-text search to the course index using PostgreSQL's built-in `tsvector` 
 ## Acceptance criteria
 
 ### Functionality
-- [ ] Searching by title returns matching approved courses
-- [ ] Searching by description returns matching approved courses
-- [ ] Search results are ranked by relevance
-- [ ] An empty search query returns all approved courses (same as unfiltered index)
-- [ ] The search input preserves the current query value after submission
-- [ ] A "no results" message appears when the search returns nothing
+- [x] Searching by title returns matching approved courses
+- [x] Searching by description returns matching approved courses
+- [x] Search results are ranked by relevance
+- [x] An empty search query returns all approved courses (same as unfiltered index)
+- [x] The search input preserves the current query value after submission
+- [x] A "no results" message appears when the search returns nothing
 
 ### Security
-- [ ] Search input is sanitised to prevent SQL injection (use `plainto_tsquery` or `websearch_to_tsquery`, not raw string interpolation)
-- [ ] Only approved courses appear in search results
+- [x] Search input is sanitised to prevent SQL injection (use `plainto_tsquery` or `websearch_to_tsquery`, not raw string interpolation)
+- [x] Only approved courses appear in search results
 
 ### Performance
-- [ ] The `tsvector` column is a generated column updated automatically by PostgreSQL (no manual trigger maintenance)
-- [ ] A GIN index on the `tsvector` column ensures search queries are fast
-- [ ] Search combines with pagination — results are not loaded all at once
+- [x] The `tsvector` column is a generated column updated automatically by PostgreSQL (no manual trigger maintenance)
+- [x] A GIN index on the `tsvector` column ensures search queries are fast
+- [x] Search combines with pagination — results are not loaded all at once
 
 ### Testing
 - [ ] Tests verify search by title returns correct results
