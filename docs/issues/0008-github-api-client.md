@@ -20,23 +20,23 @@ Build a standalone GitHub API client using Faraday that fetches repository metad
 ## Acceptance criteria
 
 ### Functionality
-- [ ] `fetch_repo_metadata` returns parsed repo data from the GitHub API
-- [ ] `fetch_file` returns decoded file contents (handles base64 decoding from the GitHub Contents API)
-- [ ] `fetch_directory` returns a list of entries in a directory
-- [ ] All methods raise typed exceptions for 404 (not found), 403 (rate limited), and network timeout errors
-- [ ] The client accepts an optional OAuth token and includes it as a Bearer token in requests
-- [ ] The client works without a token for unauthenticated requests
+- [x] `fetch_repo_metadata` returns parsed repo data from the GitHub API
+- [x] `fetch_file` returns decoded file contents (handles base64 decoding from the GitHub Contents API)
+- [x] `fetch_directory` returns a list of entries in a directory
+- [x] All methods raise typed exceptions for 404 (not found), 403 (rate limited), and network timeout errors
+- [x] The client accepts an optional OAuth token and includes it as a Bearer token in requests
+- [x] The client works without a token for unauthenticated requests
 
 ### Security
-- [ ] OAuth tokens are passed only in the Authorization header, never logged or included in error messages
-- [ ] The client does not follow redirects to arbitrary hosts
+- [x] OAuth tokens are passed only in the Authorization header, never logged or included in error messages
+- [x] The client does not follow redirects to arbitrary hosts
 
 ### Performance
-- [ ] HTTP timeout is set to 5 seconds per request to prevent hung connections
-- [ ] Faraday connection is reused across calls within the same client instance
+- [x] HTTP timeout is set to 5 seconds per request to prevent hung connections
+- [x] Faraday connection is reused across calls within the same client instance
 
 ### Testing
-- [ ] Unit tests cover all three methods with stubbed HTTP responses
-- [ ] Tests cover error handling for 404, 403, and timeout scenarios
-- [ ] Tests verify token is included in requests when provided
-- [ ] Tests verify base64 decoding of file contents
+- [x] Unit tests cover all three methods with stubbed HTTP responses
+- [x] Tests cover error handling for 404, 403, and timeout scenarios
+- [x] Tests verify token is included in requests when provided
+- [x] Tests verify base64 decoding of file contents
