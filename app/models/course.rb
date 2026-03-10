@@ -1,4 +1,6 @@
 class Course < ApplicationRecord
+  include Course::Validatable
+
   GITHUB_REPO_URL_PATTERN = %r{\Ahttps://github\.com/[a-zA-Z0-9\-_.]+/[a-zA-Z0-9\-_.]+\z}
 
   enum :status, { pending: "pending", validating: "validating", approved: "approved", failed: "failed", removed: "removed" }, validate: true
