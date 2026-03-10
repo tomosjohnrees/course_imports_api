@@ -1,5 +1,13 @@
 # Completed Issues
 
+## Milestone 1 — Project Setup & Deployment Pipeline
+
+| # | Title | Phase | Status |
+|---|-------|-------|--------|
+| 0020 | [Initialize Rails 8 application with PostgreSQL and Solid Trifecta](0020-initialize-rails-app.md) | Milestone 1 — Project Setup & Deployment Pipeline | `complete` |
+| 0021 | [Add foundational gems to Gemfile](0021-add-foundational-gems.md) | Milestone 1 — Project Setup & Deployment Pipeline | `complete` |
+| 0022 | [Provision Hetzner VPS and configure networking](0022-provision-hetzner-vps.md) | Milestone 1 — Project Setup & Deployment Pipeline | `complete` |
+
 ## Milestone 2 — GitHub Authentication
 
 | # | Title | Phase | Status |
