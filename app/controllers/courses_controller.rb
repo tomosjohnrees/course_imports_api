@@ -5,9 +5,11 @@ class CoursesController < ApplicationController
 
   def index
     @search_query = params[:q]
-    scope = Course.publicly_visible.search(@search_query).includes(:user)
+    @tag = params[:tag]&.strip&.downcase.presence
+    scope = Course.publicly_visible.search(@search_query).with_tag(@tag).includes(:user)
     scope = scope.order(created_at: :desc) if @search_query.blank?
     @pagy, @courses = pagy(scope, limit: 20)
+    @tags = Course.unique_tags
   end
 
   def dashboard

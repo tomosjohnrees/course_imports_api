@@ -12,6 +12,15 @@ class Course < ApplicationRecord
     where("search_vector @@ websearch_to_tsquery('english', ?)", query)
       .order(Arel.sql(sanitize_sql_array([ "ts_rank(search_vector, websearch_to_tsquery('english', ?)) DESC", query ])))
   }
+  scope :with_tag, ->(tag) {
+    return all if tag.blank?
+
+    where("tags @> ARRAY[?]::varchar[]", tag)
+  }
+
+  def self.unique_tags
+    publicly_visible.where("array_length(tags, 1) > 0").pluck(Arel.sql("DISTINCT unnest(tags)")).sort
+  end
 
   belongs_to :user
   has_many :validation_attempts, dependent: :destroy

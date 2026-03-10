@@ -370,4 +370,157 @@ class CourseTest < ActiveSupport::TestCase
       Course.search("'; DROP TABLE courses; --").to_a
     end
   end
+
+  test "with_tag scope returns courses that include the given tag" do
+    tagged = Course.create!(@valid_attributes.merge(
+      title: "Ruby Course", github_owner: "tag-scope1", github_repo: "ruby-tagged",
+      github_repo_url: "https://github.com/tag-scope1/ruby-tagged", status: "approved",
+      tags: [ "ruby", "web" ]
+    ))
+    untagged = Course.create!(@valid_attributes.merge(
+      title: "Python Course", github_owner: "tag-scope2", github_repo: "python-tagged",
+      github_repo_url: "https://github.com/tag-scope2/python-tagged", status: "approved",
+      tags: [ "python" ]
+    ))
+
+    result = Course.with_tag("ruby")
+    assert_includes result, tagged
+    assert_not_includes result, untagged
+  end
+
+  test "with_tag scope returns all courses when tag is blank" do
+    course1 = Course.create!(@valid_attributes.merge(
+      github_owner: "tag-blank1", github_repo: "repo-blank1",
+      github_repo_url: "https://github.com/tag-blank1/repo-blank1", tags: [ "ruby" ]
+    ))
+    course2 = Course.create!(@valid_attributes.merge(
+      github_owner: "tag-blank2", github_repo: "repo-blank2",
+      github_repo_url: "https://github.com/tag-blank2/repo-blank2", tags: []
+    ))
+
+    result = Course.with_tag(nil)
+    assert_includes result, course1
+    assert_includes result, course2
+
+    result_empty = Course.with_tag("")
+    assert_includes result_empty, course1
+    assert_includes result_empty, course2
+  end
+
+  test "with_tag scope returns empty when no courses match the tag" do
+    Course.create!(@valid_attributes.merge(
+      github_owner: "tag-nomatch1", github_repo: "repo-nomatch1",
+      github_repo_url: "https://github.com/tag-nomatch1/repo-nomatch1",
+      tags: [ "ruby", "rails" ], status: "approved"
+    ))
+
+    result = Course.with_tag("nonexistenttag")
+    assert_empty result
+  end
+
+  test "with_tag scope chains with publicly_visible" do
+    approved_tagged = Course.create!(@valid_attributes.merge(
+      github_owner: "tag-chain1", github_repo: "repo-chain1",
+      github_repo_url: "https://github.com/tag-chain1/repo-chain1",
+      tags: [ "ruby" ], status: "approved"
+    ))
+    pending_tagged = Course.create!(@valid_attributes.merge(
+      github_owner: "tag-chain2", github_repo: "repo-chain2",
+      github_repo_url: "https://github.com/tag-chain2/repo-chain2",
+      tags: [ "ruby" ], status: "pending"
+    ))
+
+    result = Course.publicly_visible.with_tag("ruby")
+    assert_includes result, approved_tagged
+    assert_not_includes result, pending_tagged
+  end
+
+  test "with_tag scope chains with search" do
+    matching = Course.create!(@valid_attributes.merge(
+      title: "Ruby Web Development", github_owner: "tag-search1", github_repo: "ruby-web",
+      github_repo_url: "https://github.com/tag-search1/ruby-web",
+      tags: [ "ruby" ], status: "approved"
+    ))
+    wrong_tag = Course.create!(@valid_attributes.merge(
+      title: "Python Web Development", github_owner: "tag-search2", github_repo: "python-web",
+      github_repo_url: "https://github.com/tag-search2/python-web",
+      tags: [ "python" ], status: "approved"
+    ))
+
+    result = Course.search("web").with_tag("ruby")
+    assert_includes result, matching
+    assert_not_includes result, wrong_tag
+  end
+
+  test "unique_tags returns sorted unique tags from approved courses" do
+    Course.create!(@valid_attributes.merge(
+      github_owner: "utag1", github_repo: "repo-utag1",
+      github_repo_url: "https://github.com/utag1/repo-utag1",
+      tags: [ "ruby", "web" ], status: "approved"
+    ))
+    Course.create!(@valid_attributes.merge(
+      github_owner: "utag2", github_repo: "repo-utag2",
+      github_repo_url: "https://github.com/utag2/repo-utag2",
+      tags: [ "python", "web" ], status: "approved"
+    ))
+
+    result = Course.unique_tags
+    assert_equal %w[python ruby web], result
+  end
+
+  test "unique_tags excludes tags from non-approved courses" do
+    Course.create!(@valid_attributes.merge(
+      github_owner: "utag-excl1", github_repo: "repo-excl1",
+      github_repo_url: "https://github.com/utag-excl1/repo-excl1",
+      tags: [ "ruby" ], status: "approved"
+    ))
+    Course.create!(@valid_attributes.merge(
+      github_owner: "utag-excl2", github_repo: "repo-excl2",
+      github_repo_url: "https://github.com/utag-excl2/repo-excl2",
+      tags: [ "hidden" ], status: "pending"
+    ))
+    Course.create!(@valid_attributes.merge(
+      github_owner: "utag-excl3", github_repo: "repo-excl3",
+      github_repo_url: "https://github.com/utag-excl3/repo-excl3",
+      tags: [ "removed-tag" ], status: "removed"
+    ))
+
+    result = Course.unique_tags
+    assert_includes result, "ruby"
+    assert_not_includes result, "hidden"
+    assert_not_includes result, "removed-tag"
+  end
+
+  test "unique_tags returns empty array when no approved courses have tags" do
+    Course.create!(@valid_attributes.merge(
+      github_owner: "utag-empty1", github_repo: "repo-empty1",
+      github_repo_url: "https://github.com/utag-empty1/repo-empty1",
+      tags: [], status: "approved"
+    ))
+    Course.create!(@valid_attributes.merge(
+      github_owner: "utag-empty2", github_repo: "repo-empty2",
+      github_repo_url: "https://github.com/utag-empty2/repo-empty2",
+      tags: [ "hidden" ], status: "pending"
+    ))
+
+    result = Course.unique_tags
+    assert_equal [], result
+  end
+
+  test "unique_tags deduplicates tags across multiple courses" do
+    Course.create!(@valid_attributes.merge(
+      github_owner: "utag-dedup1", github_repo: "repo-dedup1",
+      github_repo_url: "https://github.com/utag-dedup1/repo-dedup1",
+      tags: [ "ruby", "rails" ], status: "approved"
+    ))
+    Course.create!(@valid_attributes.merge(
+      github_owner: "utag-dedup2", github_repo: "repo-dedup2",
+      github_repo_url: "https://github.com/utag-dedup2/repo-dedup2",
+      tags: [ "ruby", "web" ], status: "approved"
+    ))
+
+    result = Course.unique_tags
+    assert_equal result.uniq, result
+    assert_equal 1, result.count { |t| t == "ruby" }
+  end
 end
