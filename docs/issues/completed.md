@@ -14,3 +14,4 @@
 | # | Title | Phase | Status |
 |---|-------|-------|--------|
 | 0006 | [Create courses and validation_attempts tables](0006-create-courses-tables.md) | Milestone 3 — Course Submission & Validation | `complete` |
+| 0007 | [Course and ValidationAttempt models](0007-course-validation-models.md) | Milestone 3 — Course Submission & Validation | `complete` |

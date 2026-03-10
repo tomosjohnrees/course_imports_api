@@ -1,6 +1,8 @@
 class User < ApplicationRecord
   encrypts :github_token
 
+  has_many :courses, dependent: :destroy
+
   validates :github_id, presence: true, uniqueness: true
   validates :github_username, presence: true
 
