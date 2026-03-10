@@ -427,6 +427,7 @@ DEPENDENCIES
   brakeman
   bundler-audit
   debug
+  faraday (~> 2.0)
   image_processing (~> 1.2)
   importmap-rails
   kamal
