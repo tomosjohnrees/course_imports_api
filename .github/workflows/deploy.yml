@@ -1,6 +1,13 @@
 name: Deploy
 
 on:
+  workflow_dispatch:
+    inputs:
+      first_deploy:
+        description: 'Run kamal setup instead of deploy (first time only)'
+        required: false
+        type: boolean
+        default: false
   workflow_run:
     workflows: [CI]
     types: [completed]
@@ -39,4 +46,4 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Deploy with Kamal
-        run: bundle exec kamal deploy
+        run: bundle exec kamal ${{ github.event.inputs.first_deploy == 'true' && 'setup' || 'deploy' }}
