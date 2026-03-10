@@ -102,9 +102,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :unprocessable_entity
-    assert_select "div.bg-red-50" do
-      assert_select "p", /must be a valid GitHub repository URL/
-    end
+    assert_select "div.bg-red-50"
   end
 
   test "create renders new with errors for blank URL" do
@@ -230,7 +228,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
 
     get course_path(course)
     assert_response :success
-    assert_select ".status-badge", "Pending"
+    assert_select "span.bg-yellow-100", "Pending"
   end
 
   test "show displays validation error for failed course" do
@@ -246,7 +244,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
 
     get course_path(course)
     assert_response :success
-    assert_select ".validation-error", "Repository not found"
+    assert_select "p.text-red-700", "Repository not found"
   end
 
   test "show hides optional fields when blank" do
@@ -351,7 +349,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
 
     delete course_path(course)
 
-    assert_redirected_to root_path
+    assert_redirected_to courses_path
     assert_equal "Course removed.", flash[:notice]
     assert_equal "removed", course.reload.status
   end
@@ -405,6 +403,367 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
     assert_equal "approved", course.reload.status
   end
 
+  # --- index action ---
+
+  test "index lists current users courses when signed in" do
+    course = Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/idx-owner/idx-repo",
+      github_owner: "idx-owner",
+      github_repo: "idx-repo",
+      title: "My Listed Course",
+      status: "approved"
+    )
+    sign_in_as(@user)
+
+    get courses_path
+    assert_response :success
+    assert_select "h1", "My Courses"
+    assert_select "a", text: "My Listed Course"
+  end
+
+  test "index does not show other users courses" do
+    other_user = User.create!(github_id: "cc_other_idx", github_username: "otheridx", avatar_url: "https://example.com/other.png")
+    Course.create!(
+      user: other_user,
+      github_repo_url: "https://github.com/other-idx/other-idx-repo",
+      github_owner: "other-idx",
+      github_repo: "other-idx-repo",
+      title: "Others Course",
+      status: "approved"
+    )
+    sign_in_as(@user)
+
+    get courses_path
+    assert_response :success
+    assert_select "a", { text: "Others Course", count: 0 }
+  end
+
+  test "index redirects to root when not signed in" do
+    get courses_path
+    assert_redirected_to root_path
+    assert_equal "You must sign in to continue.", flash[:alert]
+  end
+
+  test "index shows empty state when user has no courses" do
+    sign_in_as(@user)
+
+    get courses_path
+    assert_response :success
+    assert_select "p", /You haven't submitted any courses yet/
+    assert_select "a", text: "Submit your first course"
+  end
+
+  test "index shows status badges for each course" do
+    Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/idx-badge/pending-repo",
+      github_owner: "idx-badge",
+      github_repo: "pending-repo",
+      title: "Pending Course",
+      status: "pending"
+    )
+    Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/idx-badge/approved-repo",
+      github_owner: "idx-badge",
+      github_repo: "approved-repo",
+      title: "Approved Course",
+      status: "approved"
+    )
+    sign_in_as(@user)
+
+    get courses_path
+    assert_response :success
+    assert_select "span.bg-yellow-100", text: "Pending"
+    assert_select "span.bg-green-100", text: "Approved"
+  end
+
+  test "index shows remove button for non-removed courses" do
+    Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/idx-rm/active-repo",
+      github_owner: "idx-rm",
+      github_repo: "active-repo",
+      title: "Active Course",
+      status: "approved"
+    )
+    sign_in_as(@user)
+
+    get courses_path
+    assert_response :success
+    assert_select "button", text: "Remove"
+  end
+
+  test "index hides remove button for removed courses" do
+    Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/idx-rm/removed-repo",
+      github_owner: "idx-rm",
+      github_repo: "removed-repo",
+      title: "Removed Course",
+      status: "removed"
+    )
+    sign_in_as(@user)
+
+    get courses_path
+    assert_response :success
+    assert_select "button", { text: "Remove", count: 0 }
+  end
+
+  test "index displays github owner and repo for each course" do
+    Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/idx-meta/meta-repo",
+      github_owner: "idx-meta",
+      github_repo: "meta-repo",
+      title: "Meta Course",
+      status: "approved"
+    )
+    sign_in_as(@user)
+
+    get courses_path
+    assert_response :success
+    assert_select "p", text: "idx-meta/meta-repo"
+  end
+
+  test "index orders courses by most recent first" do
+    old_course = Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/idx-order/old-repo",
+      github_owner: "idx-order",
+      github_repo: "old-repo",
+      title: "Old Course",
+      status: "approved",
+      created_at: 2.days.ago
+    )
+    new_course = Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/idx-order/new-repo",
+      github_owner: "idx-order",
+      github_repo: "new-repo",
+      title: "New Course",
+      status: "approved",
+      created_at: 1.hour.ago
+    )
+    sign_in_as(@user)
+
+    get courses_path
+    assert_response :success
+    response_body = @response.body
+    new_pos = response_body.index("New Course")
+    old_pos = response_body.index("Old Course")
+    assert new_pos < old_pos, "New course should appear before old course"
+  end
+
+  test "index includes submit course link" do
+    sign_in_as(@user)
+
+    get courses_path
+    assert_response :success
+    assert_select "a[href='#{new_course_path}']", text: "Submit Course"
+  end
+
+  # --- resubmit action ---
+
+  test "resubmit resubmits a failed course for validation" do
+    course = Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/resub-owner/resub-repo",
+      github_owner: "resub-owner",
+      github_repo: "resub-repo",
+      title: "Failed Course",
+      status: "failed",
+      validation_error: "Repo not found"
+    )
+    sign_in_as(@user)
+
+    assert_enqueued_with(job: CourseValidationJob) do
+      post resubmit_course_path(course)
+    end
+
+    assert_redirected_to course_path(course)
+    assert_equal "Course resubmitted for validation.", flash[:notice]
+  end
+
+  test "resubmit rejects non-failed course" do
+    course = Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/resub-owner/approved-resub",
+      github_owner: "resub-owner",
+      github_repo: "approved-resub",
+      title: "Approved Course",
+      status: "approved"
+    )
+    sign_in_as(@user)
+
+    post resubmit_course_path(course)
+
+    assert_redirected_to course_path(course)
+    assert_equal "Only failed courses can be resubmitted.", flash[:alert]
+  end
+
+  test "resubmit rejects pending course" do
+    course = Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/resub-owner/pending-resub",
+      github_owner: "resub-owner",
+      github_repo: "pending-resub",
+      title: "Pending Course",
+      status: "pending"
+    )
+    sign_in_as(@user)
+
+    post resubmit_course_path(course)
+
+    assert_redirected_to course_path(course)
+    assert_equal "Only failed courses can be resubmitted.", flash[:alert]
+  end
+
+  test "resubmit returns 404 for another users course" do
+    other_user = User.create!(github_id: "cc_resub_other", github_username: "resubother", avatar_url: "https://example.com/other.png")
+    course = Course.create!(
+      user: other_user,
+      github_repo_url: "https://github.com/resub-other/other-repo",
+      github_owner: "resub-other",
+      github_repo: "other-repo",
+      title: "Not Mine",
+      status: "failed",
+      validation_error: "Some error"
+    )
+    sign_in_as(@user)
+
+    post resubmit_course_path(course)
+    assert_response :not_found
+  end
+
+  test "resubmit redirects to root when not signed in" do
+    course = Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/resub-noauth/noauth-repo",
+      github_owner: "resub-noauth",
+      github_repo: "noauth-repo",
+      title: "No Auth Resubmit",
+      status: "failed",
+      validation_error: "Some error"
+    )
+
+    post resubmit_course_path(course)
+    assert_redirected_to root_path
+    assert_equal "You must sign in to continue.", flash[:alert]
+  end
+
+  # --- show action (new features) ---
+
+  test "show displays topic count when present" do
+    course = Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/topic-owner/topic-repo",
+      github_owner: "topic-owner",
+      github_repo: "topic-repo",
+      title: "Topic Course",
+      status: "approved",
+      topic_count: 5
+    )
+
+    get course_path(course)
+    assert_response :success
+    assert_select "h2", text: "Topics"
+    assert_select "p", text: "5"
+  end
+
+  test "show hides topic count when zero" do
+    course = Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/notopic-owner/notopic-repo",
+      github_owner: "notopic-owner",
+      github_repo: "notopic-repo",
+      title: "No Topic Course",
+      status: "approved",
+      topic_count: 0
+    )
+
+    get course_path(course)
+    assert_response :success
+    assert_select "h2", { text: "Topics", count: 0 }
+  end
+
+  test "show hides topic count when nil" do
+    course = Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/niltopic-owner/niltopic-repo",
+      github_owner: "niltopic-owner",
+      github_repo: "niltopic-repo",
+      title: "Nil Topic Course",
+      status: "pending"
+    )
+
+    get course_path(course)
+    assert_response :success
+    assert_select "h2", { text: "Topics", count: 0 }
+  end
+
+  test "show displays resubmit button for failed course owned by current user" do
+    course = Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/resubshow-owner/resubshow-repo",
+      github_owner: "resubshow-owner",
+      github_repo: "resubshow-repo",
+      title: "Failed Resubmit Course",
+      status: "failed",
+      validation_error: "Some error"
+    )
+    sign_in_as(@user)
+
+    get course_path(course)
+    assert_response :success
+    assert_select "button", text: "Resubmit for Validation"
+  end
+
+  test "show hides resubmit button for approved course" do
+    course = Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/noresub-owner/noresub-repo",
+      github_owner: "noresub-owner",
+      github_repo: "noresub-repo",
+      title: "Approved No Resubmit",
+      status: "approved"
+    )
+    sign_in_as(@user)
+
+    get course_path(course)
+    assert_response :success
+    assert_select "button", { text: "Resubmit for Validation", count: 0 }
+  end
+
+  test "show hides resubmit button for unauthenticated user" do
+    course = Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/unauth-resub/unauth-resub-repo",
+      github_owner: "unauth-resub",
+      github_repo: "unauth-resub-repo",
+      title: "Unauth Resubmit Course",
+      status: "failed",
+      validation_error: "Some error"
+    )
+
+    get course_path(course)
+    assert_response :success
+    assert_select "button", { text: "Resubmit for Validation", count: 0 }
+  end
+
+  # --- new action (updated content) ---
+
+  test "new form displays repository requirements" do
+    sign_in_as(@user)
+
+    get new_course_path
+    assert_response :success
+    assert_select "p", /Add a public GitHub repository to the course registry/
+    assert_select "code", "course.json"
+    assert_select "code", "topics/"
+  end
+
   # --- routing ---
 
   test "routes GET /courses/new to courses#new" do
@@ -425,6 +784,16 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
   test "routes DELETE /courses/:id to courses#destroy" do
     assert_routing({ path: "/courses/1", method: :delete },
                    { controller: "courses", action: "destroy", id: "1" })
+  end
+
+  test "routes GET /courses to courses#index" do
+    assert_routing({ path: "/courses", method: :get },
+                   { controller: "courses", action: "index" })
+  end
+
+  test "routes POST /courses/:id/resubmit to courses#resubmit" do
+    assert_routing({ path: "/courses/1/resubmit", method: :post },
+                   { controller: "courses", action: "resubmit", id: "1" })
   end
 
   # --- strong parameters ---

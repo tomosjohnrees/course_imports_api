@@ -1,5 +1,11 @@
 class CoursesController < ApplicationController
+  include Pagy::Backend
+
   before_action :authenticate_user!, except: :show
+
+  def index
+    @pagy, @courses = pagy(current_user.courses.order(created_at: :desc), limit: 10)
+  end
 
   def new
     @course = Course.new
@@ -23,7 +29,15 @@ class CoursesController < ApplicationController
   def destroy
     @course = current_user.courses.find(params[:id])
     @course.remove!
-    redirect_to root_path, notice: "Course removed."
+    redirect_to courses_path, notice: "Course removed."
+  end
+
+  def resubmit
+    @course = current_user.courses.find(params[:id])
+    @course.resubmit!
+    redirect_to @course, notice: "Course resubmitted for validation."
+  rescue Course::Validatable::InvalidTransition
+    redirect_to @course, alert: "Only failed courses can be resubmitted."
   end
 
   private

@@ -20,22 +20,22 @@ Build the user-facing views for course submission: the submission form, the cour
 ## Acceptance criteria
 
 ### Functionality
-- [ ] Submission form has a URL input field with clear instructions
-- [ ] Form validation errors (bad URL format, duplicate repo) are displayed inline without a full page reload
-- [ ] Course status page shows the current status with appropriate visual treatment for each state
-- [ ] When validation completes, the status page updates in real time via Turbo Stream (no manual refresh needed)
-- [ ] Failed courses display the validation error message
-- [ ] Approved courses display the extracted metadata (title, description, tags, topic count)
-- [ ] User dashboard lists all of the current user's courses with their statuses
-- [ ] User can remove their own course from the dashboard
+- [x] Submission form has a URL input field with clear instructions
+- [x] Form validation errors (bad URL format, duplicate repo) are displayed inline without a full page reload
+- [x] Course status page shows the current status with appropriate visual treatment for each state
+- [x] When validation completes, the status page updates in real time via Turbo Stream (no manual refresh needed)
+- [x] Failed courses display the validation error message
+- [x] Approved courses display the extracted metadata (title, description, tags, topic count)
+- [x] User dashboard lists all of the current user's courses with their statuses
+- [x] User can remove their own course from the dashboard
 
 ### Security
-- [ ] The submission form includes a CSRF token
-- [ ] The user dashboard only shows courses belonging to the current user
+- [x] The submission form includes a CSRF token
+- [x] The user dashboard only shows courses belonging to the current user
 
 ### Performance
-- [ ] Turbo Stream connection is established only on the status page, not on every page load
-- [ ] The user dashboard paginates if the user has many courses
+- [x] Turbo Stream connection is established only on the status page, not on every page load
+- [x] The user dashboard paginates if the user has many courses
 
 ### Testing
 - [ ] System or integration tests cover the submission flow (submit URL → see pending → see result)
