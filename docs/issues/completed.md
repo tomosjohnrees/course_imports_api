@@ -30,3 +30,4 @@
 | 0016 | [Full-text search with PostgreSQL tsvector](0016-full-text-search.md) | Milestone 4 — Browse & Search | `complete` |
 | 0017 | [Tag filtering and tag cloud](0017-tag-filtering.md) | Milestone 4 — Browse & Search | `complete` |
 | 0018 | [Public course detail page](0018-course-detail-page.md) | Milestone 4 — Browse & Search | `complete` |
+| 0019 | [UI polish, responsive layout, and meta tags](0019-ui-polish-responsive-meta.md) | Milestone 4 — Browse & Search | `complete` |
