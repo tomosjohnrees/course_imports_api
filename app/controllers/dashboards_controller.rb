@@ -1,5 +1,5 @@
 class DashboardsController < ApplicationController
-  include Pagy::Backend
+  include Pagy::Method
 
   before_action :authenticate_user!
 

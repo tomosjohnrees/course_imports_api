@@ -1,5 +1,5 @@
 class CoursesController < ApplicationController
-  include Pagy::Backend
+  include Pagy::Method
 
   before_action :authenticate_user!, except: %i[index show]
 
