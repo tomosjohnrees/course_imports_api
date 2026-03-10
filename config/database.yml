@@ -90,6 +90,7 @@ production:
     database: course_imports_api_production
     username: course_imports_api
     password: <%= ENV["COURSE_IMPORTS_API_DATABASE_PASSWORD"] %>
+    host: <%= ENV.fetch("DB_HOST", "localhost") %>
   cache:
     <<: *primary_production
     database: course_imports_api_production_cache
