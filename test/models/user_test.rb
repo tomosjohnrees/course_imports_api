@@ -159,6 +159,20 @@ class UserTest < ActiveSupport::TestCase
     assert_nil user.github_token
   end
 
+  test "destroying user destroys associated courses" do
+    user = User.create!(github_id: "destroy-courses-test", github_username: "destroycoursesuser")
+    Course.create!(
+      user: user,
+      github_repo_url: "https://github.com/destroy/repo",
+      github_owner: "destroy", github_repo: "repo",
+      title: "Destroy Test", status: "pending"
+    )
+
+    assert_difference "Course.count", -1 do
+      user.destroy
+    end
+  end
+
   test "find_or_create_from_omniauth does not change banned status on update" do
     existing = User.create!(github_id: "66666", github_username: "banned_user", banned: true)
 

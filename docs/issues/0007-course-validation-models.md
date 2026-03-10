@@ -20,20 +20,20 @@ Build the `Course` and `ValidationAttempt` models with status constants, scopes,
 ## Acceptance criteria
 
 ### Functionality
-- [ ] `Course` has status constants and scopes for `pending`, `validating`, `approved`, `failed`, `removed`
-- [ ] `Course` belongs to `User` and has many `ValidationAttempt`s
-- [ ] `Course` validates presence of required fields (`github_repo_url`, `github_owner`, `github_repo`, `title`)
-- [ ] `Course` validates format of `github_repo_url` against a strict pattern
-- [ ] `ValidationAttempt` belongs to `Course` and records `result`, `error_message`, `api_calls_made`, `duration_ms`
-- [ ] A scope exists to fetch only approved, publicly visible courses
+- [x] `Course` has status constants and scopes for `pending`, `validating`, `approved`, `failed`, `removed`
+- [x] `Course` belongs to `User` and has many `ValidationAttempt`s
+- [x] `Course` validates presence of required fields (`github_repo_url`, `github_owner`, `github_repo`, `title`)
+- [x] `Course` validates format of `github_repo_url` against a strict pattern
+- [x] `ValidationAttempt` belongs to `Course` and records `result`, `error_message`, `api_calls_made`, `duration_ms`
+- [x] A scope exists to fetch only approved, publicly visible courses
 
 ### Security
-- [ ] Courses are always scoped to a user via the `belongs_to :user` association
-- [ ] URL validation prevents submission of non-GitHub URLs
+- [x] Courses are always scoped to a user via the `belongs_to :user` association
+- [x] URL validation prevents submission of non-GitHub URLs
 
 ### Performance
-- [ ] Status scopes use the indexed `status` column
-- [ ] Association queries use foreign key indexes
+- [x] Status scopes use the indexed `status` column
+- [x] Association queries use foreign key indexes
 
 ### Testing
 - [ ] Model tests cover all validations (presence, format, uniqueness)
