@@ -1,9 +1,16 @@
 class CoursesController < ApplicationController
   include Pagy::Backend
 
-  before_action :authenticate_user!, except: :show
+  before_action :authenticate_user!, except: %i[index show]
 
   def index
+    @pagy, @courses = pagy(
+      Course.publicly_visible.includes(:user).order(created_at: :desc),
+      limit: 20
+    )
+  end
+
+  def dashboard
     @pagy, @courses = pagy(current_user.courses.order(created_at: :desc), limit: 10)
   end
 
@@ -29,7 +36,7 @@ class CoursesController < ApplicationController
   def destroy
     @course = current_user.courses.find(params[:id])
     @course.remove!
-    redirect_to courses_path, notice: "Course removed."
+    redirect_to dashboard_courses_path, notice: "Course removed."
   end
 
   def resubmit

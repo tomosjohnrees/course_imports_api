@@ -349,7 +349,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
 
     delete course_path(course)
 
-    assert_redirected_to courses_path
+    assert_redirected_to dashboard_courses_path
     assert_equal "Course removed.", flash[:notice]
     assert_equal "removed", course.reload.status
   end
@@ -403,26 +403,68 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
     assert_equal "approved", course.reload.status
   end
 
-  # --- index action ---
+  # --- index action (public browse) ---
 
-  test "index lists current users courses when signed in" do
-    course = Course.create!(
+  test "index displays approved courses without authentication" do
+    Course.create!(
       user: @user,
-      github_repo_url: "https://github.com/idx-owner/idx-repo",
-      github_owner: "idx-owner",
-      github_repo: "idx-repo",
-      title: "My Listed Course",
+      github_repo_url: "https://github.com/pub-owner/pub-repo",
+      github_owner: "pub-owner",
+      github_repo: "pub-repo",
+      title: "Public Course",
       status: "approved"
     )
-    sign_in_as(@user)
 
     get courses_path
     assert_response :success
-    assert_select "h1", "My Courses"
-    assert_select "a", text: "My Listed Course"
+    assert_select "h1", "Browse Courses"
+    assert_select "a", text: "Public Course"
   end
 
-  test "index does not show other users courses" do
+  test "index only shows approved courses" do
+    Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/vis-owner/pending-vis",
+      github_owner: "vis-owner",
+      github_repo: "pending-vis",
+      title: "Pending Course",
+      status: "pending"
+    )
+    Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/vis-owner/failed-vis",
+      github_owner: "vis-owner",
+      github_repo: "failed-vis",
+      title: "Failed Course",
+      status: "failed",
+      validation_error: "Some error"
+    )
+    Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/vis-owner/removed-vis",
+      github_owner: "vis-owner",
+      github_repo: "removed-vis",
+      title: "Removed Course",
+      status: "removed"
+    )
+    Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/vis-owner/approved-vis",
+      github_owner: "vis-owner",
+      github_repo: "approved-vis",
+      title: "Approved Course",
+      status: "approved"
+    )
+
+    get courses_path
+    assert_response :success
+    assert_select "a", text: "Approved Course"
+    assert_select "a", { text: "Pending Course", count: 0 }
+    assert_select "a", { text: "Failed Course", count: 0 }
+    assert_select "a", { text: "Removed Course", count: 0 }
+  end
+
+  test "index shows courses from all users" do
     other_user = User.create!(github_id: "cc_other_idx", github_username: "otheridx", avatar_url: "https://example.com/other.png")
     Course.create!(
       user: other_user,
@@ -432,103 +474,29 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
       title: "Others Course",
       status: "approved"
     )
-    sign_in_as(@user)
-
-    get courses_path
-    assert_response :success
-    assert_select "a", { text: "Others Course", count: 0 }
-  end
-
-  test "index redirects to root when not signed in" do
-    get courses_path
-    assert_redirected_to root_path
-    assert_equal "You must sign in to continue.", flash[:alert]
-  end
-
-  test "index shows empty state when user has no courses" do
-    sign_in_as(@user)
-
-    get courses_path
-    assert_response :success
-    assert_select "p", /You haven't submitted any courses yet/
-    assert_select "a", text: "Submit your first course"
-  end
-
-  test "index shows status badges for each course" do
     Course.create!(
       user: @user,
-      github_repo_url: "https://github.com/idx-badge/pending-repo",
-      github_owner: "idx-badge",
-      github_repo: "pending-repo",
-      title: "Pending Course",
-      status: "pending"
-    )
-    Course.create!(
-      user: @user,
-      github_repo_url: "https://github.com/idx-badge/approved-repo",
-      github_owner: "idx-badge",
-      github_repo: "approved-repo",
-      title: "Approved Course",
+      github_repo_url: "https://github.com/my-idx/my-idx-repo",
+      github_owner: "my-idx",
+      github_repo: "my-idx-repo",
+      title: "My Course",
       status: "approved"
     )
-    sign_in_as(@user)
 
     get courses_path
     assert_response :success
-    assert_select "span.bg-yellow-100", text: "Pending"
-    assert_select "span.bg-green-100", text: "Approved"
+    assert_select "a", text: "Others Course"
+    assert_select "a", text: "My Course"
   end
 
-  test "index shows remove button for non-removed courses" do
-    Course.create!(
-      user: @user,
-      github_repo_url: "https://github.com/idx-rm/active-repo",
-      github_owner: "idx-rm",
-      github_repo: "active-repo",
-      title: "Active Course",
-      status: "approved"
-    )
-    sign_in_as(@user)
-
+  test "index shows empty state when no approved courses exist" do
     get courses_path
     assert_response :success
-    assert_select "button", text: "Remove"
-  end
-
-  test "index hides remove button for removed courses" do
-    Course.create!(
-      user: @user,
-      github_repo_url: "https://github.com/idx-rm/removed-repo",
-      github_owner: "idx-rm",
-      github_repo: "removed-repo",
-      title: "Removed Course",
-      status: "removed"
-    )
-    sign_in_as(@user)
-
-    get courses_path
-    assert_response :success
-    assert_select "button", { text: "Remove", count: 0 }
-  end
-
-  test "index displays github owner and repo for each course" do
-    Course.create!(
-      user: @user,
-      github_repo_url: "https://github.com/idx-meta/meta-repo",
-      github_owner: "idx-meta",
-      github_repo: "meta-repo",
-      title: "Meta Course",
-      status: "approved"
-    )
-    sign_in_as(@user)
-
-    get courses_path
-    assert_response :success
-    assert_select "p", text: "idx-meta/meta-repo"
+    assert_select "p", /No courses have been approved yet/
   end
 
   test "index orders courses by most recent first" do
-    old_course = Course.create!(
+    Course.create!(
       user: @user,
       github_repo_url: "https://github.com/idx-order/old-repo",
       github_owner: "idx-order",
@@ -537,7 +505,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
       status: "approved",
       created_at: 2.days.ago
     )
-    new_course = Course.create!(
+    Course.create!(
       user: @user,
       github_repo_url: "https://github.com/idx-order/new-repo",
       github_owner: "idx-order",
@@ -546,7 +514,6 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
       status: "approved",
       created_at: 1.hour.ago
     )
-    sign_in_as(@user)
 
     get courses_path
     assert_response :success
@@ -556,12 +523,329 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
     assert new_pos < old_pos, "New course should appear before old course"
   end
 
-  test "index includes submit course link" do
+  test "index displays course description when present" do
+    Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/desc-owner/desc-repo",
+      github_owner: "desc-owner",
+      github_repo: "desc-repo",
+      title: "Described Course",
+      status: "approved",
+      description: "A detailed course description"
+    )
+
+    get courses_path
+    assert_response :success
+    assert_select "p", /A detailed course description/
+  end
+
+  test "index displays author name when present" do
+    Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/auth-owner/auth-repo",
+      github_owner: "auth-owner",
+      github_repo: "auth-repo",
+      title: "Authored Course",
+      status: "approved",
+      author_name: "Jane Author"
+    )
+
+    get courses_path
+    assert_response :success
+    assert_select "span", text: "Jane Author"
+  end
+
+  test "index falls back to github username when author name is absent" do
+    Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/noauth-owner/noauth-repo",
+      github_owner: "noauth-owner",
+      github_repo: "noauth-repo",
+      title: "No Author Course",
+      status: "approved"
+    )
+
+    get courses_path
+    assert_response :success
+    assert_select "span", text: @user.github_username
+  end
+
+  test "index displays topic count when present" do
+    Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/topic-idx/topic-idx-repo",
+      github_owner: "topic-idx",
+      github_repo: "topic-idx-repo",
+      title: "Topic Course",
+      status: "approved",
+      topic_count: 5
+    )
+
+    get courses_path
+    assert_response :success
+    assert_select "span", text: "5 topics"
+  end
+
+  test "index displays tags when present" do
+    Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/tag-idx/tag-idx-repo",
+      github_owner: "tag-idx",
+      github_repo: "tag-idx-repo",
+      title: "Tagged Course",
+      status: "approved",
+      tags: [ "ruby", "rails" ]
+    )
+
+    get courses_path
+    assert_response :success
+    assert_select "span", text: "ruby"
+    assert_select "span", text: "rails"
+  end
+
+  test "index displays load count" do
+    Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/load-idx/load-idx-repo",
+      github_owner: "load-idx",
+      github_repo: "load-idx-repo",
+      title: "Loaded Course",
+      status: "approved",
+      load_count: 42
+    )
+
+    get courses_path
+    assert_response :success
+    assert_select "span", text: "42 loads"
+  end
+
+  test "index paginates with 20 courses per page" do
+    21.times do |i|
+      Course.create!(
+        user: @user,
+        github_repo_url: "https://github.com/page-owner/page-repo-#{i}",
+        github_owner: "page-owner",
+        github_repo: "page-repo-#{i}",
+        title: "Page Course #{i}",
+        status: "approved"
+      )
+    end
+
+    get courses_path
+    assert_response :success
+    assert_select "a[href*='page=']"
+  end
+
+  test "index does not show pagination when courses fit on one page" do
+    3.times do |i|
+      Course.create!(
+        user: @user,
+        github_repo_url: "https://github.com/nopage-owner/nopage-repo-#{i}",
+        github_owner: "nopage-owner",
+        github_repo: "nopage-repo-#{i}",
+        title: "No Page Course #{i}",
+        status: "approved"
+      )
+    end
+
+    get courses_path
+    assert_response :success
+    assert_select "a[href*='page=']", count: 0
+  end
+
+  test "index is accessible when signed in" do
     sign_in_as(@user)
 
     get courses_path
     assert_response :success
+    assert_select "h1", "Browse Courses"
+  end
+
+  # --- dashboard action ---
+
+  test "dashboard lists current users courses when signed in" do
+    course = Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/dash-owner/dash-repo",
+      github_owner: "dash-owner",
+      github_repo: "dash-repo",
+      title: "My Listed Course",
+      status: "approved"
+    )
+    sign_in_as(@user)
+
+    get dashboard_courses_path
+    assert_response :success
+    assert_select "h1", "My Courses"
+    assert_select "a", text: "My Listed Course"
+  end
+
+  test "dashboard does not show other users courses" do
+    other_user = User.create!(github_id: "cc_other_dash", github_username: "otherdash", avatar_url: "https://example.com/other.png")
+    Course.create!(
+      user: other_user,
+      github_repo_url: "https://github.com/other-dash/other-dash-repo",
+      github_owner: "other-dash",
+      github_repo: "other-dash-repo",
+      title: "Others Course",
+      status: "approved"
+    )
+    sign_in_as(@user)
+
+    get dashboard_courses_path
+    assert_response :success
+    assert_select "a", { text: "Others Course", count: 0 }
+  end
+
+  test "dashboard redirects to root when not signed in" do
+    get dashboard_courses_path
+    assert_redirected_to root_path
+    assert_equal "You must sign in to continue.", flash[:alert]
+  end
+
+  test "dashboard shows empty state when user has no courses" do
+    sign_in_as(@user)
+
+    get dashboard_courses_path
+    assert_response :success
+    assert_select "p", /You haven't submitted any courses yet/
+    assert_select "a", text: "Submit your first course"
+  end
+
+  test "dashboard shows status badges for each course" do
+    Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/dash-badge/pending-repo",
+      github_owner: "dash-badge",
+      github_repo: "pending-repo",
+      title: "Pending Course",
+      status: "pending"
+    )
+    Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/dash-badge/approved-repo",
+      github_owner: "dash-badge",
+      github_repo: "approved-repo",
+      title: "Approved Course",
+      status: "approved"
+    )
+    sign_in_as(@user)
+
+    get dashboard_courses_path
+    assert_response :success
+    assert_select "span.bg-yellow-100", text: "Pending"
+    assert_select "span.bg-green-100", text: "Approved"
+  end
+
+  test "dashboard shows remove button for non-removed courses" do
+    Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/dash-rm/active-repo",
+      github_owner: "dash-rm",
+      github_repo: "active-repo",
+      title: "Active Course",
+      status: "approved"
+    )
+    sign_in_as(@user)
+
+    get dashboard_courses_path
+    assert_response :success
+    assert_select "button", text: "Remove"
+  end
+
+  test "dashboard hides remove button for removed courses" do
+    Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/dash-rm/removed-repo",
+      github_owner: "dash-rm",
+      github_repo: "removed-repo",
+      title: "Removed Course",
+      status: "removed"
+    )
+    sign_in_as(@user)
+
+    get dashboard_courses_path
+    assert_response :success
+    assert_select "button", { text: "Remove", count: 0 }
+  end
+
+  test "dashboard displays github owner and repo for each course" do
+    Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/dash-meta/meta-repo",
+      github_owner: "dash-meta",
+      github_repo: "meta-repo",
+      title: "Meta Course",
+      status: "approved"
+    )
+    sign_in_as(@user)
+
+    get dashboard_courses_path
+    assert_response :success
+    assert_select "p", text: "dash-meta/meta-repo"
+  end
+
+  test "dashboard orders courses by most recent first" do
+    Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/dash-order/old-repo",
+      github_owner: "dash-order",
+      github_repo: "old-repo",
+      title: "Old Course",
+      status: "approved",
+      created_at: 2.days.ago
+    )
+    Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/dash-order/new-repo",
+      github_owner: "dash-order",
+      github_repo: "new-repo",
+      title: "New Course",
+      status: "approved",
+      created_at: 1.hour.ago
+    )
+    sign_in_as(@user)
+
+    get dashboard_courses_path
+    assert_response :success
+    response_body = @response.body
+    new_pos = response_body.index("New Course")
+    old_pos = response_body.index("Old Course")
+    assert new_pos < old_pos, "New course should appear before old course"
+  end
+
+  test "dashboard includes submit course link" do
+    sign_in_as(@user)
+
+    get dashboard_courses_path
+    assert_response :success
     assert_select "a[href='#{new_course_path}']", text: "Submit Course"
+  end
+
+  test "dashboard shows all statuses including pending and failed" do
+    Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/dash-all/pending-repo",
+      github_owner: "dash-all",
+      github_repo: "pending-repo",
+      title: "My Pending",
+      status: "pending"
+    )
+    Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/dash-all/failed-repo",
+      github_owner: "dash-all",
+      github_repo: "failed-repo",
+      title: "My Failed",
+      status: "failed",
+      validation_error: "Some error"
+    )
+    sign_in_as(@user)
+
+    get dashboard_courses_path
+    assert_response :success
+    assert_select "a", text: "My Pending"
+    assert_select "a", text: "My Failed"
   end
 
   # --- resubmit action ---
@@ -789,6 +1073,11 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
   test "routes GET /courses to courses#index" do
     assert_routing({ path: "/courses", method: :get },
                    { controller: "courses", action: "index" })
+  end
+
+  test "routes GET /courses/dashboard to courses#dashboard" do
+    assert_routing({ path: "/courses/dashboard", method: :get },
+                   { controller: "courses", action: "dashboard" })
   end
 
   test "routes POST /courses/:id/resubmit to courses#resubmit" do

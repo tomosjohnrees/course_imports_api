@@ -19,22 +19,22 @@ Build the public course index page — the main landing page of the registry. It
 ## Acceptance criteria
 
 ### Functionality
-- [ ] The index page lists only approved courses, newest first
-- [ ] Each course entry shows title, description excerpt, author, tags, topic count, and load count
-- [ ] Pagination controls appear when there are more courses than the per-page limit
-- [ ] The page works when there are zero courses (empty state with a helpful message)
-- [ ] Course titles link to the individual course detail page
+- [x] The index page lists only approved courses, newest first
+- [x] Each course entry shows title, description excerpt, author, tags, topic count, and load count
+- [x] Pagination controls appear when there are more courses than the per-page limit
+- [x] The page works when there are zero courses (empty state with a helpful message)
+- [x] Course titles link to the individual course detail page
 
 ### Security
-- [ ] Only courses with `status: approved` are shown — no pending, failed, or removed courses appear
-- [ ] No sensitive data (user tokens, validation errors) is exposed on the index page
+- [x] Only courses with `status: approved` are shown — no pending, failed, or removed courses appear
+- [x] No sensitive data (user tokens, validation errors) is exposed on the index page
 
 ### Performance
-- [ ] The query uses the `status` index and avoids N+1 queries (eager load associations as needed)
-- [ ] Pagination keeps response size bounded (20-25 courses per page)
-- [ ] Page loads efficiently even with hundreds of courses
+- [x] The query uses the `status` index and avoids N+1 queries (eager load associations as needed)
+- [x] Pagination keeps response size bounded (20-25 courses per page)
+- [x] Page loads efficiently even with hundreds of courses
 
 ### Testing
-- [ ] Controller tests verify only approved courses are returned
-- [ ] Controller tests verify pagination works correctly
-- [ ] Tests cover the empty state (no approved courses)
+- [x] Controller tests verify only approved courses are returned
+- [x] Controller tests verify pagination works correctly
+- [x] Tests cover the empty state (no approved courses)

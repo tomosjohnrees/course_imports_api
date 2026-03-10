@@ -1,38 +1,53 @@
-<% content_for(:title, "My Courses") %>
+<% content_for(:title, "Browse Courses") %>
 
-<div class="w-full max-w-3xl mx-auto">
-  <div class="flex items-center justify-between mb-6">
-    <h1 class="text-2xl font-bold text-gray-900">My Courses</h1>
-    <%= link_to "Submit Course", new_course_path, class: "px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-700 transition-colors" %>
+<div class="w-full max-w-4xl mx-auto">
+  <div class="mb-8">
+    <h1 class="text-2xl font-bold text-gray-900">Browse Courses</h1>
+    <p class="mt-1 text-sm text-gray-500">Discover community-submitted courses from GitHub</p>
   </div>
 
   <% if @courses.any? %>
-    <div class="space-y-3">
+    <div class="space-y-4">
       <% @courses.each do |course| %>
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 flex items-center justify-between gap-4">
-          <div class="min-w-0 flex-1">
-            <%= link_to course.title, course, class: "text-base font-medium text-gray-900 hover:text-gray-700 truncate block" %>
-            <p class="text-sm text-gray-500 truncate"><%= course.github_owner %>/<%= course.github_repo %></p>
-          </div>
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-5">
+          <%= link_to course.title, course, class: "text-lg font-semibold text-gray-900 hover:text-gray-700" %>
 
-          <div class="flex items-center gap-3 shrink-0">
-            <%= status_badge(course) %>
+          <% if course.description.present? %>
+            <p class="mt-1 text-sm text-gray-600 line-clamp-2"><%= course.description %></p>
+          <% end %>
 
-            <% unless course.removed? %>
-              <%= button_to "Remove", course, method: :delete, class: "text-sm text-red-600 hover:text-red-800 font-medium transition-colors cursor-pointer", data: { turbo_confirm: "Are you sure you want to remove this course?" } %>
+          <div class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-gray-500">
+            <% if course.author_name.present? %>
+              <span>by <span class="font-medium text-gray-700"><%= course.author_name %></span></span>
+            <% else %>
+              <span>by <span class="font-medium text-gray-700"><%= course.user.github_username %></span></span>
             <% end %>
+
+            <% unless course.topic_count.nil? %>
+              <span><%= course.topic_count %> <%= "topic".pluralize(course.topic_count) %></span>
+            <% end %>
+
+            <span><%= course.load_count %> <%= "load".pluralize(course.load_count) %></span>
           </div>
+
+          <% if course.tags.any? %>
+            <div class="mt-3 flex flex-wrap gap-1.5">
+              <% course.tags.each do |tag| %>
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700"><%= tag %></span>
+              <% end %>
+            </div>
+          <% end %>
         </div>
       <% end %>
     </div>
 
-    <div class="mt-6">
+    <div class="mt-8">
       <%== pagy_nav(@pagy) if @pagy.pages > 1 %>
     </div>
   <% else %>
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-8 text-center">
-      <p class="text-gray-600 mb-4">You haven't submitted any courses yet.</p>
-      <%= link_to "Submit your first course", new_course_path, class: "text-gray-900 font-medium hover:text-gray-700" %>
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
+      <p class="text-gray-600 mb-2">No courses have been approved yet.</p>
+      <p class="text-sm text-gray-500">Be the first to <%= link_to "submit a course", new_course_path, class: "text-gray-900 font-medium hover:text-gray-700" %>!</p>
     </div>
   <% end %>
 </div>
