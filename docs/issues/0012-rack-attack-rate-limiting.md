@@ -20,24 +20,24 @@ Configure `rack-attack` with rate limiting rules to prevent abuse of the course 
 ## Acceptance criteria
 
 ### Functionality
-- [ ] Submitting more than 5 courses in an hour from the same user returns a 429 response
-- [ ] Making more than 20 requests per minute from the same IP returns a 429 response
-- [ ] An IP that triggers more than 10 POST requests to `/courses` in an hour is blocked for 24 hours
-- [ ] Rate limit responses include a clear message explaining the limit
+- [x] Submitting more than 5 courses in an hour from the same user returns a 429 response
+- [x] Making more than 20 requests per minute from the same IP returns a 429 response
+- [x] An IP that triggers more than 10 POST requests to `/courses` in an hour is blocked for 24 hours
+- [x] Rate limit responses include a clear message explaining the limit
 
 ### Security
-- [ ] Rate limiting is active in all environments (or at minimum, production and staging)
-- [ ] The blocklist prevents sustained abuse of the submission endpoint
-- [ ] Rate limiting cannot be bypassed by unauthenticated requests (IP-based limits still apply)
+- [x] Rate limiting is active in all environments (or at minimum, production and staging)
+- [x] The blocklist prevents sustained abuse of the submission endpoint
+- [x] Rate limiting cannot be bypassed by unauthenticated requests (IP-based limits still apply)
 
 ### Performance
-- [ ] Rate limit checks use in-memory or cache-backed storage and do not add significant latency to requests
-- [ ] Rack-attack is configured early in the middleware stack
+- [x] Rate limit checks use in-memory or cache-backed storage and do not add significant latency to requests
+- [x] Rack-attack is configured early in the middleware stack
 
 ### Testing
-- [ ] Tests verify the per-user submission throttle triggers at the correct threshold
-- [ ] Tests verify the per-IP general throttle triggers at the correct threshold
-- [ ] Tests verify the auto-ban blocklist activates after repeated requests
+- [x] Tests verify the per-user submission throttle triggers at the correct threshold
+- [x] Tests verify the per-IP general throttle triggers at the correct threshold
+- [x] Tests verify the auto-ban blocklist activates after repeated requests
 
 ## Notes
 

@@ -26,6 +26,8 @@ gem "omniauth-rails_csrf_protection", "~> 1.0"
 
 gem "faraday", "~> 2.0"
 
+gem "rack-attack", "~> 6.7"
+
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 
