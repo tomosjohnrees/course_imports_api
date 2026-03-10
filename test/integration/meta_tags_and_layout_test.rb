@@ -46,7 +46,7 @@ class MetaTagsAndLayoutTest < ActionDispatch::IntegrationTest
   test "dashboard has My Courses in title" do
     sign_in_as(@user)
 
-    get dashboard_courses_path
+    get dashboard_path
     assert_select "title", text: /My Courses — Course Imports/
   end
 

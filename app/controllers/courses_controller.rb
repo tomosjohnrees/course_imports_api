@@ -12,10 +12,6 @@ class CoursesController < ApplicationController
     @tags = Course.unique_tags
   end
 
-  def dashboard
-    @pagy, @courses = pagy(current_user.courses.order(created_at: :desc), limit: 10)
-  end
-
   def new
     @course = Course.new
   end
@@ -41,7 +37,7 @@ class CoursesController < ApplicationController
   def destroy
     @course = current_user.courses.find(params[:id])
     @course.remove!
-    redirect_to dashboard_courses_path, notice: "Course removed."
+    redirect_to dashboard_path, notice: "Course removed."
   end
 
   def resubmit

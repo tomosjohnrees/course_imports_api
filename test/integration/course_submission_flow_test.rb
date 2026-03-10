@@ -80,7 +80,7 @@ class CourseSubmissionFlowTest < ActionDispatch::IntegrationTest
     assert_select "button", "Remove Course"
 
     delete course_path(course)
-    assert_redirected_to dashboard_courses_path
+    assert_redirected_to dashboard_path
     follow_redirect!
 
     assert_select "div.bg-green-50", /Course removed/
@@ -105,7 +105,7 @@ class CourseSubmissionFlowTest < ActionDispatch::IntegrationTest
     follow_redirect!
 
     get root_path
-    assert_select "nav a[href='#{dashboard_courses_path}']", "My Courses"
+    assert_select "nav a[href='#{dashboard_path}']", "My Courses"
   end
 
   test "navbar shows browse link when not signed in" do
@@ -115,7 +115,7 @@ class CourseSubmissionFlowTest < ActionDispatch::IntegrationTest
 
   test "navbar hides my courses link when not signed in" do
     get root_path
-    assert_select "nav a[href='#{dashboard_courses_path}']", count: 0
+    assert_select "nav a[href='#{dashboard_path}']", count: 0
   end
 
   test "course dashboard flow from sign-in to dashboard" do
@@ -124,7 +124,7 @@ class CourseSubmissionFlowTest < ActionDispatch::IntegrationTest
     post courses_path, params: { course: { github_repo_url: "https://github.com/dash-owner/dash-repo" } }
     Course.last
 
-    get dashboard_courses_path
+    get dashboard_path
     assert_response :success
     assert_select "h1", "My Courses"
     assert_select "a", text: "Dash Repo"
@@ -162,7 +162,7 @@ class CourseSubmissionFlowTest < ActionDispatch::IntegrationTest
     follow_redirect!
     assert_select "span.bg-yellow-100", text: "Pending"
 
-    get dashboard_courses_path
+    get dashboard_path
     assert_response :success
     assert_select "span.bg-yellow-100", text: "Pending"
     assert_select "p", text: "dashstatus-owner/dashstatus-repo"

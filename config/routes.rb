@@ -3,10 +3,9 @@ Rails.application.routes.draw do
   get "auth/failure", to: "sessions#failure"
   delete "sign_out", to: "sessions#destroy", as: :sign_out
 
+  resource :dashboard, only: :show
+
   resources :courses, only: %i[index new create show destroy] do
-    collection do
-      get :dashboard
-    end
     post :resubmit, on: :member
   end
 
