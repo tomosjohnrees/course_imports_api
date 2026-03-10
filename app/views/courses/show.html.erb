@@ -1,4 +1,5 @@
 <% content_for(:title, @course.title) %>
+<% content_for(:description, truncate(@course.description.presence || "A course on GitHub submitted to the Course Imports registry.", length: 160)) %>
 
 <%= turbo_stream_from "course_#{@course.id}" %>
 

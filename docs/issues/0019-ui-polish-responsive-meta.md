@@ -19,21 +19,21 @@ Polish the public-facing pages for a clean, calm, minimal design consistent with
 ## Acceptance criteria
 
 ### Functionality
-- [ ] All public pages have a consistent, clean visual design
-- [ ] The layout is readable and usable on mobile screen sizes (320px–768px)
-- [ ] Navigation works on both desktop and mobile
-- [ ] Every public page has a unique, descriptive `<title>` tag
-- [ ] Every public page has a `<meta name="description">` tag with relevant content
-- [ ] Course detail pages include the course title in the `<title>` tag
+- [x] All public pages have a consistent, clean visual design
+- [x] The layout is readable and usable on mobile screen sizes (320px–768px)
+- [x] Navigation works on both desktop and mobile
+- [x] Every public page has a unique, descriptive `<title>` tag
+- [x] Every public page has a `<meta name="description">` tag with relevant content
+- [x] Course detail pages include the course title in the `<title>` tag
 
 ### Security
-- [ ] No user-generated content is rendered unescaped in meta tags or HTML attributes
+- [x] No user-generated content is rendered unescaped in meta tags or HTML attributes
 
 ### Performance
-- [ ] CSS is minimal and loads quickly (no heavy framework unless already in use)
-- [ ] Images (e.g. avatars) use appropriate sizing and lazy loading where applicable
-- [ ] No layout shifts on page load
+- [x] CSS is minimal and loads quickly (no heavy framework unless already in use)
+- [x] Images (e.g. avatars) use appropriate sizing and lazy loading where applicable
+- [x] No layout shifts on page load
 
 ### Testing
-- [ ] Visual review of all public pages at desktop and mobile breakpoints
-- [ ] Tests verify `<title>` and meta description tags are present and correct on key pages
+- [x] Visual review of all public pages at desktop and mobile breakpoints
+- [x] Tests verify `<title>` and meta description tags are present and correct on key pages
