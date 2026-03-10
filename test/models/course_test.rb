@@ -25,19 +25,19 @@ class CourseTest < ActiveSupport::TestCase
   end
 
   test "validates presence of github_owner" do
-    course = Course.new(@valid_attributes.merge(github_owner: nil))
+    course = Course.new(@valid_attributes.merge(github_owner: nil, github_repo_url: nil))
     assert_not course.valid?
     assert_includes course.errors[:github_owner], "can't be blank"
   end
 
   test "validates presence of github_repo" do
-    course = Course.new(@valid_attributes.merge(github_repo: nil))
+    course = Course.new(@valid_attributes.merge(github_repo: nil, github_repo_url: nil))
     assert_not course.valid?
     assert_includes course.errors[:github_repo], "can't be blank"
   end
 
   test "validates presence of title" do
-    course = Course.new(@valid_attributes.merge(title: nil))
+    course = Course.new(@valid_attributes.merge(title: nil, github_repo_url: nil))
     assert_not course.valid?
     assert_includes course.errors[:title], "can't be blank"
   end

@@ -8,7 +8,7 @@
         <%= link_to "My Courses", dashboard_courses_path, class: "text-sm text-gray-600 hover:text-gray-900 font-medium transition-colors" %>
         <%= link_to "Submit Course", new_course_path, class: "text-sm text-gray-600 hover:text-gray-900 font-medium transition-colors" %>
         <div class="flex items-center gap-3">
-          <%= image_tag current_user.avatar_url, alt: current_user.github_username, class: "w-8 h-8 rounded-full", size: "32x32" %>
+          <%= image_tag current_user.avatar_url, alt: current_user.github_username, class: "w-8 h-8 rounded-full", size: "32x32", loading: "lazy" %>
           <span class="text-sm font-medium text-gray-700"><%= current_user.github_username %></span>
         </div>
         <%= button_to "Sign out", sign_out_path, method: :delete, class: "text-sm text-gray-500 hover:text-gray-700 transition-colors" %>
@@ -30,7 +30,7 @@
       <%= link_to "My Courses", dashboard_courses_path, class: "block text-sm text-gray-600 hover:text-gray-900 font-medium py-2", data: { action: "nav#close" } %>
       <%= link_to "Submit Course", new_course_path, class: "block text-sm text-gray-600 hover:text-gray-900 font-medium py-2", data: { action: "nav#close" } %>
       <div class="flex items-center gap-3 py-2">
-        <%= image_tag current_user.avatar_url, alt: current_user.github_username, class: "w-8 h-8 rounded-full", size: "32x32" %>
+        <%= image_tag current_user.avatar_url, alt: current_user.github_username, class: "w-8 h-8 rounded-full", size: "32x32", loading: "lazy" %>
         <span class="text-sm font-medium text-gray-700"><%= current_user.github_username %></span>
       </div>
       <%= button_to "Sign out", sign_out_path, method: :delete, class: "block text-sm text-gray-500 hover:text-gray-700 py-2" %>

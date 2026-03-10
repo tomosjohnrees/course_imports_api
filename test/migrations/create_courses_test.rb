@@ -40,8 +40,8 @@ class CreateCoursesTest < ActiveSupport::TestCase
     assert_not column.null
   end
 
-  test "course_id is a nullable string" do
-    column = @columns["course_id"]
+  test "external_id is a nullable string" do
+    column = @columns["external_id"]
     assert_equal :string, column.type
     assert column.null
   end
