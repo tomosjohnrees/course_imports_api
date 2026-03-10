@@ -21,3 +21,9 @@
 | 0011 | [CoursesController for submission and management](0011-courses-controller.md) | Milestone 3 — Course Submission & Validation | `complete` |
 | 0012 | [Rack-attack rate limiting for course submissions](0012-rack-attack-rate-limiting.md) | Milestone 3 — Course Submission & Validation | `complete` |
 | 0013 | [Course submission and status UI with Turbo Streams](0013-course-submission-status-ui.md) | Milestone 3 — Course Submission & Validation | `complete` |
+
+## Milestone 4 — Browse & Search
+
+| # | Title | Phase | Status |
+|---|-------|-------|--------|
+| 0015 | [Course index page with pagination](0015-course-index-pagination.md) | Milestone 4 — Browse & Search | `complete` |
