@@ -20,20 +20,20 @@ Build the public-facing course detail page that shows full information about an 
 ## Acceptance criteria
 
 ### Functionality
-- [ ] The detail page displays: title, full description, author name, tags, topic count, GitHub repo link, and load count
-- [ ] "View on GitHub" link opens the course's GitHub repository
-- [ ] "Open in app" button generates a deep link URL for the desktop app
-- [ ] Tags on the detail page link to the filtered course index
-- [ ] Non-approved courses return a 404 (not accessible via direct URL)
+- [x] The detail page displays: title, full description, author name, tags, topic count, GitHub repo link, and load count
+- [x] "View on GitHub" link opens the course's GitHub repository
+- [x] "Open in app" button generates a deep link URL for the desktop app
+- [x] Tags on the detail page link to the filtered course index
+- [x] Non-approved courses return a 404 (not accessible via direct URL)
 
 ### Security
-- [ ] Only approved courses are viewable on the public detail page
-- [ ] No internal data (validation errors, user tokens, internal IDs beyond the course ID) is exposed
-- [ ] External links use `rel="noopener noreferrer"`
+- [x] Only approved courses are viewable on the public detail page
+- [x] No internal data (validation errors, user tokens, internal IDs beyond the course ID) is exposed
+- [x] External links use `rel="noopener noreferrer"`
 
 ### Performance
-- [ ] The detail page requires a single database query (no N+1s)
-- [ ] The page is cacheable for public CDN caching (appropriate cache headers)
+- [x] The detail page requires a single database query (no N+1s)
+- [x] The page is cacheable for public CDN caching (appropriate cache headers)
 
 ### Testing
 - [ ] Controller tests verify the detail page renders for approved courses

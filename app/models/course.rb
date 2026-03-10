@@ -34,6 +34,14 @@ class Course < ApplicationRecord
   validates :status, presence: true
   validates :github_owner, uniqueness: { scope: :github_repo }
 
+  def viewable_by?(user)
+    approved? || (user.present? && user_id == user.id)
+  end
+
+  def deep_link_url
+    "courseimports://import/#{github_owner}/#{github_repo}"
+  end
+
   def remove!
     update!(status: :removed)
   end
