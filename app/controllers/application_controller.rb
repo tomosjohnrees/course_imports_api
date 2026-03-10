@@ -16,6 +16,7 @@ class ApplicationController < ActionController::Base
 
   def authenticate_user!
     unless user_signed_in?
+      session[:return_to] = request.fullpath
       redirect_to root_path, alert: "You must sign in to continue."
     end
   end

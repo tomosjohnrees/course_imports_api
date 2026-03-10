@@ -19,18 +19,18 @@ Build the minimal UI for GitHub authentication: a home page with a "Sign in with
 ## Acceptance criteria
 
 ### Functionality
-- [ ] Home page displays a "Sign in with GitHub" button when no user is signed in
-- [ ] After sign-in, the page shows the user's GitHub avatar and username
-- [ ] A "Sign out" link is visible when signed in and works correctly
-- [ ] After signing in, the user is redirected back to the page they were trying to access (if any)
-- [ ] The layout works for both signed-in and signed-out states without visual glitches
+- [x] Home page displays a "Sign in with GitHub" button when no user is signed in
+- [x] After sign-in, the page shows the user's GitHub avatar and username
+- [x] A "Sign out" link is visible when signed in and works correctly
+- [x] After signing in, the user is redirected back to the page they were trying to access (if any)
+- [x] The layout works for both signed-in and signed-out states without visual glitches
 
 ### Security
-- [ ] The sign-in button uses a `POST` form (not a `GET` link) to satisfy CSRF requirements
-- [ ] No sensitive data (tokens, internal IDs) is rendered in the HTML
+- [x] The sign-in button uses a `POST` form (not a `GET` link) to satisfy CSRF requirements
+- [x] No sensitive data (tokens, internal IDs) is rendered in the HTML
 
 ### Performance
-- [ ] Pages load without unnecessary database queries beyond fetching the current user
+- [x] Pages load without unnecessary database queries beyond fetching the current user
 
 ### Testing
 - [ ] System or integration tests cover the sign-in and sign-out user flow

@@ -39,7 +39,7 @@ module OmniAuthTestHelper
       name: user.display_name,
       image: user.avatar_url
     )
-    post "/auth/github/callback"
+    get "/auth/github/callback"
   end
 end
 

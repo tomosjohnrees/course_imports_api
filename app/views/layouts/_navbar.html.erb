@@ -1,0 +1,17 @@
+<nav class="fixed top-0 inset-x-0 bg-white border-b border-gray-200 z-50">
+  <div class="container mx-auto px-5 h-16 flex items-center justify-between">
+    <%= link_to "Course Imports", root_path, class: "text-lg font-semibold text-gray-900 hover:text-gray-700" %>
+
+    <div class="flex items-center gap-4">
+      <% if user_signed_in? %>
+        <div class="flex items-center gap-3">
+          <%= image_tag current_user.avatar_url, alt: current_user.github_username, class: "w-8 h-8 rounded-full", size: "32x32" %>
+          <span class="text-sm font-medium text-gray-700"><%= current_user.github_username %></span>
+        </div>
+        <%= button_to "Sign out", sign_out_path, method: :delete, class: "text-sm text-gray-500 hover:text-gray-700 transition-colors" %>
+      <% else %>
+        <%= button_to "Sign in with GitHub", "/auth/github", method: :post, data: { turbo: false }, class: "text-sm px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-700 transition-colors" %>
+      <% end %>
+    </div>
+  </div>
+</nav>

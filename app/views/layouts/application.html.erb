@@ -24,7 +24,10 @@
   </head>
 
   <body>
-    <main class="container mx-auto mt-28 px-5 flex">
+    <%= render "layouts/navbar" %>
+
+    <main class="container mx-auto mt-28 px-5">
+      <%= render "layouts/flash" %>
       <%= yield %>
     </main>
   </body>
