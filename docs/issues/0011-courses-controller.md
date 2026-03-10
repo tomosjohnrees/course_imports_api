@@ -20,25 +20,25 @@ Build the `CoursesController` with actions for submitting a new course, viewing 
 ## Acceptance criteria
 
 ### Functionality
-- [ ] `new` requires authentication and renders the submission form
-- [ ] `create` validates the GitHub repo URL format before processing
-- [ ] `create` checks for an existing course with the same `github_owner` and `github_repo` and rejects duplicates
-- [ ] `create` parses the owner and repo name from the URL
-- [ ] `create` creates a `Course` record in `pending` status and enqueues `CourseValidationJob`
-- [ ] `create` redirects to the course `show` page after successful submission
-- [ ] `show` displays the course's current status and metadata (or validation error if failed)
-- [ ] `destroy` removes a course by setting its status to `removed`
-- [ ] `destroy` only works for courses owned by the current user
+- [x] `new` requires authentication and renders the submission form
+- [x] `create` validates the GitHub repo URL format before processing
+- [x] `create` checks for an existing course with the same `github_owner` and `github_repo` and rejects duplicates
+- [x] `create` parses the owner and repo name from the URL
+- [x] `create` creates a `Course` record in `pending` status and enqueues `CourseValidationJob`
+- [x] `create` redirects to the course `show` page after successful submission
+- [x] `show` displays the course's current status and metadata (or validation error if failed)
+- [x] `destroy` removes a course by setting its status to `removed`
+- [x] `destroy` only works for courses owned by the current user
 
 ### Security
-- [ ] All actions except `show` require authentication
-- [ ] `destroy` is scoped to `current_user.courses` — users cannot remove other users' courses
-- [ ] URL input is validated and sanitised before being stored
-- [ ] Strong parameters are used — only permitted attributes are accepted
+- [x] All actions except `show` require authentication
+- [x] `destroy` is scoped to `current_user.courses` — users cannot remove other users' courses
+- [x] URL input is validated and sanitised before being stored
+- [x] Strong parameters are used — only permitted attributes are accepted
 
 ### Performance
-- [ ] Duplicate check uses the unique composite index on `[github_owner, github_repo]`
-- [ ] The `create` action responds quickly — validation runs asynchronously in the background job
+- [x] Duplicate check uses the unique composite index on `[github_owner, github_repo]`
+- [x] The `create` action responds quickly — validation runs asynchronously in the background job
 
 ### Testing
 - [ ] Controller tests cover successful course creation and job enqueuing
