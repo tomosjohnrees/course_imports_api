@@ -18,3 +18,4 @@
 | 0008 | [GitHub API client](0008-github-api-client.md) | Milestone 3 — Course Submission & Validation | `complete` |
 | 0009 | [Course validation service](0009-course-validation-service.md) | Milestone 3 — Course Submission & Validation | `complete` |
 | 0010 | [Course validation job with Turbo Stream broadcast](0010-course-validation-job.md) | Milestone 3 — Course Submission & Validation | `complete` |
+| 0011 | [CoursesController for submission and management](0011-courses-controller.md) | Milestone 3 — Course Submission & Validation | `complete` |

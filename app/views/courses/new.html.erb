@@ -1,0 +1,23 @@
+<% content_for(:title, "Submit a Course") %>
+
+<div class="w-full max-w-lg mx-auto">
+  <h1 class="text-2xl font-bold text-gray-900 mb-6">Submit a Course</h1>
+
+  <%= form_with model: @course, class: "space-y-6" do |f| %>
+    <% if @course.errors.any? %>
+      <div class="bg-red-50 border border-red-200 rounded-lg px-4 py-3 text-sm text-red-800">
+        <% @course.errors.full_messages.each do |message| %>
+          <p><%= message %></p>
+        <% end %>
+      </div>
+    <% end %>
+
+    <div>
+      <%= f.label :github_repo_url, "GitHub Repository URL", class: "block text-sm font-medium text-gray-700 mb-1" %>
+      <%= f.url_field :github_repo_url, placeholder: "https://github.com/owner/repo", class: "w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent" %>
+      <p class="mt-1 text-sm text-gray-500">Enter the URL of a public GitHub repository containing a course.</p>
+    </div>
+
+    <%= f.submit "Submit Course", class: "w-full px-4 py-2 bg-gray-900 text-white font-medium rounded-lg hover:bg-gray-700 transition-colors cursor-pointer" %>
+  <% end %>
+</div>
