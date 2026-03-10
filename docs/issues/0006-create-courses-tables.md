@@ -19,21 +19,21 @@ Create the database migrations for the `courses` and `validation_attempts` table
 ## Acceptance criteria
 
 ### Functionality
-- [ ] `courses` table exists with all specified columns and correct types/nullability/defaults
-- [ ] `validation_attempts` table exists with all specified columns and foreign key to `courses`
-- [ ] `courses.status` defaults to `'pending'` and is non-nullable
-- [ ] `courses.load_count` defaults to `0`
-- [ ] `courses.tags` is a PostgreSQL string array with a default of `{}`
-- [ ] Both migrations run cleanly up and down
+- [x] `courses` table exists with all specified columns and correct types/nullability/defaults
+- [x] `validation_attempts` table exists with all specified columns and foreign key to `courses`
+- [x] `courses.status` defaults to `'pending'` and is non-nullable
+- [x] `courses.load_count` defaults to `0`
+- [x] `courses.tags` is a PostgreSQL string array with a default of `{}`
+- [x] Both migrations run cleanly up and down
 
 ### Security
-- [ ] Foreign key constraints are in place (`courses.user_id` → `users`, `validation_attempts.course_id` → `courses`)
+- [x] Foreign key constraints are in place (`courses.user_id` → `users`, `validation_attempts.course_id` → `courses`)
 
 ### Performance
-- [ ] Unique composite index exists on `[github_owner, github_repo]`
-- [ ] GIN index exists on `tags` for efficient array queries
-- [ ] Index exists on `status` for filtering approved courses
-- [ ] Index exists on `courses.user_id` (via `t.references`)
+- [x] Unique composite index exists on `[github_owner, github_repo]`
+- [x] GIN index exists on `tags` for efficient array queries
+- [x] Index exists on `status` for filtering approved courses
+- [x] Index exists on `courses.user_id` (via `t.references`)
 
 ### Testing
-- [ ] Migrations can be verified by running `rails db:migrate` and inspecting the schema
+- [x] Migrations can be verified by running `rails db:migrate` and inspecting the schema
