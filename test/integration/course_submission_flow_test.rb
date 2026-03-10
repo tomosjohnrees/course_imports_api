@@ -191,6 +191,6 @@ class CourseSubmissionFlowTest < ActionDispatch::IntegrationTest
     get courses_path, params: { q: "nonexistentxyzterm" }
     assert_response :success
     assert_select "p", /No courses found for/
-    assert_select "a", text: "Clear search"
+    assert_select "a", text: "Clear filters"
   end
 end

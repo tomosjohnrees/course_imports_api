@@ -599,8 +599,8 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
 
     get courses_path
     assert_response :success
-    assert_select "span", text: "ruby"
-    assert_select "span", text: "rails"
+    assert_select "a", text: "ruby"
+    assert_select "a", text: "rails"
   end
 
   test "index displays load count" do
@@ -1153,7 +1153,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
   test "index search no results shows clear search link" do
     get courses_path, params: { q: "nonexistentxyzterm" }
     assert_response :success
-    assert_select "a[href='#{courses_path}']", text: "Clear search"
+    assert_select "a[href='#{courses_path}']", text: "Clear filters"
   end
 
   test "index without search query shows default empty state" do
@@ -1248,6 +1248,276 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
     get courses_path, params: { q: "searchable" }
     assert_response :success
     assert_select "a[href*='page=']"
+  end
+
+  # --- index tag filtering ---
+
+  test "index with tag filter shows only courses with that tag" do
+    tagged = Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/tag-filt/ruby-tagged",
+      github_owner: "tag-filt",
+      github_repo: "ruby-tagged",
+      title: "Ruby Tagged Course",
+      status: "approved",
+      tags: [ "ruby", "web" ]
+    )
+    untagged = Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/tag-filt/python-untagged",
+      github_owner: "tag-filt",
+      github_repo: "python-untagged",
+      title: "Python Untagged Course",
+      status: "approved",
+      tags: [ "python" ]
+    )
+
+    get courses_path, params: { tag: "ruby" }
+    assert_response :success
+    assert_select "a", text: "Ruby Tagged Course"
+    assert_select "a", { text: "Python Untagged Course", count: 0 }
+  end
+
+  test "index with tag filter combines with search query" do
+    both_match = Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/tag-combo/ruby-web",
+      github_owner: "tag-combo",
+      github_repo: "ruby-web",
+      title: "Ruby Web Development",
+      status: "approved",
+      tags: [ "ruby" ]
+    )
+    tag_only = Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/tag-combo/ruby-data",
+      github_owner: "tag-combo",
+      github_repo: "ruby-data",
+      title: "Ruby Data Science",
+      status: "approved",
+      tags: [ "ruby" ]
+    )
+
+    get courses_path, params: { q: "web", tag: "ruby" }
+    assert_response :success
+    assert_select "a", text: "Ruby Web Development"
+    assert_select "a", { text: "Ruby Data Science", count: 0 }
+  end
+
+  test "index displays tag cloud with unique tags from approved courses" do
+    Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/tag-cloud/repo1",
+      github_owner: "tag-cloud",
+      github_repo: "repo1",
+      title: "Course One",
+      status: "approved",
+      tags: [ "ruby", "web" ]
+    )
+    Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/tag-cloud/repo2",
+      github_owner: "tag-cloud",
+      github_repo: "repo2",
+      title: "Course Two",
+      status: "approved",
+      tags: [ "python" ]
+    )
+
+    get courses_path
+    assert_response :success
+    assert_select "span", text: "Tags:"
+    assert_select "a[href*='tag=ruby']", text: "ruby"
+    assert_select "a[href*='tag=python']", text: "python"
+    assert_select "a[href*='tag=web']", text: "web"
+  end
+
+  test "index tag cloud does not include tags from non-approved courses" do
+    Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/tag-cloud-vis/approved",
+      github_owner: "tag-cloud-vis",
+      github_repo: "approved",
+      title: "Approved Course",
+      status: "approved",
+      tags: [ "visible" ]
+    )
+    Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/tag-cloud-vis/pending",
+      github_owner: "tag-cloud-vis",
+      github_repo: "pending",
+      title: "Pending Course",
+      status: "pending",
+      tags: [ "hidden" ]
+    )
+
+    get courses_path
+    assert_response :success
+    assert_select "a[href*='tag=visible']", text: "visible"
+    assert_select "a[href*='tag=hidden']", count: 0
+  end
+
+  test "index highlights the active tag filter" do
+    Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/tag-active/repo1",
+      github_owner: "tag-active",
+      github_repo: "repo1",
+      title: "Active Tag Course",
+      status: "approved",
+      tags: [ "ruby", "python" ]
+    )
+
+    get courses_path, params: { tag: "ruby" }
+    assert_response :success
+    assert_select "a.bg-gray-900.text-white", text: "ruby"
+    assert_select "a.bg-gray-100", text: "python"
+  end
+
+  test "index shows clear filter link when tag is active" do
+    Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/tag-clear/repo1",
+      github_owner: "tag-clear",
+      github_repo: "repo1",
+      title: "Clear Filter Course",
+      status: "approved",
+      tags: [ "ruby" ]
+    )
+
+    get courses_path, params: { tag: "ruby" }
+    assert_response :success
+    assert_select "a", text: "Clear filter"
+  end
+
+  test "index does not show clear filter link without active tag" do
+    Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/tag-noclear/repo1",
+      github_owner: "tag-noclear",
+      github_repo: "repo1",
+      title: "No Clear Course",
+      status: "approved",
+      tags: [ "ruby" ]
+    )
+
+    get courses_path
+    assert_response :success
+    assert_select "a", { text: "Clear filter", count: 0 }
+  end
+
+  test "index tag filter strips whitespace and downcases" do
+    Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/tag-sanitize/repo1",
+      github_owner: "tag-sanitize",
+      github_repo: "repo1",
+      title: "Sanitize Tag Course",
+      status: "approved",
+      tags: [ "ruby" ]
+    )
+
+    get courses_path, params: { tag: "  Ruby  " }
+    assert_response :success
+    assert_select "a", text: "Sanitize Tag Course"
+  end
+
+  test "index with nonexistent tag shows no results with tag message" do
+    Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/tag-noexist/repo1",
+      github_owner: "tag-noexist",
+      github_repo: "repo1",
+      title: "Existing Course",
+      status: "approved",
+      tags: [ "ruby" ]
+    )
+
+    get courses_path, params: { tag: "nonexistenttag" }
+    assert_response :success
+    assert_select "p", /tagged "nonexistenttag"/
+    assert_select "a", text: "Clear filters"
+  end
+
+  test "index tag filter preserves tag in hidden field within search form" do
+    Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/tag-hidden/repo1",
+      github_owner: "tag-hidden",
+      github_repo: "repo1",
+      title: "Hidden Field Course",
+      status: "approved",
+      tags: [ "ruby" ]
+    )
+
+    get courses_path, params: { tag: "ruby" }
+    assert_response :success
+    assert_select "input[name='tag'][type='hidden'][value='ruby']"
+  end
+
+  test "index tag filter does not add hidden tag field without active filter" do
+    get courses_path
+    assert_response :success
+    assert_select "input[name='tag'][type='hidden']", count: 0
+  end
+
+  test "index course card tags link to tag-filtered index" do
+    Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/tag-link/repo1",
+      github_owner: "tag-link",
+      github_repo: "repo1",
+      title: "Tag Link Course",
+      status: "approved",
+      tags: [ "ruby" ]
+    )
+
+    get courses_path
+    assert_response :success
+    assert_select "a[href='#{courses_path(tag: "ruby")}']", text: "ruby"
+  end
+
+  test "index tag filter combines with pagination" do
+    21.times do |i|
+      Course.create!(
+        user: @user,
+        github_repo_url: "https://github.com/tag-page/tag-repo-#{i}",
+        github_owner: "tag-page",
+        github_repo: "tag-repo-#{i}",
+        title: "Paginated Tag Course #{i}",
+        status: "approved",
+        tags: [ "paginatedtag" ]
+      )
+    end
+
+    get courses_path, params: { tag: "paginatedtag" }
+    assert_response :success
+    assert_select "a[href*='page=']"
+  end
+
+  test "index shows combined empty state for search and tag filter" do
+    get courses_path, params: { q: "nonexistent", tag: "faketag" }
+    assert_response :success
+    assert_select "p", /No courses found/
+    assert_select "p", /for "nonexistent"/
+    assert_select "p", /tagged "faketag"/
+  end
+
+  test "index without tag cloud section when no tags exist" do
+    Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/no-tags/repo1",
+      github_owner: "no-tags",
+      github_repo: "repo1",
+      title: "No Tags Course",
+      status: "approved",
+      tags: []
+    )
+
+    get courses_path
+    assert_response :success
+    assert_select "span", { text: "Tags:", count: 0 }
   end
 
   # --- routing ---

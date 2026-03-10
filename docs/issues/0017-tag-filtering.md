@@ -20,24 +20,24 @@ Add tag-based filtering to the course index so users can browse courses by topic
 ## Acceptance criteria
 
 ### Functionality
-- [ ] Filtering by tag shows only approved courses that include that tag
-- [ ] Tag filter combines with full-text search (e.g. `?q=python&tag=beginner`)
-- [ ] A tag cloud or list displays all unique tags from approved courses
-- [ ] Each tag in the cloud links to the filtered index view
-- [ ] The active tag filter is visually indicated on the page
-- [ ] Clearing the tag filter returns to the unfiltered index
+- [x] Filtering by tag shows only approved courses that include that tag
+- [x] Tag filter combines with full-text search (e.g. `?q=python&tag=beginner`)
+- [x] A tag cloud or list displays all unique tags from approved courses
+- [x] Each tag in the cloud links to the filtered index view
+- [x] The active tag filter is visually indicated on the page
+- [x] Clearing the tag filter returns to the unfiltered index
 
 ### Security
-- [ ] Tag parameter is validated and sanitised before use in queries
-- [ ] Only tags from approved courses are shown in the tag cloud
+- [x] Tag parameter is validated and sanitised before use in queries
+- [x] Only tags from approved courses are shown in the tag cloud
 
 ### Performance
-- [ ] Tag filtering uses the GIN index on the `tags` array column
-- [ ] The tag cloud query is efficient (aggregates tags from approved courses without loading all course records)
-- [ ] Tag filtering combines with pagination
+- [x] Tag filtering uses the GIN index on the `tags` array column
+- [x] The tag cloud query is efficient (aggregates tags from approved courses without loading all course records)
+- [x] Tag filtering combines with pagination
 
 ### Testing
-- [ ] Tests verify filtering by tag returns only matching courses
-- [ ] Tests verify combined search + tag filter returns correct results
-- [ ] Tests verify the tag cloud includes only tags from approved courses
-- [ ] Tests verify an invalid or nonexistent tag returns an empty result set
+- [x] Tests verify filtering by tag returns only matching courses
+- [x] Tests verify combined search + tag filter returns correct results
+- [x] Tests verify the tag cloud includes only tags from approved courses
+- [x] Tests verify an invalid or nonexistent tag returns an empty result set
