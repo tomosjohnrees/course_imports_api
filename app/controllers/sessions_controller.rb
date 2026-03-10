@@ -9,9 +9,10 @@ class SessionsController < ApplicationController
       return
     end
 
+    return_to = session[:return_to]
     reset_session
     session[:user_id] = user.id
-    redirect_to root_path, notice: "Signed in as #{user.github_username}."
+    redirect_to return_to || root_path, notice: "Signed in as #{user.github_username}."
   end
 
   def destroy
