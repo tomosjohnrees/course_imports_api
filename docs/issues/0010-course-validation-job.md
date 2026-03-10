@@ -20,23 +20,23 @@ Build the `CourseValidationJob` that runs asynchronously via Solid Queue. The jo
 ## Acceptance criteria
 
 ### Functionality
-- [ ] Job sets course status to `validating` before calling the service
-- [ ] On success, course status is set to `approved` and metadata fields are populated from the validation result
-- [ ] On failure, course status is set to `failed` and `validation_error` is set to the error message
-- [ ] A `ValidationAttempt` record is created with `result`, `error_message`, `api_calls_made`, and `duration_ms`
-- [ ] A Turbo Stream broadcast is sent after validation completes, targeting the course status page
-- [ ] If the validation service raises an unexpected error, the course is set to `failed` with a generic error message (not a stack trace)
+- [x] Job sets course status to `validating` before calling the service
+- [x] On success, course status is set to `approved` and metadata fields are populated from the validation result
+- [x] On failure, course status is set to `failed` and `validation_error` is set to the error message
+- [x] A `ValidationAttempt` record is created with `result`, `error_message`, `api_calls_made`, and `duration_ms`
+- [x] A Turbo Stream broadcast is sent after validation completes, targeting the course status page
+- [x] If the validation service raises an unexpected error, the course is set to `failed` with a generic error message (not a stack trace)
 
 ### Security
-- [ ] The job uses the submitting user's OAuth token for GitHub API calls (not a shared app token)
-- [ ] Error messages broadcast to the browser do not include internal details or stack traces
+- [x] The job uses the submitting user's OAuth token for GitHub API calls (not a shared app token)
+- [x] Error messages broadcast to the browser do not include internal details or stack traces
 
 ### Performance
-- [ ] The job has a hard timeout (30 seconds) to prevent hung jobs from blocking the queue
-- [ ] If a course is already in `validating` status, a duplicate job for the same course is not enqueued
+- [x] The job has a hard timeout (30 seconds) to prevent hung jobs from blocking the queue
+- [x] If a course is already in `validating` status, a duplicate job for the same course is not enqueued
 
 ### Testing
-- [ ] Job tests cover the success path — course ends up `approved` with correct metadata
-- [ ] Job tests cover the failure path — course ends up `failed` with an error message
-- [ ] Job tests verify a `ValidationAttempt` is created in both success and failure cases
-- [ ] Job tests verify the Turbo Stream broadcast is sent
+- [x] Job tests cover the success path — course ends up `approved` with correct metadata
+- [x] Job tests cover the failure path — course ends up `failed` with an error message
+- [x] Job tests verify a `ValidationAttempt` is created in both success and failure cases
+- [x] Job tests verify the Turbo Stream broadcast is sent
