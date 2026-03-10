@@ -507,6 +507,42 @@ class CourseTest < ActiveSupport::TestCase
     assert_equal [], result
   end
 
+  test "deep_link_url generates correct protocol URL" do
+    course = Course.new(github_owner: "myorg", github_repo: "mycourse")
+    assert_equal "courseimports://import/myorg/mycourse", course.deep_link_url
+  end
+
+  test "deep_link_url handles hyphenated owner and repo" do
+    course = Course.new(github_owner: "my-org", github_repo: "my-cool-course")
+    assert_equal "courseimports://import/my-org/my-cool-course", course.deep_link_url
+  end
+
+  test "viewable_by? returns true for approved course with nil user" do
+    course = Course.new(status: "approved")
+    assert course.viewable_by?(nil)
+  end
+
+  test "viewable_by? returns true for approved course with any user" do
+    course = Course.new(status: "approved")
+    assert course.viewable_by?(@user)
+  end
+
+  test "viewable_by? returns true for non-approved course owned by user" do
+    course = Course.new(@valid_attributes.merge(status: "pending", user: @user))
+    assert course.viewable_by?(@user)
+  end
+
+  test "viewable_by? returns false for non-approved course with nil user" do
+    course = Course.new(status: "pending")
+    assert_not course.viewable_by?(nil)
+  end
+
+  test "viewable_by? returns false for non-approved course owned by another user" do
+    other_user = User.create!(github_id: "viewable-other", github_username: "viewableother")
+    course = Course.new(@valid_attributes.merge(status: "pending", user: other_user))
+    assert_not course.viewable_by?(@user)
+  end
+
   test "unique_tags deduplicates tags across multiple courses" do
     Course.create!(@valid_attributes.merge(
       github_owner: "utag-dedup1", github_repo: "repo-dedup1",

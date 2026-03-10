@@ -2,5 +2,4 @@
 
 | # | Title | Phase | Status |
 |---|-------|-------|--------|
-| 0018 | [Public course detail page](0018-course-detail-page.md) | Milestone 4 — Browse & Search | `todo` |
 | 0019 | [UI polish, responsive layout, and meta tags](0019-ui-polish-responsive-meta.md) | Milestone 4 — Browse & Search | `todo` |

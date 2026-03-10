@@ -185,7 +185,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
     assert_select "p", "1.0.0"
   end
 
-  test "show displays course tags" do
+  test "show displays course tags as links to filtered index" do
     course = Course.create!(
       user: @user,
       github_repo_url: "https://github.com/tag-owner/tag-repo",
@@ -198,17 +198,18 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
 
     get course_path(course)
     assert_response :success
-    assert_select "span", "ruby"
-    assert_select "span", "rails"
+    assert_select "a[href='#{courses_path(tag: "ruby")}']", text: "ruby"
+    assert_select "a[href='#{courses_path(tag: "rails")}']", text: "rails"
   end
 
-  test "show is accessible without authentication" do
+  test "show is accessible without authentication for approved courses" do
     course = Course.create!(
       user: @user,
       github_repo_url: "https://github.com/public-owner/public-repo",
       github_owner: "public-owner",
       github_repo: "public-repo",
-      title: "Public Course"
+      title: "Public Course",
+      status: "approved"
     )
 
     get course_path(course)
@@ -225,6 +226,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
       title: "Status Course",
       status: "pending"
     )
+    sign_in_as(@user)
 
     get course_path(course)
     assert_response :success
@@ -241,6 +243,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
       status: "failed",
       validation_error: "Repository not found"
     )
+    sign_in_as(@user)
 
     get course_path(course)
     assert_response :success
@@ -254,7 +257,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
       github_owner: "minimal-owner",
       github_repo: "minimal-repo",
       title: "Minimal Course",
-      status: "pending"
+      status: "approved"
     )
 
     get course_path(course)
@@ -332,6 +335,301 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
   test "show returns 404 for nonexistent course" do
     get course_path(id: 999999)
     assert_response :not_found
+  end
+
+  test "show returns 404 for pending course when not signed in" do
+    course = Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/noview-owner/pending-noview",
+      github_owner: "noview-owner",
+      github_repo: "pending-noview",
+      title: "Hidden Pending",
+      status: "pending"
+    )
+
+    get course_path(course)
+    assert_response :not_found
+  end
+
+  test "show returns 404 for failed course when not signed in" do
+    course = Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/noview-owner/failed-noview",
+      github_owner: "noview-owner",
+      github_repo: "failed-noview",
+      title: "Hidden Failed",
+      status: "failed",
+      validation_error: "Something went wrong"
+    )
+
+    get course_path(course)
+    assert_response :not_found
+  end
+
+  test "show returns 404 for validating course when not signed in" do
+    course = Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/noview-owner/validating-noview",
+      github_owner: "noview-owner",
+      github_repo: "validating-noview",
+      title: "Hidden Validating",
+      status: "validating"
+    )
+
+    get course_path(course)
+    assert_response :not_found
+  end
+
+  test "show returns 404 for removed course when not signed in" do
+    course = Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/noview-owner/removed-noview",
+      github_owner: "noview-owner",
+      github_repo: "removed-noview",
+      title: "Hidden Removed",
+      status: "removed"
+    )
+
+    get course_path(course)
+    assert_response :not_found
+  end
+
+  test "show allows owner to view their own pending course" do
+    course = Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/myview-owner/pending-myview",
+      github_owner: "myview-owner",
+      github_repo: "pending-myview",
+      title: "My Pending Course",
+      status: "pending"
+    )
+    sign_in_as(@user)
+
+    get course_path(course)
+    assert_response :success
+    assert_select "h1", "My Pending Course"
+  end
+
+  test "show allows owner to view their own failed course" do
+    course = Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/myview-owner/failed-myview",
+      github_owner: "myview-owner",
+      github_repo: "failed-myview",
+      title: "My Failed Course",
+      status: "failed",
+      validation_error: "Some error"
+    )
+    sign_in_as(@user)
+
+    get course_path(course)
+    assert_response :success
+    assert_select "h1", "My Failed Course"
+  end
+
+  test "show returns 404 for non-approved course belonging to another user" do
+    other_user = User.create!(github_id: "cc_view_other", github_username: "viewother", avatar_url: "https://example.com/other.png")
+    course = Course.create!(
+      user: other_user,
+      github_repo_url: "https://github.com/viewother-owner/pending-viewother",
+      github_owner: "viewother-owner",
+      github_repo: "pending-viewother",
+      title: "Others Pending Course",
+      status: "pending"
+    )
+    sign_in_as(@user)
+
+    get course_path(course)
+    assert_response :not_found
+  end
+
+  test "show sets public cache headers for approved course" do
+    course = Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/cache-owner/cache-repo",
+      github_owner: "cache-owner",
+      github_repo: "cache-repo",
+      title: "Cached Course",
+      status: "approved"
+    )
+
+    get course_path(course)
+    assert_response :success
+    assert_match(/max-age=300/, response.headers["Cache-Control"])
+    assert_match(/public/, response.headers["Cache-Control"])
+  end
+
+  test "show does not set public cache headers for non-approved course" do
+    course = Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/nocache-owner/nocache-repo",
+      github_owner: "nocache-owner",
+      github_repo: "nocache-repo",
+      title: "Uncached Course",
+      status: "pending"
+    )
+    sign_in_as(@user)
+
+    get course_path(course)
+    assert_response :success
+    cache_control = response.headers["Cache-Control"] || ""
+    refute_match(/public/, cache_control)
+  end
+
+  test "show displays deep link button for approved course" do
+    course = Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/deep-owner/deep-repo",
+      github_owner: "deep-owner",
+      github_repo: "deep-repo",
+      title: "Deep Link Course",
+      status: "approved"
+    )
+
+    get course_path(course)
+    assert_response :success
+    assert_select "a[href='courseimports://import/deep-owner/deep-repo']", text: "Open in app"
+  end
+
+  test "show hides deep link button for non-approved course" do
+    course = Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/nodeep-owner/nodeep-repo",
+      github_owner: "nodeep-owner",
+      github_repo: "nodeep-repo",
+      title: "No Deep Link Course",
+      status: "pending"
+    )
+    sign_in_as(@user)
+
+    get course_path(course)
+    assert_response :success
+    assert_select "a", { text: "Open in app", count: 0 }
+  end
+
+  test "show displays back to courses link" do
+    course = Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/back-owner/back-repo",
+      github_owner: "back-owner",
+      github_repo: "back-repo",
+      title: "Back Link Course",
+      status: "approved"
+    )
+
+    get course_path(course)
+    assert_response :success
+    assert_select "a[href='#{courses_path}']", text: /Back to courses/
+  end
+
+  test "show displays view on github button" do
+    course = Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/ghbtn-owner/ghbtn-repo",
+      github_owner: "ghbtn-owner",
+      github_repo: "ghbtn-repo",
+      title: "GitHub Button Course",
+      status: "approved"
+    )
+
+    get course_path(course)
+    assert_response :success
+    assert_select "a[href='https://github.com/ghbtn-owner/ghbtn-repo'][target='_blank'][rel='noopener noreferrer']", text: "View on GitHub"
+  end
+
+  test "show displays topic count when present" do
+    course = Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/topic-show/topic-show-repo",
+      github_owner: "topic-show",
+      github_repo: "topic-show-repo",
+      title: "Topic Show Course",
+      status: "approved",
+      topic_count: 12
+    )
+
+    get course_path(course)
+    assert_response :success
+    assert_select "p", text: "12 topics"
+  end
+
+  test "show hides topic count when nil" do
+    course = Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/notopic-show/notopic-show-repo",
+      github_owner: "notopic-show",
+      github_repo: "notopic-show-repo",
+      title: "No Topic Course",
+      status: "approved",
+      topic_count: nil
+    )
+
+    get course_path(course)
+    assert_response :success
+    assert_select "h2", { text: "Topics", count: 0 }
+  end
+
+  test "show displays load count" do
+    course = Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/load-show/load-show-repo",
+      github_owner: "load-show",
+      github_repo: "load-show-repo",
+      title: "Load Show Course",
+      status: "approved",
+      load_count: 7
+    )
+
+    get course_path(course)
+    assert_response :success
+    assert_select "p", text: "7 loads"
+  end
+
+  test "show displays zero load count" do
+    course = Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/zeroload-show/zeroload-show-repo",
+      github_owner: "zeroload-show",
+      github_repo: "zeroload-show-repo",
+      title: "Zero Load Course",
+      status: "approved"
+    )
+
+    get course_path(course)
+    assert_response :success
+    assert_select "p", text: "0 loads"
+  end
+
+  test "show pluralizes topic count correctly for one topic" do
+    course = Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/onetopic-show/onetopic-repo",
+      github_owner: "onetopic-show",
+      github_repo: "onetopic-repo",
+      title: "One Topic Course",
+      status: "approved",
+      topic_count: 1
+    )
+
+    get course_path(course)
+    assert_response :success
+    assert_select "p", text: "1 topic"
+  end
+
+  test "show pluralizes load count correctly for one load" do
+    course = Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/oneload-show/oneload-repo",
+      github_owner: "oneload-show",
+      github_repo: "oneload-repo",
+      title: "One Load Course",
+      status: "approved",
+      load_count: 1
+    )
+
+    get course_path(course)
+    assert_response :success
+    assert_select "p", text: "1 load"
   end
 
   # --- destroy action ---
@@ -937,55 +1235,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
     assert_equal "You must sign in to continue.", flash[:alert]
   end
 
-  # --- show action (new features) ---
-
-  test "show displays topic count when present" do
-    course = Course.create!(
-      user: @user,
-      github_repo_url: "https://github.com/topic-owner/topic-repo",
-      github_owner: "topic-owner",
-      github_repo: "topic-repo",
-      title: "Topic Course",
-      status: "approved",
-      topic_count: 5
-    )
-
-    get course_path(course)
-    assert_response :success
-    assert_select "h2", text: "Topics"
-    assert_select "p", text: "5"
-  end
-
-  test "show hides topic count when zero" do
-    course = Course.create!(
-      user: @user,
-      github_repo_url: "https://github.com/notopic-owner/notopic-repo",
-      github_owner: "notopic-owner",
-      github_repo: "notopic-repo",
-      title: "No Topic Course",
-      status: "approved",
-      topic_count: 0
-    )
-
-    get course_path(course)
-    assert_response :success
-    assert_select "h2", { text: "Topics", count: 0 }
-  end
-
-  test "show hides topic count when nil" do
-    course = Course.create!(
-      user: @user,
-      github_repo_url: "https://github.com/niltopic-owner/niltopic-repo",
-      github_owner: "niltopic-owner",
-      github_repo: "niltopic-repo",
-      title: "Nil Topic Course",
-      status: "pending"
-    )
-
-    get course_path(course)
-    assert_response :success
-    assert_select "h2", { text: "Topics", count: 0 }
-  end
+  # --- resubmit button on show ---
 
   test "show displays resubmit button for failed course owned by current user" do
     course = Course.create!(
@@ -1014,22 +1264,6 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
       status: "approved"
     )
     sign_in_as(@user)
-
-    get course_path(course)
-    assert_response :success
-    assert_select "button", { text: "Resubmit for Validation", count: 0 }
-  end
-
-  test "show hides resubmit button for unauthenticated user" do
-    course = Course.create!(
-      user: @user,
-      github_repo_url: "https://github.com/unauth-resub/unauth-resub-repo",
-      github_owner: "unauth-resub",
-      github_repo: "unauth-resub-repo",
-      title: "Unauth Resubmit Course",
-      status: "failed",
-      validation_error: "Some error"
-    )
 
     get course_path(course)
     assert_response :success

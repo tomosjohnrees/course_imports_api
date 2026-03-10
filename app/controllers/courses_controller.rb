@@ -33,6 +33,9 @@ class CoursesController < ApplicationController
 
   def show
     @course = Course.find(params[:id])
+    raise ActiveRecord::RecordNotFound unless @course.viewable_by?(current_user)
+
+    expires_in 5.minutes, public: true if @course.approved?
   end
 
   def destroy
