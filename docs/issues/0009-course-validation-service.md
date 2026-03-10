@@ -22,28 +22,28 @@ Build the `CourseValidationService` that validates a submitted GitHub repository
 ## Acceptance criteria
 
 ### Functionality
-- [ ] Validation runs all four steps in order, stopping at the first failure
-- [ ] Step 1 rejects private repos, oversized repos (> 5MB), and archived repos
-- [ ] Step 2 rejects missing/invalid `course.json`, missing required fields, and values exceeding length limits
-- [ ] Step 3 rejects missing topics directory and mismatches between directory contents and `topicOrder`
-- [ ] Step 4 rejects missing or invalid `content.json` in the first topic
-- [ ] On success, returns extracted metadata (title, description, tags, topic count, version, author, course_id)
-- [ ] On failure, returns a specific, human-readable error message explaining what went wrong
-- [ ] Tracks API call count and total duration for logging
+- [x] Validation runs all four steps in order, stopping at the first failure
+- [x] Step 1 rejects private repos, oversized repos (> 5MB), and archived repos
+- [x] Step 2 rejects missing/invalid `course.json`, missing required fields, and values exceeding length limits
+- [x] Step 3 rejects missing topics directory and mismatches between directory contents and `topicOrder`
+- [x] Step 4 rejects missing or invalid `content.json` in the first topic
+- [x] On success, returns extracted metadata (title, description, tags, topic count, version, author, course_id)
+- [x] On failure, returns a specific, human-readable error message explaining what went wrong
+- [x] Tracks API call count and total duration for logging
 
 ### Security
-- [ ] The service does not expose raw GitHub API responses to the caller — only validated, extracted fields
-- [ ] All string values from `course.json` are length-capped before being returned
+- [x] The service does not expose raw GitHub API responses to the caller — only validated, extracted fields
+- [x] All string values from `course.json` are length-capped before being returned
 
 ### Performance
-- [ ] Validation makes at most 6 GitHub API calls (stops early on failure)
-- [ ] Hard limits are enforced: `MAX_REPO_SIZE_KB`, `MAX_TOPIC_COUNT`, `MAX_TITLE_LENGTH`, `MAX_DESCRIPTION_LENGTH`, etc.
+- [x] Validation makes at most 6 GitHub API calls (stops early on failure)
+- [x] Hard limits are enforced: `MAX_REPO_SIZE_KB`, `MAX_TOPIC_COUNT`, `MAX_TITLE_LENGTH`, `MAX_DESCRIPTION_LENGTH`, etc.
 
 ### Testing
-- [ ] Tests cover the happy path — a fully valid repo passes all four steps
-- [ ] Tests cover each failure mode individually (private repo, oversized, bad JSON, missing fields, etc.)
-- [ ] Tests verify that validation stops at the first failure and does not make unnecessary API calls
-- [ ] Tests verify extracted metadata matches the input course.json
+- [x] Tests cover the happy path — a fully valid repo passes all four steps
+- [x] Tests cover each failure mode individually (private repo, oversized, bad JSON, missing fields, etc.)
+- [x] Tests verify that validation stops at the first failure and does not make unnecessary API calls
+- [x] Tests verify extracted metadata matches the input course.json
 
 ## Notes
 
