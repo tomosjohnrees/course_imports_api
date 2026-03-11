@@ -19,17 +19,17 @@ UK GDPR requires a clear, accessible privacy policy explaining what personal dat
 ## Acceptance criteria
 
 ### Functionality
-- [ ] A privacy policy page is accessible at `/privacy`
-- [ ] The policy covers: what data is collected, why, the legal basis, retention period, third-party sharing, cookies, and user rights (access, rectification, erasure, portability, complaint to the ICO)
-- [ ] The policy identifies the data controller and provides contact details
-- [ ] A link to the privacy policy appears in the site footer on every page
+- [x] A privacy policy page is accessible at `/privacy`
+- [x] The policy covers: what data is collected, why, the legal basis, retention period, third-party sharing, cookies, and user rights (access, rectification, erasure, portability, complaint to the ICO)
+- [x] The policy identifies the data controller and provides contact details
+- [x] A link to the privacy policy appears in the site footer on every page
 
 ### Security
-- [ ] The privacy policy does not inadvertently disclose internal system details or infrastructure information
+- [x] The privacy policy does not inadvertently disclose internal system details or infrastructure information
 
 ### Performance
-- [ ] The privacy policy page is a static-content page with no database queries
+- [x] The privacy policy page is a static-content page with no database queries
 
 ### Testing
-- [ ] The privacy policy page renders correctly and is reachable from the footer link
-- [ ] The content is reviewed to confirm it covers all required UK GDPR disclosures
+- [x] The privacy policy page renders correctly and is reachable from the footer link
+- [x] The content is reviewed to confirm it covers all required UK GDPR disclosures
