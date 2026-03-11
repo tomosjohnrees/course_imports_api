@@ -4,6 +4,7 @@
 
     <% if user_signed_in? %>
       <div class="flex items-center gap-6">
+        <%= link_to "Authoring Guide", authoring_guide_path, class: "text-sm text-walnut/70 hover:text-walnut font-medium tracking-wide uppercase transition-colors" %>
         <%= link_to "My Courses", dashboard_path, class: "text-sm text-walnut/70 hover:text-walnut font-medium tracking-wide uppercase transition-colors" %>
         <div class="relative" data-controller="dropdown" data-action="click@window->dropdown#clickOutside">
         <button data-action="dropdown#toggle" class="flex items-center focus:outline-none cursor-pointer">
@@ -20,7 +21,10 @@
         </div>
       </div>
     <% else %>
-      <%= button_to "Sign in with GitHub", "/auth/github", method: :post, data: { turbo: false }, class: "text-sm px-5 py-2 bg-rose text-white rounded-lg hover:bg-rose-dark tracking-wide transition-colors" %>
+      <div class="flex items-center gap-6">
+        <%= link_to "Authoring Guide", authoring_guide_path, class: "text-sm text-walnut/70 hover:text-walnut font-medium tracking-wide uppercase transition-colors" %>
+        <%= button_to "Sign in with GitHub", "/auth/github", method: :post, data: { turbo: false }, class: "text-sm px-5 py-2 bg-rose text-white rounded-lg hover:bg-rose-dark tracking-wide transition-colors" %>
+      </div>
     <% end %>
   </div>
 </nav>

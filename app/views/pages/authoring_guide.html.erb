@@ -1,0 +1,317 @@
+<% content_for(:title, "Course Authoring Guide") %>
+
+<div class="w-full max-w-3xl mx-auto">
+  <h1 class="font-heading text-4xl text-walnut tracking-wide mb-4">Course Authoring Guide</h1>
+  <p class="text-walnut/60 text-[15px] leading-relaxed mb-8">
+    Everything you need to create a course compatible with Course Imports &mdash; folder structure,
+    metadata format, block types, and content best practices.
+  </p>
+
+  <div class="mb-8 p-5 bg-parchment/50 border border-rose/20 rounded-lg">
+    <h2 class="font-heading text-lg text-walnut mb-2">Build courses with Claude Code</h2>
+    <p class="text-walnut/70 text-sm leading-relaxed mb-3">
+      Download the Claude Code skill to generate complete, spec-compliant courses automatically.
+      Unzip into your <code class="text-rose bg-parchment px-1.5 py-0.5 rounded text-xs">.claude/skills/</code> directory and run
+      <code class="text-rose bg-parchment px-1.5 py-0.5 rounded text-xs">/creating-course [topic]</code>.
+    </p>
+    <%= link_to download_skill_path, class: "inline-flex items-center gap-2 text-sm px-4 py-2 bg-rose text-white rounded-lg hover:bg-rose-dark tracking-wide transition-colors" do %>
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+      </svg>
+      Download Skill
+    <% end %>
+  </div>
+
+  <div class="space-y-10 text-walnut/80 text-[15px] leading-relaxed">
+
+    <section>
+      <h2 class="font-heading text-2xl text-walnut mb-4">Folder structure</h2>
+      <p>A course is a single folder containing a <code class="text-rose bg-parchment px-1.5 py-0.5 rounded text-xs">course.json</code> metadata file and a <code class="text-rose bg-parchment px-1.5 py-0.5 rounded text-xs">topics/</code> directory. Each topic is a numbered subfolder with its own <code class="text-rose bg-parchment px-1.5 py-0.5 rounded text-xs">content.json</code> and any referenced files.</p>
+<pre class="mt-4 p-4 bg-walnut text-cream rounded-lg text-sm overflow-x-auto"><code>my-course/
+├── course.json
+└── topics/
+    ├── 01-introduction/
+    │   ├── content.json
+    │   ├── intro.md
+    │   └── hello.py
+    ├── 02-variables-and-types/
+    │   ├── content.json
+    │   ├── overview.md
+    │   ├── example.py
+    │   └── diagram.png
+    └── 03-functions/
+        ├── content.json
+        └── explanation.md</code></pre>
+    </section>
+
+    <section>
+      <h2 class="font-heading text-2xl text-walnut mb-4">course.json</h2>
+      <p class="mb-4">The root metadata file. All fields are required unless noted.</p>
+<pre class="p-4 bg-walnut text-cream rounded-lg text-sm overflow-x-auto"><code>{
+  "id": "intro-to-python",
+  "title": "Introduction to Python",
+  "description": "A beginner-friendly course covering Python fundamentals.",
+  "version": "1.0.0",
+  "author": "Jane Smith",
+  "tags": ["programming", "python", "beginner"],
+  "topicOrder": [
+    "01-introduction",
+    "02-variables-and-types",
+    "03-functions"
+  ]
+}</code></pre>
+      <div class="mt-4 overflow-x-auto">
+        <table class="w-full text-sm border border-walnut/10 rounded-lg">
+          <thead>
+            <tr class="bg-parchment/50 text-walnut">
+              <th class="text-left px-4 py-2 font-medium">Field</th>
+              <th class="text-left px-4 py-2 font-medium">Type</th>
+              <th class="text-left px-4 py-2 font-medium">Description</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-walnut/10">
+            <tr><td class="px-4 py-2"><code class="text-rose text-xs">id</code></td><td class="px-4 py-2">string</td><td class="px-4 py-2">Unique identifier (kebab-case)</td></tr>
+            <tr><td class="px-4 py-2"><code class="text-rose text-xs">title</code></td><td class="px-4 py-2">string</td><td class="px-4 py-2">Display title</td></tr>
+            <tr><td class="px-4 py-2"><code class="text-rose text-xs">description</code></td><td class="px-4 py-2">string</td><td class="px-4 py-2">Short summary of the course</td></tr>
+            <tr><td class="px-4 py-2"><code class="text-rose text-xs">version</code></td><td class="px-4 py-2">string</td><td class="px-4 py-2">Semver version string</td></tr>
+            <tr><td class="px-4 py-2"><code class="text-rose text-xs">author</code></td><td class="px-4 py-2">string</td><td class="px-4 py-2">Course author name</td></tr>
+            <tr><td class="px-4 py-2"><code class="text-rose text-xs">tags</code></td><td class="px-4 py-2">string[]</td><td class="px-4 py-2">Keywords for categorisation</td></tr>
+            <tr><td class="px-4 py-2"><code class="text-rose text-xs">topicOrder</code></td><td class="px-4 py-2">string[]</td><td class="px-4 py-2">Ordered list of topic folder names (must match folders in <code class="text-rose text-xs">topics/</code>)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="font-heading text-2xl text-walnut mb-4">Topics</h2>
+      <p>Each entry in <code class="text-rose bg-parchment px-1.5 py-0.5 rounded text-xs">topicOrder</code> must correspond to a subfolder inside <code class="text-rose bg-parchment px-1.5 py-0.5 rounded text-xs">topics/</code>.</p>
+      <p class="mt-3">Prefix folder names with a number for ordering, e.g. <code class="text-rose bg-parchment px-1.5 py-0.5 rounded text-xs">01-introduction</code>. The display title is derived by stripping the numeric prefix and title-casing the remainder.</p>
+      <p class="mt-3">Each topic folder must contain a <code class="text-rose bg-parchment px-1.5 py-0.5 rounded text-xs">content.json</code> file &mdash; an ordered JSON array of blocks rendered top-to-bottom.</p>
+<pre class="mt-4 p-4 bg-walnut text-cream rounded-lg text-sm overflow-x-auto"><code>[
+  { "type": "text", "src": "intro.md" },
+  { "type": "code", "language": "python", "src": "hello.py", "label": "hello.py" },
+  { "type": "callout", "style": "info", "body": "Python is case-sensitive." },
+  { "type": "quiz", "question": "What does print() do?",
+    "options": ["Saves a file", "Outputs text", "Creates a variable"],
+    "answer": 1, "explanation": "print() outputs text to the console." },
+  { "type": "reveal", "label": "ELI5: What is print?",
+    "body": "Think of print() like a megaphone." },
+  { "type": "image", "src": "diagram.png", "alt": "Memory model diagram" },
+  { "type": "checkpoint", "label": "I can write and run a Python script" }
+]</code></pre>
+    </section>
+
+    <section>
+      <h2 class="font-heading text-2xl text-walnut mb-4">Block types</h2>
+
+      <div class="space-y-8">
+        <div>
+          <h3 class="font-heading text-lg text-walnut mb-2">Text</h3>
+          <p>Renders markdown content. Reference an external <code class="text-rose bg-parchment px-1.5 py-0.5 rounded text-xs">.md</code> file with <code class="text-rose bg-parchment px-1.5 py-0.5 rounded text-xs">src</code>, or provide content inline.</p>
+<pre class="mt-3 p-4 bg-walnut text-cream rounded-lg text-sm overflow-x-auto"><code>{ "type": "text", "src": "intro.md" }
+{ "type": "text", "content": "Welcome to the course. This is **markdown**." }</code></pre>
+          <div class="mt-3 overflow-x-auto">
+            <table class="w-full text-sm border border-walnut/10 rounded-lg">
+              <thead><tr class="bg-parchment/50 text-walnut"><th class="text-left px-4 py-2 font-medium">Field</th><th class="text-left px-4 py-2 font-medium">Type</th><th class="text-left px-4 py-2 font-medium">Required</th><th class="text-left px-4 py-2 font-medium">Description</th></tr></thead>
+              <tbody class="divide-y divide-walnut/10">
+                <tr><td class="px-4 py-2"><code class="text-rose text-xs">type</code></td><td class="px-4 py-2">"text"</td><td class="px-4 py-2">Yes</td><td class="px-4 py-2">Must be "text"</td></tr>
+                <tr><td class="px-4 py-2"><code class="text-rose text-xs">src</code></td><td class="px-4 py-2">string</td><td class="px-4 py-2">No</td><td class="px-4 py-2">Path to a .md file relative to the topic folder</td></tr>
+                <tr><td class="px-4 py-2"><code class="text-rose text-xs">content</code></td><td class="px-4 py-2">string</td><td class="px-4 py-2">No</td><td class="px-4 py-2">Inline markdown string (used if src is absent)</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="mt-2 text-sm text-walnut/60">One of <code class="text-rose text-xs">src</code> or <code class="text-rose text-xs">content</code> must be provided.</p>
+        </div>
+
+        <div>
+          <h3 class="font-heading text-lg text-walnut mb-2">Code</h3>
+          <p>Displays a syntax-highlighted code block.</p>
+<pre class="mt-3 p-4 bg-walnut text-cream rounded-lg text-sm overflow-x-auto"><code>{ "type": "code", "language": "python", "src": "hello.py", "label": "hello.py" }
+{ "type": "code", "language": "javascript", "content": "console.log('hello')" }</code></pre>
+          <div class="mt-3 overflow-x-auto">
+            <table class="w-full text-sm border border-walnut/10 rounded-lg">
+              <thead><tr class="bg-parchment/50 text-walnut"><th class="text-left px-4 py-2 font-medium">Field</th><th class="text-left px-4 py-2 font-medium">Type</th><th class="text-left px-4 py-2 font-medium">Required</th><th class="text-left px-4 py-2 font-medium">Description</th></tr></thead>
+              <tbody class="divide-y divide-walnut/10">
+                <tr><td class="px-4 py-2"><code class="text-rose text-xs">type</code></td><td class="px-4 py-2">"code"</td><td class="px-4 py-2">Yes</td><td class="px-4 py-2">Must be "code"</td></tr>
+                <tr><td class="px-4 py-2"><code class="text-rose text-xs">language</code></td><td class="px-4 py-2">string</td><td class="px-4 py-2">Yes</td><td class="px-4 py-2">Language identifier for syntax highlighting</td></tr>
+                <tr><td class="px-4 py-2"><code class="text-rose text-xs">src</code></td><td class="px-4 py-2">string</td><td class="px-4 py-2">No</td><td class="px-4 py-2">Path to a source file relative to the topic folder</td></tr>
+                <tr><td class="px-4 py-2"><code class="text-rose text-xs">content</code></td><td class="px-4 py-2">string</td><td class="px-4 py-2">No</td><td class="px-4 py-2">Inline code string (used if src is absent)</td></tr>
+                <tr><td class="px-4 py-2"><code class="text-rose text-xs">label</code></td><td class="px-4 py-2">string</td><td class="px-4 py-2">No</td><td class="px-4 py-2">Display label shown above the code block</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="mt-2 text-sm text-walnut/60">One of <code class="text-rose text-xs">src</code> or <code class="text-rose text-xs">content</code> must be provided.</p>
+        </div>
+
+        <div>
+          <h3 class="font-heading text-lg text-walnut mb-2">Quiz</h3>
+          <p>Presents a question with selectable options.</p>
+<pre class="mt-3 p-4 bg-walnut text-cream rounded-lg text-sm overflow-x-auto"><code>{
+  "type": "quiz",
+  "question": "What does the print() function do?",
+  "options": [
+    "Saves a file",
+    "Outputs text to the console",
+    "Creates a variable"
+  ],
+  "answer": 1,
+  "explanation": "print() writes output to the standard console."
+}</code></pre>
+          <div class="mt-3 overflow-x-auto">
+            <table class="w-full text-sm border border-walnut/10 rounded-lg">
+              <thead><tr class="bg-parchment/50 text-walnut"><th class="text-left px-4 py-2 font-medium">Field</th><th class="text-left px-4 py-2 font-medium">Type</th><th class="text-left px-4 py-2 font-medium">Required</th><th class="text-left px-4 py-2 font-medium">Description</th></tr></thead>
+              <tbody class="divide-y divide-walnut/10">
+                <tr><td class="px-4 py-2"><code class="text-rose text-xs">type</code></td><td class="px-4 py-2">"quiz"</td><td class="px-4 py-2">Yes</td><td class="px-4 py-2">Must be "quiz"</td></tr>
+                <tr><td class="px-4 py-2"><code class="text-rose text-xs">question</code></td><td class="px-4 py-2">string</td><td class="px-4 py-2">Yes</td><td class="px-4 py-2">The question text</td></tr>
+                <tr><td class="px-4 py-2"><code class="text-rose text-xs">options</code></td><td class="px-4 py-2">string[]</td><td class="px-4 py-2">Yes</td><td class="px-4 py-2">List of answer choices</td></tr>
+                <tr><td class="px-4 py-2"><code class="text-rose text-xs">answer</code></td><td class="px-4 py-2">number</td><td class="px-4 py-2">Yes</td><td class="px-4 py-2">Zero-based index of the correct option</td></tr>
+                <tr><td class="px-4 py-2"><code class="text-rose text-xs">explanation</code></td><td class="px-4 py-2">string</td><td class="px-4 py-2">No</td><td class="px-4 py-2">Shown after the user answers</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="font-heading text-lg text-walnut mb-2">Callout</h3>
+          <p>A highlighted box for tips, warnings, or extra info.</p>
+<pre class="mt-3 p-4 bg-walnut text-cream rounded-lg text-sm overflow-x-auto"><code>{ "type": "callout", "style": "warning", "body": "Do not use eval() in production code." }</code></pre>
+          <div class="mt-3 overflow-x-auto">
+            <table class="w-full text-sm border border-walnut/10 rounded-lg">
+              <thead><tr class="bg-parchment/50 text-walnut"><th class="text-left px-4 py-2 font-medium">Field</th><th class="text-left px-4 py-2 font-medium">Type</th><th class="text-left px-4 py-2 font-medium">Required</th><th class="text-left px-4 py-2 font-medium">Description</th></tr></thead>
+              <tbody class="divide-y divide-walnut/10">
+                <tr><td class="px-4 py-2"><code class="text-rose text-xs">type</code></td><td class="px-4 py-2">"callout"</td><td class="px-4 py-2">Yes</td><td class="px-4 py-2">Must be "callout"</td></tr>
+                <tr><td class="px-4 py-2"><code class="text-rose text-xs">style</code></td><td class="px-4 py-2">"info" | "warning" | "tip"</td><td class="px-4 py-2">Yes</td><td class="px-4 py-2">Visual style of the callout</td></tr>
+                <tr><td class="px-4 py-2"><code class="text-rose text-xs">body</code></td><td class="px-4 py-2">string</td><td class="px-4 py-2">Yes</td><td class="px-4 py-2">Markdown-formatted callout content</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="font-heading text-lg text-walnut mb-2">Reveal</h3>
+          <p>A collapsible block that hides content behind a clickable header. Useful for supplementary material.</p>
+<pre class="mt-3 p-4 bg-walnut text-cream rounded-lg text-sm overflow-x-auto"><code>{
+  "type": "reveal",
+  "label": "ELI5: What is a variable?",
+  "body": "Think of a variable like a labeled box..."
+}</code></pre>
+          <div class="mt-3 overflow-x-auto">
+            <table class="w-full text-sm border border-walnut/10 rounded-lg">
+              <thead><tr class="bg-parchment/50 text-walnut"><th class="text-left px-4 py-2 font-medium">Field</th><th class="text-left px-4 py-2 font-medium">Type</th><th class="text-left px-4 py-2 font-medium">Required</th><th class="text-left px-4 py-2 font-medium">Description</th></tr></thead>
+              <tbody class="divide-y divide-walnut/10">
+                <tr><td class="px-4 py-2"><code class="text-rose text-xs">type</code></td><td class="px-4 py-2">"reveal"</td><td class="px-4 py-2">Yes</td><td class="px-4 py-2">Must be "reveal"</td></tr>
+                <tr><td class="px-4 py-2"><code class="text-rose text-xs">label</code></td><td class="px-4 py-2">string</td><td class="px-4 py-2">No</td><td class="px-4 py-2">Collapsed header text (defaults to "Reveal")</td></tr>
+                <tr><td class="px-4 py-2"><code class="text-rose text-xs">body</code></td><td class="px-4 py-2">string</td><td class="px-4 py-2">Yes</td><td class="px-4 py-2">Markdown content shown when expanded</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="mt-3 text-sm text-walnut/60">Recommended uses: ELI5 explanations, deep dives, common mistakes, and exercises.</p>
+        </div>
+
+        <div>
+          <h3 class="font-heading text-lg text-walnut mb-2">Checkpoint</h3>
+          <p>A completion marker rendered as a toggleable button. Place at the end of a topic.</p>
+<pre class="mt-3 p-4 bg-walnut text-cream rounded-lg text-sm overflow-x-auto"><code>{ "type": "checkpoint", "label": "I can write and call a Python function" }</code></pre>
+          <div class="mt-3 overflow-x-auto">
+            <table class="w-full text-sm border border-walnut/10 rounded-lg">
+              <thead><tr class="bg-parchment/50 text-walnut"><th class="text-left px-4 py-2 font-medium">Field</th><th class="text-left px-4 py-2 font-medium">Type</th><th class="text-left px-4 py-2 font-medium">Required</th><th class="text-left px-4 py-2 font-medium">Description</th></tr></thead>
+              <tbody class="divide-y divide-walnut/10">
+                <tr><td class="px-4 py-2"><code class="text-rose text-xs">type</code></td><td class="px-4 py-2">"checkpoint"</td><td class="px-4 py-2">Yes</td><td class="px-4 py-2">Must be "checkpoint"</td></tr>
+                <tr><td class="px-4 py-2"><code class="text-rose text-xs">label</code></td><td class="px-4 py-2">string</td><td class="px-4 py-2">No</td><td class="px-4 py-2">Button text (defaults to "Mark as complete")</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="mt-2 text-sm text-walnut/60">Phrase as a self-assessment: "I can..." or "I understand..." statements.</p>
+        </div>
+
+        <div>
+          <h3 class="font-heading text-lg text-walnut mb-2">Image</h3>
+          <p>Displays an image with alt text.</p>
+<pre class="mt-3 p-4 bg-walnut text-cream rounded-lg text-sm overflow-x-auto"><code>{
+  "type": "image",
+  "src": "diagram.png",
+  "alt": "Python variable memory model",
+  "caption": "How Python stores variables in memory"
+}</code></pre>
+          <div class="mt-3 overflow-x-auto">
+            <table class="w-full text-sm border border-walnut/10 rounded-lg">
+              <thead><tr class="bg-parchment/50 text-walnut"><th class="text-left px-4 py-2 font-medium">Field</th><th class="text-left px-4 py-2 font-medium">Type</th><th class="text-left px-4 py-2 font-medium">Required</th><th class="text-left px-4 py-2 font-medium">Description</th></tr></thead>
+              <tbody class="divide-y divide-walnut/10">
+                <tr><td class="px-4 py-2"><code class="text-rose text-xs">type</code></td><td class="px-4 py-2">"image"</td><td class="px-4 py-2">Yes</td><td class="px-4 py-2">Must be "image"</td></tr>
+                <tr><td class="px-4 py-2"><code class="text-rose text-xs">src</code></td><td class="px-4 py-2">string</td><td class="px-4 py-2">Yes</td><td class="px-4 py-2">Path to image file relative to the topic folder</td></tr>
+                <tr><td class="px-4 py-2"><code class="text-rose text-xs">alt</code></td><td class="px-4 py-2">string</td><td class="px-4 py-2">Yes</td><td class="px-4 py-2">Alt text for accessibility</td></tr>
+                <tr><td class="px-4 py-2"><code class="text-rose text-xs">caption</code></td><td class="px-4 py-2">string</td><td class="px-4 py-2">No</td><td class="px-4 py-2">Caption displayed below the image</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="mt-2 text-sm text-walnut/60">Images must be under 10 MB.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="font-heading text-2xl text-walnut mb-4">Topic completion rules</h2>
+      <ul class="ml-5 list-disc space-y-2">
+        <li><strong class="text-walnut">Topics without quizzes or checkpoints</strong> are marked complete when first viewed.</li>
+        <li><strong class="text-walnut">Topics with quizzes</strong> are marked complete only when all quizzes have been answered.</li>
+        <li><strong class="text-walnut">Topics with checkpoints</strong> are marked complete when all checkpoints have been toggled.</li>
+        <li><strong class="text-walnut">Topics with both</strong> require all quizzes answered and all checkpoints toggled.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2 class="font-heading text-2xl text-walnut mb-4">Validation checklist</h2>
+      <p class="mb-3">The app validates courses on load. Use this checklist to catch issues before importing:</p>
+      <ul class="ml-5 list-disc space-y-2">
+        <li><code class="text-rose bg-parchment px-1.5 py-0.5 rounded text-xs">course.json</code> exists at the root and is valid JSON</li>
+        <li>All required fields are present (<code class="text-rose text-xs">id</code>, <code class="text-rose text-xs">title</code>, <code class="text-rose text-xs">description</code>, <code class="text-rose text-xs">version</code>, <code class="text-rose text-xs">author</code>, <code class="text-rose text-xs">tags</code>, <code class="text-rose text-xs">topicOrder</code>)</li>
+        <li>A <code class="text-rose bg-parchment px-1.5 py-0.5 rounded text-xs">topics/</code> directory exists</li>
+        <li>Every entry in <code class="text-rose text-xs">topicOrder</code> has a matching folder in <code class="text-rose text-xs">topics/</code></li>
+        <li>Every topic folder contains a valid <code class="text-rose text-xs">content.json</code> (a JSON array)</li>
+        <li>Every block in <code class="text-rose text-xs">content.json</code> has a <code class="text-rose text-xs">type</code> field</li>
+        <li>All <code class="text-rose text-xs">src</code> paths point to files that exist within the topic folder (no <code class="text-rose text-xs">../</code> path traversal)</li>
+        <li>Images are under 10 MB</li>
+        <li>Multiple-choice quizzes have an <code class="text-rose text-xs">options</code> array and a valid <code class="text-rose text-xs">answer</code> index</li>
+        <li>Text and code blocks provide either <code class="text-rose text-xs">src</code> or <code class="text-rose text-xs">content</code></li>
+      </ul>
+    </section>
+
+    <section>
+      <h2 class="font-heading text-2xl text-walnut mb-4">Writing effective content</h2>
+
+      <h3 class="font-heading text-lg text-walnut mb-2 mt-6">Recommended topic structure</h3>
+      <ol class="ml-5 list-decimal space-y-3">
+        <li><strong class="text-walnut">Overview</strong> (15&ndash;30 lines) &mdash; frame the problem this topic solves, include 3&ndash;5 learning objectives</li>
+        <li><strong class="text-walnut">Core content</strong> (interleaved text + code, 20&ndash;50 lines per file) &mdash; one concept per file, weave code into narrative</li>
+        <li><strong class="text-walnut">Inline knowledge checks</strong> &mdash; 3&ndash;5 quizzes placed after each major concept, every quiz needs an explanation</li>
+        <li><strong class="text-walnut">Supplementary depth</strong> &mdash; at least 2 reveal blocks per topic (ELI5 + deep dive)</li>
+        <li><strong class="text-walnut">Callouts</strong> (2&ndash;4 per topic) &mdash; tips, warnings, and context distributed throughout</li>
+        <li><strong class="text-walnut">Key takeaways</strong> &mdash; 3&ndash;5 bullet recap before the checkpoint</li>
+        <li><strong class="text-walnut">Checkpoint</strong> &mdash; "I can..." or "I understand..." phrasing</li>
+      </ol>
+
+      <h3 class="font-heading text-lg text-walnut mb-2 mt-6">Writing style</h3>
+      <ul class="ml-5 list-disc space-y-2">
+        <li>Write as a knowledgeable colleague at a whiteboard, not a textbook</li>
+        <li>Open every topic with the <em>problem</em> before the solution</li>
+        <li>Use concrete analogies for abstract concepts</li>
+        <li>Use second person ("you"), present tense</li>
+        <li>Vary sentence rhythm &mdash; short sentences punch, longer ones connect ideas</li>
+        <li>Never use foo/bar/baz &mdash; use realistic names and scenarios</li>
+        <li>Show the "wrong way" before the "right way" where helpful</li>
+      </ul>
+    </section>
+
+    <section class="pb-4">
+      <div class="p-5 bg-parchment/50 border border-rose/20 rounded-lg text-center">
+        <p class="text-walnut/70 text-sm mb-3">Ready to create a course?</p>
+        <%= link_to download_skill_path, class: "inline-flex items-center gap-2 text-sm px-4 py-2 bg-rose text-white rounded-lg hover:bg-rose-dark tracking-wide transition-colors" do %>
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
+          Download Claude Code Skill
+        <% end %>
+      </div>
+    </section>
+  </div>
+</div>

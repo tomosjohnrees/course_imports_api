@@ -12,6 +12,8 @@ Rails.application.routes.draw do
 
   get "privacy", to: "pages#privacy"
   get "terms", to: "pages#terms"
+  get "authoring-guide", to: "pages#authoring_guide", as: :authoring_guide
+  get "authoring-guide/skill", to: "pages#download_skill", as: :download_skill
 
   get "up" => "rails/health#show", as: :rails_health_check
 

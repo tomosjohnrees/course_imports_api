@@ -55,3 +55,4 @@
 | 0031 | [Add terms of use page](0031-terms-of-use.md) | — | `complete` |
 | 0032 | [Add account and data deletion](0032-account-deletion.md) | — | `complete` |
 | 0033 | [Hard-delete courses on removal](0033-hard-delete-courses.md) | — | `complete` |
+| 0034 | [Add course authoring guide page with downloadable skill](0034-course-authoring-page.md) | — | `complete` |
