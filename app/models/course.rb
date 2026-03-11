@@ -27,6 +27,7 @@ class Course < ApplicationRecord
   }
 
   belongs_to :user
+  has_many :course_loads, dependent: :delete_all
   has_many :validation_attempts, dependent: :destroy
 
   before_validation :extract_github_details, if: -> { github_repo_url_changed? }
@@ -40,6 +41,13 @@ class Course < ApplicationRecord
 
   def viewable_by?(user)
     approved? || (user.present? && user_id == user.id)
+  end
+
+  def record_load(identifier)
+    course_loads.create!(identifier: identifier)
+    Course.increment_counter(:load_count, id)
+  rescue ActiveRecord::RecordNotUnique, ActiveRecord::RecordInvalid
+    # Already recorded
   end
 
   def deep_link_url

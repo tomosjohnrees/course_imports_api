@@ -70,7 +70,7 @@
       </a>
 
       <% if @course.approved? %>
-        <a href="<%= @course.deep_link_url %>" class="inline-flex items-center px-5 py-2 bg-white text-walnut text-sm font-medium rounded-lg border-2 border-walnut hover:bg-parchment/50 tracking-wide transition-colors">
+        <a href="<%= @course.deep_link_url %>" class="inline-flex items-center px-5 py-2 bg-white text-walnut text-sm font-medium rounded-lg border-2 border-walnut hover:bg-parchment/50 tracking-wide transition-colors" data-controller="track-load" data-track-load-url-value="<%= track_load_course_path(@course) %>" data-action="click->track-load#track">
           Open in app
         </a>
       <% end %>

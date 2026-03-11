@@ -56,3 +56,4 @@
 | 0032 | [Add account and data deletion](0032-account-deletion.md) | — | `complete` |
 | 0033 | [Hard-delete courses on removal](0033-hard-delete-courses.md) | — | `complete` |
 | 0034 | [Add course authoring guide page with downloadable skill](0034-course-authoring-page.md) | — | `complete` |
+| 0035 | [Track course loads via Open in App clicks](0035-track-course-loads.md) | — | `complete` |

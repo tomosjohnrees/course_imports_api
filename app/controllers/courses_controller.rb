@@ -1,7 +1,7 @@
 class CoursesController < ApplicationController
   include Pagy::Method
 
-  before_action :authenticate_user!, except: %i[index show]
+  before_action :authenticate_user!, except: %i[index show track_load]
 
   def index
     @search_query = params[:q]
@@ -37,6 +37,13 @@ class CoursesController < ApplicationController
     @course = current_user.courses.find(params[:id])
     @course.destroy!
     redirect_to dashboard_path, notice: "Course removed."
+  end
+
+  def track_load
+    course = Course.find(params[:id])
+    identifier = current_user ? "user_#{current_user.id}" : "session_#{session.id}"
+    course.record_load(identifier)
+    head :no_content
   end
 
   def resubmit

@@ -8,6 +8,7 @@ Rails.application.routes.draw do
 
   resources :courses, only: %i[index new create show destroy] do
     post :resubmit, on: :member
+    post :track_load, on: :member
   end
 
   get "privacy", to: "pages#privacy"

@@ -461,6 +461,22 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
     assert_select "a[href='courseimports://import/deep-owner/deep-repo']", text: "Open in app"
   end
 
+  test "show deep link button has track-load stimulus controller" do
+    course = Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/stimulus-owner/stimulus-repo",
+      github_owner: "stimulus-owner",
+      github_repo: "stimulus-repo",
+      title: "Stimulus Track Course",
+      status: "approved"
+    )
+
+    get course_path(course)
+    assert_response :success
+    assert_select "a[data-controller='track-load'][data-action='click->track-load#track']", text: "Open in app"
+    assert_select "a[data-track-load-url-value='#{track_load_course_path(course)}']"
+  end
+
   test "show hides deep link button for non-approved course" do
     course = Course.create!(
       user: @user,
@@ -920,6 +936,149 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
 
     get root_path
     assert_select "div.mb-8 form[action='/auth/github']", count: 0
+  end
+
+  # --- track_load action ---
+
+  test "track_load creates a course load and increments load_count for signed-in user" do
+    course = Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/track-owner/track-repo",
+      github_owner: "track-owner",
+      github_repo: "track-repo",
+      title: "Track Load Course",
+      status: "approved"
+    )
+    sign_in_as(@user)
+
+    assert_difference "CourseLoad.count", 1 do
+      post track_load_course_path(course)
+    end
+
+    assert_response :no_content
+    assert_equal 1, course.reload.load_count
+    assert_equal "user_#{@user.id}", CourseLoad.last.identifier
+  end
+
+  test "track_load creates a course load for anonymous user using session" do
+    course = Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/track-owner/anon-track-repo",
+      github_owner: "track-owner",
+      github_repo: "anon-track-repo",
+      title: "Anon Track Course",
+      status: "approved"
+    )
+
+    assert_difference "CourseLoad.count", 1 do
+      post track_load_course_path(course)
+    end
+
+    assert_response :no_content
+    assert_equal 1, course.reload.load_count
+    assert CourseLoad.last.identifier.start_with?("session_")
+  end
+
+  test "track_load deduplicates loads for the same signed-in user" do
+    course = Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/track-owner/dedup-repo",
+      github_owner: "track-owner",
+      github_repo: "dedup-repo",
+      title: "Dedup Course",
+      status: "approved"
+    )
+    sign_in_as(@user)
+
+    post track_load_course_path(course)
+    assert_response :no_content
+    assert_equal 1, course.reload.load_count
+
+    assert_no_difference "CourseLoad.count" do
+      post track_load_course_path(course)
+    end
+
+    assert_response :no_content
+    assert_equal 1, course.reload.load_count
+  end
+
+  test "track_load deduplicates loads for the same anonymous session" do
+    course = Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/track-owner/anon-dedup-repo",
+      github_owner: "track-owner",
+      github_repo: "anon-dedup-repo",
+      title: "Anon Dedup Course",
+      status: "approved"
+    )
+
+    post track_load_course_path(course)
+    assert_response :no_content
+    assert_equal 1, course.reload.load_count
+
+    assert_no_difference "CourseLoad.count" do
+      post track_load_course_path(course)
+    end
+
+    assert_response :no_content
+    assert_equal 1, course.reload.load_count
+  end
+
+  test "track_load allows different users to each record a load" do
+    course = Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/track-owner/multi-user-repo",
+      github_owner: "track-owner",
+      github_repo: "multi-user-repo",
+      title: "Multi User Course",
+      status: "approved"
+    )
+    other_user = User.create!(github_id: "cc_track_other", github_username: "trackother", avatar_url: "https://example.com/other.png")
+
+    sign_in_as(@user)
+    post track_load_course_path(course)
+    assert_equal 1, course.reload.load_count
+
+    sign_in_as(other_user)
+    post track_load_course_path(course)
+    assert_equal 2, course.reload.load_count
+    assert_equal 2, course.course_loads.count
+  end
+
+  test "track_load returns 404 for nonexistent course" do
+    post track_load_course_path(id: 999999)
+    assert_response :not_found
+  end
+
+  test "track_load does not require authentication" do
+    course = Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/track-owner/noauth-track-repo",
+      github_owner: "track-owner",
+      github_repo: "noauth-track-repo",
+      title: "No Auth Track Course",
+      status: "approved"
+    )
+
+    post track_load_course_path(course)
+    assert_response :no_content
+  end
+
+  test "track_load returns no_content even on duplicate" do
+    course = Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/track-owner/dup-track-repo",
+      github_owner: "track-owner",
+      github_repo: "dup-track-repo",
+      title: "Dup Track Course",
+      status: "approved"
+    )
+    sign_in_as(@user)
+
+    post track_load_course_path(course)
+    post track_load_course_path(course)
+
+    assert_response :no_content
   end
 
   # --- resubmit action ---
@@ -1538,6 +1697,11 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
   test "routes GET /courses to courses#index" do
     assert_routing({ path: "/courses", method: :get },
                    { controller: "courses", action: "index" })
+  end
+
+  test "routes POST /courses/:id/track_load to courses#track_load" do
+    assert_routing({ path: "/courses/1/track_load", method: :post },
+                   { controller: "courses", action: "track_load", id: "1" })
   end
 
   test "routes POST /courses/:id/resubmit to courses#resubmit" do

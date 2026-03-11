@@ -19,19 +19,19 @@ Course loads are not currently tracked, so there is no visibility into which cou
 ## Acceptance criteria
 
 ### Functionality
-- [ ] Clicking "Open in App" increments the course's load count
-- [ ] A logged-in user clicking the same course's "Open in App" multiple times counts as one load
-- [ ] An anonymous visitor clicking the same course's "Open in App" multiple times counts as one load (e.g. session-based or fingerprint-based deduplication)
-- [ ] The load count is visible on the course detail page or accessible via the API
+- [x] Clicking "Open in App" increments the course's load count
+- [x] A logged-in user clicking the same course's "Open in App" multiple times counts as one load
+- [x] An anonymous visitor clicking the same course's "Open in App" multiple times counts as one load (e.g. session-based or fingerprint-based deduplication)
+- [x] The load count is visible on the course detail page or accessible via the API
 
 ### Security
-- [ ] No personally identifiable information is stored in the tracking data beyond what is necessary for deduplication
-- [ ] The tracking endpoint cannot be abused to inflate counts (rate-limited or otherwise protected)
+- [x] No personally identifiable information is stored in the tracking data beyond what is necessary for deduplication
+- [x] The tracking endpoint cannot be abused to inflate counts (rate-limited or otherwise protected)
 
 ### Performance
-- [ ] Recording a load does not add noticeable latency to the "Open in App" action
-- [ ] Querying load counts does not introduce N+1 queries on course listing pages
+- [x] Recording a load does not add noticeable latency to the "Open in App" action
+- [x] Querying load counts does not introduce N+1 queries on course listing pages
 
 ### Testing
-- [ ] Unit tests cover deduplication logic for both logged-in and anonymous users
-- [ ] Controller or integration tests verify the tracking endpoint records loads correctly and rejects duplicates
+- [x] Unit tests cover deduplication logic for both logged-in and anonymous users
+- [x] Controller or integration tests verify the tracking endpoint records loads correctly and rejects duplicates

@@ -121,6 +121,57 @@ class CourseTest < ActiveSupport::TestCase
     assert_equal @user, course.user
   end
 
+  test "has many course_loads" do
+    course = Course.create!(@valid_attributes)
+    load1 = CourseLoad.create!(course: course, identifier: "user_1")
+    load2 = CourseLoad.create!(course: course, identifier: "session_abc")
+
+    assert_equal 2, course.course_loads.count
+    assert_includes course.course_loads, load1
+    assert_includes course.course_loads, load2
+  end
+
+  test "destroying course deletes associated course_loads" do
+    course = Course.create!(@valid_attributes)
+    CourseLoad.create!(course: course, identifier: "user_1")
+    CourseLoad.create!(course: course, identifier: "session_abc")
+
+    assert_difference "CourseLoad.count", -2 do
+      course.destroy
+    end
+  end
+
+  test "record_load creates a course load and increments load_count" do
+    course = Course.create!(@valid_attributes)
+
+    assert_difference "CourseLoad.count", 1 do
+      course.record_load("user_1")
+    end
+
+    assert_equal 1, course.reload.load_count
+    assert_equal "user_1", course.course_loads.last.identifier
+  end
+
+  test "record_load silently skips duplicate identifiers" do
+    course = Course.create!(@valid_attributes)
+    course.record_load("user_1")
+
+    assert_no_difference "CourseLoad.count" do
+      course.record_load("user_1")
+    end
+
+    assert_equal 1, course.reload.load_count
+  end
+
+  test "record_load allows different identifiers" do
+    course = Course.create!(@valid_attributes)
+    course.record_load("user_1")
+    course.record_load("session_abc")
+
+    assert_equal 2, course.reload.load_count
+    assert_equal 2, course.course_loads.count
+  end
+
   test "has many validation_attempts" do
     course = Course.create!(@valid_attributes)
     attempt1 = ValidationAttempt.create!(course: course, result: "passed")
