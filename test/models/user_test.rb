@@ -173,6 +173,40 @@ class UserTest < ActiveSupport::TestCase
     end
   end
 
+  test "destroying user cascades through courses to validation_attempts" do
+    user = User.create!(github_id: "cascade-test", github_username: "cascadeuser")
+    course = Course.create!(
+      user: user,
+      github_repo_url: "https://github.com/cascade/repo",
+      github_owner: "cascade", github_repo: "repo",
+      title: "Cascade Test", status: "approved"
+    )
+    ValidationAttempt.create!(course: course, result: "passed")
+    ValidationAttempt.create!(course: course, result: "failed")
+
+    assert_difference "ValidationAttempt.count", -2 do
+      assert_difference "Course.count", -1 do
+        user.destroy
+      end
+    end
+  end
+
+  test "destroying user with multiple courses removes all courses" do
+    user = User.create!(github_id: "multi-destroy-test", github_username: "multidestroyuser")
+    3.times do |i|
+      Course.create!(
+        user: user,
+        github_repo_url: "https://github.com/multi-destroy/repo-#{i}",
+        github_owner: "multi-destroy", github_repo: "repo-#{i}",
+        title: "Course #{i}", status: %w[pending approved failed][i]
+      )
+    end
+
+    assert_difference "Course.count", -3 do
+      user.destroy
+    end
+  end
+
   test "find_or_create_from_omniauth does not change banned status on update" do
     existing = User.create!(github_id: "66666", github_username: "banned_user", banned: true)
 

@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   delete "sign_out", to: "sessions#destroy", as: :sign_out
 
   resource :dashboard, only: :show
+  resource :account, only: %i[show destroy]
 
   resources :courses, only: %i[index new create show destroy] do
     post :resubmit, on: :member

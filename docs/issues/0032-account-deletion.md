@@ -19,20 +19,20 @@ UK GDPR gives users the right to erasure ("right to be forgotten"). The site mus
 ## Acceptance criteria
 
 ### Functionality
-- [ ] Users can initiate account deletion from their account settings
-- [ ] A confirmation step prevents accidental deletion
-- [ ] Account deletion removes the user record and anonymises or deletes all associated course submissions
-- [ ] After deletion, the user is logged out and cannot log back in to the deleted account
+- [x] Users can initiate account deletion from their account settings
+- [x] A confirmation step prevents accidental deletion
+- [x] Account deletion removes the user record and anonymises or deletes all associated course submissions
+- [x] After deletion, the user is logged out and cannot log back in to the deleted account
 
 ### Security
-- [ ] Only the authenticated user can delete their own account — no user can trigger deletion of another account
-- [ ] Personal data is removed from all database tables (users, courses, any cached data)
-- [ ] Deletion is irreversible and no personal data remains recoverable
+- [x] Only the authenticated user can delete their own account — no user can trigger deletion of another account
+- [x] Personal data is removed from all database tables (users, courses, any cached data)
+- [x] Deletion is irreversible and no personal data remains recoverable
 
 ### Performance
-- [ ] Deletion of associated records is handled in a background job if the user has many submissions, to avoid request timeouts
+- [x] Deletion of associated records is handled in a background job if the user has many submissions, to avoid request timeouts
 
 ### Testing
-- [ ] Account deletion removes the user record from the database
-- [ ] Associated course submissions are deleted or anonymised after account deletion
-- [ ] A deleted user cannot authenticate again with the same GitHub account (or if they can, they get a fresh account with no prior data)
+- [x] Account deletion removes the user record from the database
+- [x] Associated course submissions are deleted or anonymised after account deletion
+- [x] A deleted user cannot authenticate again with the same GitHub account (or if they can, they get a fresh account with no prior data)

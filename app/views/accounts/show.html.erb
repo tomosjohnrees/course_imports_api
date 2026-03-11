@@ -1,0 +1,23 @@
+<% content_for(:title, "Account") %>
+
+<div class="w-full max-w-xl mx-auto">
+  <h1 class="font-heading text-3xl text-walnut tracking-wide mb-8">Account</h1>
+
+  <div class="bg-white rounded-lg border-2 border-parchment p-6 mb-8">
+    <div class="flex items-center gap-4">
+      <%= image_tag current_user.avatar_url, alt: current_user.github_username, class: "w-16 h-16 rounded-full border-2 border-parchment", size: "64x64", loading: "lazy" %>
+      <div>
+        <p class="text-lg font-medium text-walnut"><%= current_user.display_name || current_user.github_username %></p>
+        <p class="text-sm text-walnut/50">@<%= current_user.github_username %></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-lg border-2 border-terracotta/30 p-6">
+    <h2 class="font-heading text-xl text-terracotta tracking-wide mb-2">Delete account</h2>
+    <p class="text-sm text-walnut/70 mb-4">
+      This will permanently delete your account, all your course submissions, and any associated data. This action cannot be undone.
+    </p>
+    <%= button_to "Delete my account", account_path, method: :delete, class: "px-5 py-2 bg-terracotta text-white text-sm font-medium rounded-lg hover:bg-terracotta/80 tracking-wide transition-colors cursor-pointer", data: { turbo_confirm: "Are you sure you want to delete your account? All your data will be permanently removed. This cannot be undone." } %>
+  </div>
+</div>
