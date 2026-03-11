@@ -50,3 +50,4 @@
 | 0026 | [Make search flexible with partial and case-insensitive matching](0026-flexible-search.md) | — | `complete` |
 | 0027 | [Simplify tag filtering to inline links only](0027-simplify-tag-filtering.md) | — | `complete` |
 | 0028 | [Add cookie consent banner](0028-cookie-consent-banner.md) | — | `complete` |
+| 0029 | [Audit and categorise all cookies](0029-cookie-audit.md) | — | `complete` |

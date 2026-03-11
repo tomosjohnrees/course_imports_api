@@ -19,15 +19,15 @@ Before implementing cookie consent, the site needs a complete inventory of every
 ## Acceptance criteria
 
 ### Functionality
-- [ ] A cookie audit document exists (e.g. `docs/cookie-audit.md`) listing every cookie with name, purpose, duration, and category
-- [ ] Session cookies are confirmed as strictly necessary
-- [ ] Any analytics, tracking, or preference cookies are identified and flagged as requiring consent
+- [x] A cookie audit document exists (e.g. `docs/cookie-audit.md`) listing every cookie with name, purpose, duration, and category
+- [x] Session cookies are confirmed as strictly necessary
+- [x] Any analytics, tracking, or preference cookies are identified and flagged as requiring consent
 
 ### Security
-- [ ] No cookies are found to contain sensitive data in plain text (e.g. tokens, emails)
+- [x] No cookies are found to contain sensitive data in plain text (e.g. tokens, emails)
 
 ### Performance
-- [ ] No performance criteria — this is a documentation task
+- [x] No performance criteria — this is a documentation task
 
 ### Testing
-- [ ] The audit is verified against a fresh browser session by inspecting cookies in DevTools
+- [x] The audit is verified against a fresh browser session by inspecting cookies in DevTools
