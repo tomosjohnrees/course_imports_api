@@ -20,21 +20,21 @@ UK law (PECR) requires opt-in consent before setting non-essential cookies. The 
 ## Acceptance criteria
 
 ### Functionality
-- [ ] A cookie consent banner appears on the first page load for new visitors
-- [ ] Non-essential cookies and scripts are not set or loaded until the user clicks "Accept"
-- [ ] Clicking "Reject" or dismissing the banner results in only strictly necessary cookies being set
-- [ ] The user's choice is remembered across sessions
-- [ ] A link or button (e.g. in the footer) allows users to reopen the consent dialog and change their preference
+- [x] A cookie consent banner appears on the first page load for new visitors
+- [x] Non-essential cookies and scripts are not set or loaded until the user clicks "Accept"
+- [x] Clicking "Reject" or dismissing the banner results in only strictly necessary cookies being set
+- [x] The user's choice is remembered across sessions
+- [x] A link or button (e.g. in the footer) allows users to reopen the consent dialog and change their preference
 
 ### Security
-- [ ] The consent preference cookie cannot be spoofed to grant consent on behalf of another user
-- [ ] No third-party scripts are loaded before consent is recorded
+- [x] The consent preference cookie cannot be spoofed to grant consent on behalf of another user
+- [x] No third-party scripts are loaded before consent is recorded
 
 ### Performance
-- [ ] The consent banner renders without additional blocking network requests
-- [ ] The banner uses inline or existing CSS — no new external stylesheets
+- [x] The consent banner renders without additional blocking network requests
+- [x] The banner uses inline or existing CSS — no new external stylesheets
 
 ### Testing
-- [ ] Banner appears for a new visitor with no prior consent cookie
-- [ ] Banner does not reappear after the user makes a choice
-- [ ] Non-essential cookies are verified absent when consent is rejected
+- [x] Banner appears for a new visitor with no prior consent cookie
+- [x] Banner does not reappear after the user makes a choice
+- [x] Non-essential cookies are verified absent when consent is rejected
