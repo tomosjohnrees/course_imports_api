@@ -44,7 +44,7 @@ class AuthenticationFlowTest < ActionDispatch::IntegrationTest
 
     assert_select "nav form[action='/auth/github']"
     assert_select "nav span", { text: "signoutflow", count: 0 }
-    assert_select "div.bg-green-50", text: /Signed out/
+    assert_select "div.bg-sage-light", text: /Signed out/
   end
 
   test "banned user sees alert flash on sign-in attempt" do
@@ -55,14 +55,14 @@ class AuthenticationFlowTest < ActionDispatch::IntegrationTest
     assert_redirected_to root_path
     follow_redirect!
 
-    assert_select "div.bg-red-50", text: /suspended/
+    assert_select "div.bg-rose-light", text: /suspended/
     assert_select "nav form[action='/auth/github']"
   end
 
   test "sign-in button uses POST method for CSRF protection" do
     get root_path
     assert_select "nav form[action='/auth/github'][method='post']"
-    assert_select ".max-w-2xl form[action='/auth/github'][method='post']"
+    assert_select ".max-w-4xl form[action='/auth/github'][method='post']"
   end
 
   test "home page does not expose sensitive data in HTML" do

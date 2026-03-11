@@ -102,7 +102,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :unprocessable_entity
-    assert_select "div.bg-red-50"
+    assert_select "div.bg-rose-light"
   end
 
   test "create renders new with errors for blank URL" do
@@ -230,7 +230,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
 
     get course_path(course)
     assert_response :success
-    assert_select "span.bg-yellow-100", "Pending"
+    assert_select "span.bg-mustard-light", "Pending"
   end
 
   test "show displays validation error for failed course" do
@@ -247,7 +247,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
 
     get course_path(course)
     assert_response :success
-    assert_select "p.text-red-700", "Repository not found"
+    assert_select "p.text-terracotta", "Repository not found"
   end
 
   test "show hides optional fields when blank" do
@@ -1396,7 +1396,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
     get courses_path, params: { tag: "ruby" }
     assert_response :success
     assert_select "span", text: "Filtered by:"
-    assert_select "span.bg-gray-900.text-white", text: "ruby"
+    assert_select "span.bg-rose.text-white", text: "ruby"
   end
 
   test "index shows clear filter link when tag is active" do

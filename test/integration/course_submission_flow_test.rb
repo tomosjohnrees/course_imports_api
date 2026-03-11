@@ -33,7 +33,7 @@ class CourseSubmissionFlowTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "h1", "Flowrepo"
     assert_select "a", text: /flowowner\/flowrepo/
-    assert_select "span.bg-yellow-100", "Pending"
+    assert_select "span.bg-mustard-light", "Pending"
   end
 
   test "course submission with invalid URL shows errors and allows resubmission" do
@@ -41,7 +41,7 @@ class CourseSubmissionFlowTest < ActionDispatch::IntegrationTest
 
     post courses_path, params: { course: { github_repo_url: "not-a-url" } }
     assert_response :unprocessable_entity
-    assert_select "div.bg-red-50"
+    assert_select "div.bg-rose-light"
 
     post courses_path, params: { course: { github_repo_url: "https://github.com/resubmit-owner/resubmit-repo" } }
     course = Course.last
@@ -83,7 +83,7 @@ class CourseSubmissionFlowTest < ActionDispatch::IntegrationTest
     assert_redirected_to dashboard_path
     follow_redirect!
 
-    assert_select "div.bg-green-50", /Course removed/
+    assert_select "div.bg-sage-light", /Course removed/
     assert_equal "removed", course.reload.status
   end
 
@@ -145,7 +145,7 @@ class CourseSubmissionFlowTest < ActionDispatch::IntegrationTest
     get course_path(course)
     assert_response :success
     assert_select "button", text: "Resubmit for Validation"
-    assert_select "p.text-red-700", "Repo not found"
+    assert_select "p.text-terracotta", "Repo not found"
 
     post resubmit_course_path(course)
     assert_redirected_to course_path(course)
@@ -160,11 +160,11 @@ class CourseSubmissionFlowTest < ActionDispatch::IntegrationTest
 
     post courses_path, params: { course: { github_repo_url: "https://github.com/dashstatus-owner/dashstatus-repo" } }
     follow_redirect!
-    assert_select "span.bg-yellow-100", text: "Pending"
+    assert_select "span.bg-mustard-light", text: "Pending"
 
     get dashboard_path
     assert_response :success
-    assert_select "span.bg-yellow-100", text: "Pending"
+    assert_select "span.bg-mustard-light", text: "Pending"
     assert_select "p", text: "dashstatus-owner/dashstatus-repo"
   end
 

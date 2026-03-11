@@ -1,9 +1,9 @@
 <div id="course_<%= course.id %>">
-  <h2 class="text-sm font-medium text-gray-500 mb-1">Status</h2>
+  <h2 class="text-xs font-medium text-walnut/50 mb-1 uppercase tracking-wider">Status</h2>
   <div class="flex items-center gap-2">
     <%= status_badge(course) %>
   </div>
   <% if course.failed? && course.validation_error.present? %>
-    <p class="mt-2 text-sm text-red-700"><%= course.validation_error %></p>
+    <p class="mt-2 text-sm text-terracotta"><%= course.validation_error %></p>
   <% end %>
 </div>

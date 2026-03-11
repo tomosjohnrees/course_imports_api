@@ -1,47 +1,47 @@
 <% content_for(:description, "Discover and share public course repositories on GitHub. A community-driven registry for course content.") %>
 
 <div class="w-full max-w-4xl mx-auto">
-  <div class="mb-8 text-center">
-    <h1 class="text-3xl sm:text-4xl font-bold text-gray-900">Course Imports</h1>
-    <p class="mt-2 text-base sm:text-lg text-gray-600">A community registry for public course repositories on GitHub.</p>
+  <div class="mb-10 text-center">
+    <h1 class="font-heading text-4xl sm:text-5xl text-walnut tracking-wide">Course Imports</h1>
+    <p class="mt-3 text-base sm:text-lg text-walnut/60 font-light">A community registry for public course repositories on GitHub.</p>
     <% unless user_signed_in? %>
-      <div class="mt-4">
-        <%= button_to "Sign in with GitHub", "/auth/github", method: :post, data: { turbo: false }, class: "inline-flex items-center px-6 py-3 bg-gray-900 text-white font-medium rounded-lg hover:bg-gray-700 transition-colors" %>
+      <div class="mt-6">
+        <%= button_to "Sign in with GitHub", "/auth/github", method: :post, data: { turbo: false }, class: "inline-flex items-center px-8 py-3 bg-rose text-white font-medium rounded-lg hover:bg-rose-dark tracking-wide transition-colors" %>
       </div>
     <% end %>
   </div>
 
-  <%= form_with url: courses_path, method: :get, class: "mb-6" do |f| %>
+  <%= form_with url: courses_path, method: :get, class: "mb-8" do |f| %>
     <div class="flex gap-2">
-      <%= f.search_field :q, value: @search_query, placeholder: "Search courses…", autofocus: true, class: "flex-1 rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 placeholder-gray-400 focus:border-gray-500 focus:ring-1 focus:ring-gray-500 focus:outline-none" %>
+      <%= f.search_field :q, value: @search_query, placeholder: "Search courses\u2026", autofocus: true, class: "flex-1 rounded-lg border-2 border-parchment bg-white px-4 py-2.5 text-sm text-walnut placeholder-walnut/40 focus:border-rose focus:ring-1 focus:ring-rose focus:outline-none transition-colors" %>
       <%= f.hidden_field :tag, value: @tag if @tag.present? %>
-      <%= f.submit "Search", class: "rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700 cursor-pointer" %>
+      <%= f.submit "Search", class: "rounded-lg bg-rose px-5 py-2.5 text-sm font-medium text-white hover:bg-rose-dark cursor-pointer tracking-wide transition-colors" %>
     </div>
   <% end %>
 
   <% if @tag.present? %>
     <div class="mb-6 flex items-center gap-2">
-      <span class="text-xs font-medium text-gray-500">Filtered by:</span>
-      <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-900 text-white"><%= @tag %></span>
-      <%= link_to "Clear filter", courses_path(q: @search_query.presence), class: "text-xs text-gray-500 hover:text-gray-700 underline" %>
+      <span class="text-xs font-medium text-walnut/50 uppercase tracking-wider">Filtered by:</span>
+      <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-rose text-white"><%= @tag %></span>
+      <%= link_to "Clear filter", courses_path(q: @search_query.presence), class: "text-xs text-rose hover:text-rose-dark underline" %>
     </div>
   <% end %>
 
   <% if @courses.any? %>
     <div class="space-y-4">
       <% @courses.each do |course| %>
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-5">
-          <%= link_to course.title, course, class: "text-lg font-semibold text-gray-900 hover:text-gray-700" %>
+        <div class="bg-white rounded-lg border-2 border-parchment p-5 hover:border-rose/40 transition-colors">
+          <%= link_to course.title, course, class: "font-heading text-lg text-walnut hover:text-rose-dark transition-colors" %>
 
           <% if course.description.present? %>
-            <p class="mt-1 text-sm text-gray-600 line-clamp-2"><%= course.description %></p>
+            <p class="mt-1.5 text-sm text-walnut/60 line-clamp-2"><%= course.description %></p>
           <% end %>
 
-          <div class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-gray-500">
+          <div class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-walnut/50">
             <% if course.author_name.present? %>
-              <span>by <span class="font-medium text-gray-700"><%= course.author_name %></span></span>
+              <span>by <span class="font-medium text-walnut/70"><%= course.author_name %></span></span>
             <% else %>
-              <span>by <span class="font-medium text-gray-700"><%= course.user.github_username %></span></span>
+              <span>by <span class="font-medium text-walnut/70"><%= course.user.github_username %></span></span>
             <% end %>
 
             <% unless course.topic_count.nil? %>
@@ -54,7 +54,7 @@
           <% if course.tags.any? %>
             <div class="mt-3 flex flex-wrap gap-1.5">
               <% course.tags.each do |tag| %>
-                <%= link_to tag, courses_path(tag: tag), class: "inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors" %>
+                <%= link_to tag, courses_path(tag: tag), class: "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-sage-light text-sage border border-sage/20 hover:bg-sage hover:text-white transition-colors" %>
               <% end %>
             </div>
           <% end %>
@@ -66,13 +66,13 @@
       <%== @pagy.series_nav if @pagy.pages > 1 %>
     </div>
   <% else %>
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
+    <div class="bg-white rounded-lg border-2 border-parchment p-12 text-center">
       <% if @search_query.present? || @tag.present? %>
-        <p class="text-gray-600 mb-2">No courses found<%= %Q[ for "#{@search_query}"] if @search_query.present? %><%= %Q[ tagged "#{@tag}"] if @tag.present? %>.</p>
-        <p class="text-sm text-gray-500"><%= link_to "Clear filters", courses_path, class: "text-gray-900 font-medium hover:text-gray-700" %></p>
+        <p class="text-walnut/70 mb-2">No courses found<%= %Q[ for "#{@search_query}"] if @search_query.present? %><%= %Q[ tagged "#{@tag}"] if @tag.present? %>.</p>
+        <p class="text-sm text-walnut/50"><%= link_to "Clear filters", courses_path, class: "text-rose font-medium hover:text-rose-dark" %></p>
       <% else %>
-        <p class="text-gray-600 mb-2">No courses have been approved yet.</p>
-        <p class="text-sm text-gray-500">Be the first to <%= link_to "submit a course", new_course_path, class: "text-gray-900 font-medium hover:text-gray-700" %>!</p>
+        <p class="text-walnut/70 mb-2">No courses have been approved yet.</p>
+        <p class="text-sm text-walnut/50">Be the first to <%= link_to "submit a course", new_course_path, class: "text-rose font-medium hover:text-rose-dark" %>!</p>
       <% end %>
     </div>
   <% end %>

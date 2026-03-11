@@ -115,7 +115,7 @@ class ApplicationControllerTest < ActionDispatch::IntegrationTest
     get "/auth/github/callback"
     follow_redirect!
 
-    assert_select "div.bg-green-50", text: /Signed in as flashuser/
+    assert_select "div.bg-sage-light", text: /Signed in as flashuser/
   end
 
   test "alert flash renders with red styling" do
@@ -124,6 +124,6 @@ class ApplicationControllerTest < ActionDispatch::IntegrationTest
     get "/auth/github/callback"
     follow_redirect!
 
-    assert_select "div.bg-red-50", text: /suspended/
+    assert_select "div.bg-rose-light", text: /suspended/
   end
 end

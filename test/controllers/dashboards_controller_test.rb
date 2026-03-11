@@ -87,8 +87,8 @@ class DashboardsControllerTest < ActionDispatch::IntegrationTest
 
     get dashboard_path
     assert_response :success
-    assert_select "span.bg-yellow-100", text: "Pending"
-    assert_select "span.bg-green-100", text: "Approved"
+    assert_select "span.bg-mustard-light", text: "Pending"
+    assert_select "span.bg-sage-light", text: "Approved"
   end
 
   test "dashboard shows remove button for non-removed courses" do
