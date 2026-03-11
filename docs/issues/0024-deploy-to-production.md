@@ -20,24 +20,24 @@ Run the initial Kamal deployment to get the Rails app live on the production ser
 ## Acceptance criteria
 
 ### Functionality
-- [ ] `kamal setup` completes without errors
-- [ ] `kamal deploy` completes without errors and the app container is running
-- [ ] The `/up` health check endpoint responds with HTTP 200
-- [ ] The app is accessible at the production domain in a browser
+- [x] `kamal setup` completes without errors
+- [x] `kamal deploy` completes without errors and the app container is running
+- [x] The `/up` health check endpoint responds with HTTP 200
+- [x] The app is accessible at the production domain in a browser
 
 ### Security
-- [ ] HTTPS is working with a valid Let's Encrypt certificate (no browser warnings)
-- [ ] HTTP requests redirect to HTTPS
-- [ ] PostgreSQL is not accessible from outside the server (port 5432 is firewalled)
+- [x] HTTPS is working with a valid Let's Encrypt certificate (no browser warnings)
+- [x] HTTP requests redirect to HTTPS
+- [x] PostgreSQL is not accessible from outside the server (port 5432 is firewalled)
 
 ### Performance
-- [ ] The health check responds within 1 second
-- [ ] `kamal deploy` from local machine completes within a reasonable time (image build + push + deploy)
+- [x] The health check responds within 1 second
+- [x] `kamal deploy` from local machine completes within a reasonable time (image build + push + deploy)
 
 ### Testing
-- [ ] Manual verification of `/up` returning 200 via `curl https://<domain>/up`
-- [ ] Manual verification of HTTPS certificate validity in browser
-- [ ] `kamal app exec 'bin/rails db:version'` confirms the database is accessible from the app container
+- [x] Manual verification of `/up` returning 200 via `curl https://<domain>/up`
+- [x] Manual verification of HTTPS certificate validity in browser
+- [x] `kamal app exec 'bin/rails db:version'` confirms the database is accessible from the app container
 
 ## Notes
 

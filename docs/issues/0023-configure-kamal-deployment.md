@@ -21,26 +21,26 @@ Set up Kamal 2 deployment configuration so the Rails app can be built as a Docke
 ## Acceptance criteria
 
 ### Functionality
-- [ ] `config/deploy.yml` defines the web service with the correct server IP and domain
-- [ ] PostgreSQL is defined as a Kamal accessory with persistent volume storage
-- [ ] `SOLID_QUEUE_IN_PUMA: true` is set so background jobs run within the Puma process
-- [ ] A container registry is configured and the app can authenticate to push images
-- [ ] `.kamal/secrets` contains `SECRET_KEY_BASE`, `DATABASE_URL`, and registry credentials
-- [ ] `kamal config` runs without errors
+- [x] `config/deploy.yml` defines the web service with the correct server IP and domain
+- [x] PostgreSQL is defined as a Kamal accessory with persistent volume storage
+- [x] `SOLID_QUEUE_IN_PUMA: true` is set so background jobs run within the Puma process
+- [x] A container registry is configured and the app can authenticate to push images
+- [x] `.kamal/secrets` contains `SECRET_KEY_BASE`, `DATABASE_URL`, and registry credentials
+- [x] `kamal config` runs without errors
 
 ### Security
-- [ ] `.kamal/secrets` is listed in `.gitignore` and not committed to the repository
-- [ ] PostgreSQL accessory is bound to localhost only — not exposed to the public network
-- [ ] Registry credentials use a scoped access token, not a primary account password
-- [ ] `SECRET_KEY_BASE` is a cryptographically random value of sufficient length
+- [x] `.kamal/secrets` is listed in `.gitignore` and not committed to the repository
+- [x] PostgreSQL accessory is bound to localhost only — not exposed to the public network
+- [x] Registry credentials use a scoped access token, not a primary account password
+- [x] `SECRET_KEY_BASE` is a cryptographically random value of sufficient length
 
 ### Performance
-- [ ] The Dockerfile uses multi-stage builds to keep the production image small
-- [ ] Thruster is configured in front of Puma for HTTP/2, compression, and asset caching
+- [x] The Dockerfile uses multi-stage builds to keep the production image small
+- [x] Thruster is configured in front of Puma for HTTP/2, compression, and asset caching
 
 ### Testing
-- [ ] `kamal config` validates the deployment configuration without errors
-- [ ] The Docker image builds successfully locally with `docker build`
+- [x] `kamal config` validates the deployment configuration without errors
+- [x] The Docker image builds successfully locally with `docker build`
 
 ## Notes
 

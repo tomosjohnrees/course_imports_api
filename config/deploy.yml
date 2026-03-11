@@ -21,6 +21,8 @@ env:
     - RAILS_MASTER_KEY
     - SECRET_KEY_BASE
     - COURSE_IMPORTS_API_DATABASE_PASSWORD
+    - GITHUB_CLIENT_ID
+    - GITHUB_CLIENT_SECRET
   clear:
     SOLID_QUEUE_IN_PUMA: true
     DB_HOST: course_imports_api-db
