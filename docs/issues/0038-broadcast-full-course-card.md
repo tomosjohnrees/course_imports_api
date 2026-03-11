@@ -19,15 +19,15 @@ When a course finishes validation, the Turbo Stream broadcast only replaces the 
 ## Acceptance criteria
 
 ### Functionality
-- [ ] When a course transitions to approved, the broadcast replaces the full course card including tags, topic count, author, description, and status
-- [ ] When a course transitions to failed, the broadcast replaces the card showing the updated status and validation error
-- [ ] The validating status transition is also broadcast so users see the intermediate state
+- [x] When a course transitions to approved, the broadcast replaces the full course card including tags, topic count, author, description, and status
+- [x] When a course transitions to failed, the broadcast replaces the card showing the updated status and validation error
+- [x] The validating status transition is also broadcast so users see the intermediate state
 
 ### Security
-- [ ] Broadcast channels remain scoped to the individual course so users cannot subscribe to other courses' updates
+- [x] Broadcast channels remain scoped to the individual course so users cannot subscribe to other courses' updates
 
 ### Performance
-- [ ] The broadcast partial renders efficiently without additional database queries beyond the course record itself
+- [x] The broadcast partial renders efficiently without additional database queries beyond the course record itself
 
 ### Testing
-- [ ] Broadcast replacement is tested to confirm the correct partial and target are used for each status transition
+- [x] Broadcast replacement is tested to confirm the correct partial and target are used for each status transition

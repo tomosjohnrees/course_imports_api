@@ -59,3 +59,4 @@
 | 0035 | [Track course loads via Open in App clicks](0035-track-course-loads.md) | — | `complete` |
 | 0036 | [Use GitHub username/repo as course URL path](0036-slug-based-course-urls.md) | — | `complete` |
 | 0037 | [Add course favouriting](0037-favourite-courses.md) | — | `complete` |
+| 0038 | [Broadcast full course card on validation complete](0038-broadcast-full-course-card.md) | — | `complete` |

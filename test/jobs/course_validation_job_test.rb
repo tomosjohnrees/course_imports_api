@@ -2,7 +2,6 @@ require "test_helper"
 
 class CourseValidationJobTest < ActiveSupport::TestCase
   include ActiveJob::TestHelper
-  include ActionCable::TestHelper
 
   setup do
     @user = User.create!(github_id: "job-test-user", github_username: "jobtester", github_token: "ghp_test_token")
@@ -78,9 +77,23 @@ class CourseValidationJobTest < ActiveSupport::TestCase
     assert_equal 30_000, attempt.duration_ms
   end
 
-  test "broadcasts status update after validation" do
-    assert_broadcasts "course_#{@course.id}", 1 do
+  test "broadcasts to both detail and dashboard_entry targets" do
+    turbo_streams = capture_turbo_stream_broadcasts("course_#{@course.id}") do
       run_validation
+    end
+
+    targets = turbo_streams.map { |ts| ts["target"] }
+    assert_equal 2, targets.count { |t| t == "course_#{@course.id}" }
+    assert_equal 2, targets.count { |t| t == "dashboard_course_#{@course.id}" }
+  end
+
+  test "all broadcasts use the replace action" do
+    turbo_streams = capture_turbo_stream_broadcasts("course_#{@course.id}") do
+      run_validation
+    end
+
+    turbo_streams.each do |ts|
+      assert_equal "replace", ts["action"]
     end
   end
 

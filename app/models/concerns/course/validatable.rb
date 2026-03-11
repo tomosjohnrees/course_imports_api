@@ -17,6 +17,7 @@ module Course::Validatable
     return unless pending? || failed?
 
     update!(status: :validating)
+    broadcast_validation_status
 
     result = perform_validation(github_client)
     apply_validation_result(result)
@@ -69,7 +70,14 @@ module Course::Validatable
     broadcast_replace_to(
       "course_#{id}",
       target: "course_#{id}",
-      partial: "courses/status",
+      partial: "courses/detail",
+      locals: { course: self }
+    )
+
+    broadcast_replace_to(
+      "course_#{id}",
+      target: "dashboard_course_#{id}",
+      partial: "courses/dashboard_entry",
       locals: { course: self }
     )
   end

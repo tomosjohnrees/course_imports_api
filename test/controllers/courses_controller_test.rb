@@ -493,6 +493,21 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
     assert_select "a", { text: "Open in app", count: 0 }
   end
 
+  test "show renders detail partial with correct DOM id" do
+    course = Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/detail-owner/detail-repo",
+      github_owner: "detail-owner",
+      github_repo: "detail-repo",
+      title: "Detail Course",
+      status: "approved"
+    )
+
+    get course_path(course.github_owner, course.github_repo)
+    assert_response :success
+    assert_select "#course_#{course.id}"
+  end
+
   test "show displays back to courses link" do
     course = Course.create!(
       user: @user,

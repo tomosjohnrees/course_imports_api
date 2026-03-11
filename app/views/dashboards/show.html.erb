@@ -9,20 +9,8 @@
   <% if @courses.any? %>
     <div class="space-y-3">
       <% @courses.each do |course| %>
-        <div class="bg-white rounded-lg border-2 border-parchment p-4 hover:border-rose/40 transition-colors">
-          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <div class="min-w-0 flex-1">
-              <%= link_to course.title, course, class: "text-base font-medium text-walnut hover:text-rose-dark truncate block transition-colors" %>
-              <p class="text-sm text-walnut/50 truncate"><%= course.github_owner %>/<%= course.github_repo %></p>
-            </div>
-
-            <div class="flex items-center gap-3 shrink-0">
-              <%= status_badge(course) %>
-
-              <%= button_to "Remove", course, method: :delete, class: "text-sm text-terracotta hover:text-terracotta/70 font-medium tracking-wide transition-colors cursor-pointer", data: { turbo_confirm: "Are you sure you want to remove this course?" } %>
-            </div>
-          </div>
-        </div>
+        <%= turbo_stream_from "course_#{course.id}" %>
+        <%= render "courses/dashboard_entry", course: course %>
       <% end %>
     </div>
 

@@ -17,12 +17,18 @@ class StatusPartialTest < ActionView::TestCase
     )
   end
 
-  test "renders course status badge with correct DOM id" do
+  test "renders course status badge" do
     course = build_course(status: "pending")
     render partial: "courses/status", locals: { course: course }
 
-    assert_select "#course_#{course.id}"
     assert_select "span.bg-mustard-light", text: "Pending"
+  end
+
+  test "does not include a DOM id on the wrapper div" do
+    course = build_course(status: "pending")
+    render partial: "courses/status", locals: { course: course }
+
+    assert_select "div[id]", count: 0
   end
 
   test "renders approved status badge" do

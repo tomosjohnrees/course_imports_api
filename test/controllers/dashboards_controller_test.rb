@@ -186,6 +186,38 @@ class DashboardsControllerTest < ActionDispatch::IntegrationTest
     assert_select "a", text: "My Failed"
   end
 
+  test "dashboard subscribes to turbo stream for each course" do
+    course = Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/dash-turbo/turbo-repo",
+      github_owner: "dash-turbo",
+      github_repo: "turbo-repo",
+      title: "Turbo Course",
+      status: "pending"
+    )
+    sign_in_as(@user)
+
+    get dashboard_path
+    assert_response :success
+    assert_select "turbo-cable-stream-source[signed-stream-name]", minimum: 1
+  end
+
+  test "dashboard renders courses using the dashboard_entry partial with correct DOM ids" do
+    course = Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/dash-partial/partial-repo",
+      github_owner: "dash-partial",
+      github_repo: "partial-repo",
+      title: "Partial Course",
+      status: "approved"
+    )
+    sign_in_as(@user)
+
+    get dashboard_path
+    assert_response :success
+    assert_select "#dashboard_course_#{course.id}"
+  end
+
   test "routes GET /dashboard to dashboards#show" do
     assert_routing({ path: "/dashboard", method: :get },
                    { controller: "dashboards", action: "show" })
