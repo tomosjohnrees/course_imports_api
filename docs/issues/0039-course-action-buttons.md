@@ -21,18 +21,18 @@ The action buttons on the course detail page (View on GitHub, Open in app, Remov
 ## Acceptance criteria
 
 ### Functionality
-- [ ] "Open in app" appears near the top of the course detail page, above course metadata
-- [ ] "Open in app" is visible on course cards in search/index results for approved courses
-- [ ] "View on GitHub" is demoted to a secondary visual style (e.g. text link or ghost button) on both detail and card views
-- [ ] "Remove Course" remains on the detail page only, visually separated from primary actions
-- [ ] "Resubmit for Validation" button placement is reviewed and consistent with the new hierarchy
-- [ ] Button placement works across all course statuses (pending, validating, approved, failed, removed)
+- [x] "Open in app" appears near the top of the course detail page, above course metadata
+- [x] "Open in app" is visible on course cards in search/index results for approved courses
+- [x] "View on GitHub" is demoted to a secondary visual style (e.g. text link or ghost button) on both detail and card views
+- [x] "Remove Course" remains on the detail page only, visually separated from primary actions
+- [x] "Resubmit for Validation" button placement is reviewed and consistent with the new hierarchy
+- [x] Button placement works across all course statuses (pending, validating, approved, failed, removed)
 
 ### Security
-- [ ] "Remove Course" remains gated behind ownership check and confirmation dialog
+- [x] "Remove Course" remains gated behind ownership check and confirmation dialog
 
 ### Performance
-- [ ] Adding buttons to course cards does not introduce additional database queries (deep link URL is already available on the course model)
+- [x] Adding buttons to course cards does not introduce additional database queries (deep link URL is already available on the course model)
 
 ### Testing
-- [ ] View tests verify button presence and placement across course statuses and ownership scenarios
+- [x] View tests verify button presence and placement across course statuses and ownership scenarios

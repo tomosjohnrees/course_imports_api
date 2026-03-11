@@ -116,11 +116,11 @@ class DetailPartialTest < ActionView::TestCase
     assert_select "h2", { text: "Version", count: 0 }
   end
 
-  test "renders View on GitHub link" do
+  test "renders View on GitHub link as text link" do
     course = build_course
     render partial: "courses/detail", locals: { course: course }
 
-    assert_select "a[href='#{course.github_repo_url}']", text: "View on GitHub"
+    assert_select "a[href='#{course.github_repo_url}'][target='_blank'][rel='noopener noreferrer']", text: /View on GitHub/
   end
 
   test "renders Open in app link for approved course" do

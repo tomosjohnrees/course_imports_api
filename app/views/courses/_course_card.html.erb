@@ -29,4 +29,11 @@
       <% end %>
     </div>
   <% end %>
+
+  <div class="mt-3 flex items-center gap-3">
+    <% if course.approved? %>
+      <%= link_to "Open in app", course.deep_link_url, class: "inline-flex items-center px-3.5 py-1.5 bg-rose text-white text-xs font-medium rounded-lg hover:bg-rose-dark tracking-wide transition-colors", data: { controller: "track-load", track_load_url_value: track_load_course_path(course.github_owner, course.github_repo), action: "click->track-load#track" } %>
+    <% end %>
+    <%= link_to "View on GitHub →", course.github_repo_url, target: "_blank", rel: "noopener noreferrer", class: "text-xs text-walnut/50 hover:text-rose transition-colors" %>
+  </div>
 </div>

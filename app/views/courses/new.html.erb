@@ -4,7 +4,7 @@
   <h1 class="font-heading text-3xl text-walnut tracking-wide mb-2">Submit a Course</h1>
   <p class="text-walnut/60 mb-8">Add a public GitHub repository to the course registry. Your repo will be validated automatically.</p>
 
-  <%= form_with model: @course, class: "space-y-6" do |f| %>
+  <%= form_with model: @course, url: courses_path, class: "space-y-6" do |f| %>
     <% if @course.errors.any? %>
       <div class="bg-rose-light border-2 border-rose/30 rounded-lg px-4 py-3 text-sm text-rose-dark">
         <% @course.errors.full_messages.each do |message| %>

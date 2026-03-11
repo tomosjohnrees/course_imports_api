@@ -1,4 +1,10 @@
 <div id="course_<%= course.id %>" class="space-y-5">
+  <% if course.approved? %>
+    <div>
+      <%= link_to "Open in app", course.deep_link_url, class: "inline-flex items-center px-5 py-2.5 bg-rose text-white text-sm font-medium rounded-lg hover:bg-rose-dark tracking-wide transition-colors", data: { controller: "track-load", track_load_url_value: track_load_course_path(course.github_owner, course.github_repo), action: "click->track-load#track" } %>
+    </div>
+  <% end %>
+
   <%= render "courses/status", course: course %>
 
   <% if course.description.present? %>
@@ -47,15 +53,7 @@
     <% end %>
   </div>
 
-  <div class="pt-4 border-t-2 border-parchment flex flex-wrap gap-3">
-    <a href="<%= course.github_repo_url %>" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-5 py-2 bg-rose text-white text-sm font-medium rounded-lg hover:bg-rose-dark tracking-wide transition-colors">
-      View on GitHub
-    </a>
-
-    <% if course.approved? %>
-      <a href="<%= course.deep_link_url %>" class="inline-flex items-center px-5 py-2 bg-white text-walnut text-sm font-medium rounded-lg border-2 border-walnut hover:bg-parchment/50 tracking-wide transition-colors" data-controller="track-load" data-track-load-url-value="<%= track_load_course_path(course.github_owner, course.github_repo) %>" data-action="click->track-load#track">
-        Open in app
-      </a>
-    <% end %>
+  <div class="pt-4 border-t-2 border-parchment">
+    <%= link_to "View on GitHub →", course.github_repo_url, target: "_blank", rel: "noopener noreferrer", class: "text-sm text-walnut/50 hover:text-rose transition-colors" %>
   </div>
 </div>

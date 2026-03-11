@@ -535,7 +535,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
 
     get course_path(course.github_owner, course.github_repo)
     assert_response :success
-    assert_select "a[href='https://github.com/ghbtn-owner/ghbtn-repo'][target='_blank'][rel='noopener noreferrer']", text: "View on GitHub"
+    assert_select "a[href='https://github.com/ghbtn-owner/ghbtn-repo'][target='_blank'][rel='noopener noreferrer']", text: /View on GitHub/
   end
 
   test "show displays topic count when present" do
