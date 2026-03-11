@@ -5,6 +5,7 @@ Rails.application.routes.draw do
 
   resource :dashboard, only: :show
   resource :account, only: %i[show destroy]
+  resources :favourites, only: :index, controller: "course_favourites"
 
   resources :courses, only: %i[index new create]
 
@@ -14,6 +15,8 @@ Rails.application.routes.draw do
     delete "", to: "courses#destroy"
     post "resubmit", to: "courses#resubmit", as: :resubmit_course
     post "track_load", to: "courses#track_load", as: :track_load_course
+    post "favourite", to: "course_favourites#create", as: :favourite_course
+    delete "favourite", to: "course_favourites#destroy"
   end
 
   get "privacy", to: "pages#privacy"

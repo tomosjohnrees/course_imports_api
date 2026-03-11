@@ -141,6 +141,26 @@ class CourseTest < ActiveSupport::TestCase
     end
   end
 
+  test "has many course_favourites" do
+    course = Course.create!(@valid_attributes)
+    other_user = User.create!(github_id: "fav-assoc-user", github_username: "favassoc")
+    fav1 = CourseFavourite.create!(course: course, user: @user)
+    fav2 = CourseFavourite.create!(course: course, user: other_user)
+
+    assert_equal 2, course.course_favourites.count
+    assert_includes course.course_favourites, fav1
+    assert_includes course.course_favourites, fav2
+  end
+
+  test "destroying course deletes associated course_favourites" do
+    course = Course.create!(@valid_attributes)
+    CourseFavourite.create!(course: course, user: @user)
+
+    assert_difference "CourseFavourite.count", -1 do
+      course.destroy
+    end
+  end
+
   test "record_load creates a course load and increments load_count" do
     course = Course.create!(@valid_attributes)
 

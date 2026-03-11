@@ -20,20 +20,20 @@ Users should be able to favourite (star) a course from the course listing or det
 ## Acceptance criteria
 
 ### Functionality
-- [ ] Authenticated users can favourite a course from the course index or course detail page
-- [ ] Authenticated users can unfavourite a previously favourited course
-- [ ] A "My Favourites" page displays all courses the current user has favourited
-- [ ] The favourite state is visually indicated on course cards and the detail page
-- [ ] Unauthenticated users do not see the favourite toggle
+- [x] Authenticated users can favourite a course from the course index or course detail page
+- [x] Authenticated users can unfavourite a previously favourited course
+- [x] A "My Favourites" page displays all courses the current user has favourited
+- [x] The favourite state is visually indicated on course cards and the detail page
+- [x] Unauthenticated users do not see the favourite toggle
 
 ### Security
-- [ ] Only authenticated users can create or delete favourites, and only their own
-- [ ] Users cannot view or modify another user's favourites list
+- [x] Only authenticated users can create or delete favourites, and only their own
+- [x] Users cannot view or modify another user's favourites list
 
 ### Performance
-- [ ] The favourites join table has a composite unique index on (user_id, course_id)
-- [ ] The "My Favourites" page is paginated if the user has many favourites
+- [x] The favourites join table has a composite unique index on (user_id, course_id)
+- [x] The "My Favourites" page is paginated if the user has many favourites
 
 ### Testing
-- [ ] Model validations and associations have unit tests covering creation, uniqueness, and deletion
-- [ ] Controller tests verify authentication requirements and correct scoping to current user
+- [x] Model validations and associations have unit tests covering creation, uniqueness, and deletion
+- [x] Controller tests verify authentication requirements and correct scoping to current user

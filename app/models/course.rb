@@ -28,6 +28,7 @@ class Course < ApplicationRecord
 
   belongs_to :user
   has_many :course_loads, dependent: :delete_all
+  has_many :course_favourites, dependent: :delete_all
   has_many :validation_attempts, dependent: :destroy
 
   before_validation :extract_github_details, if: -> { github_repo_url_changed? }

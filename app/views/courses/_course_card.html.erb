@@ -1,0 +1,32 @@
+<div class="bg-white rounded-lg border-2 border-parchment p-5 hover:border-rose/40 transition-colors">
+  <div class="flex items-start justify-between gap-3">
+    <%= link_to course.title, course, class: "font-heading text-lg text-walnut hover:text-rose-dark transition-colors" %>
+    <%= render "course_favourites/button", course: course, favourited: favourited %>
+  </div>
+
+  <% if course.description.present? %>
+    <p class="mt-1.5 text-sm text-walnut/60 line-clamp-2"><%= course.description %></p>
+  <% end %>
+
+  <div class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-walnut/50">
+    <% if course.author_name.present? %>
+      <span>by <span class="font-medium text-walnut/70"><%= course.author_name %></span></span>
+    <% else %>
+      <span>by <span class="font-medium text-walnut/70"><%= course.user.github_username %></span></span>
+    <% end %>
+
+    <% unless course.topic_count.nil? %>
+      <span><%= course.topic_count %> <%= "topic".pluralize(course.topic_count) %></span>
+    <% end %>
+
+    <span><%= course.load_count %> <%= "load".pluralize(course.load_count) %></span>
+  </div>
+
+  <% if course.tags.any? %>
+    <div class="mt-3 flex flex-wrap gap-1.5">
+      <% course.tags.each do |tag| %>
+        <%= link_to tag, courses_path(tag: tag), class: "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-sage-light text-sage border border-sage/20 hover:bg-sage hover:text-white transition-colors" %>
+      <% end %>
+    </div>
+  <% end %>
+</div>

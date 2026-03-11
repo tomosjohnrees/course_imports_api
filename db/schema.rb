@@ -10,9 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_11_160158) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_11_162907) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "course_favourites", force: :cascade do |t|
+    t.bigint "course_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["course_id"], name: "index_course_favourites_on_course_id"
+    t.index ["user_id", "course_id"], name: "index_course_favourites_on_user_id_and_course_id", unique: true
+    t.index ["user_id"], name: "index_course_favourites_on_user_id"
+  end
 
   create_table "course_loads", force: :cascade do |t|
     t.bigint "course_id", null: false
@@ -72,6 +82,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_11_160158) do
     t.index ["course_id"], name: "index_validation_attempts_on_course_id"
   end
 
+  add_foreign_key "course_favourites", "courses"
+  add_foreign_key "course_favourites", "users"
   add_foreign_key "course_loads", "courses"
   add_foreign_key "courses", "users"
   add_foreign_key "validation_attempts", "courses"

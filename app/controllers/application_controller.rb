@@ -1,4 +1,6 @@
 class ApplicationController < ActionController::Base
+  include Pagy::Method
+
   allow_browser versions: :modern
   stale_when_importmap_changes
 
@@ -19,5 +21,9 @@ class ApplicationController < ActionController::Base
       session[:return_to] = request.fullpath
       redirect_to root_path, alert: "You must sign in to continue."
     end
+  end
+
+  def find_course
+    Course.find_by!(github_owner: params[:github_owner], github_repo: params[:github_repo])
   end
 end

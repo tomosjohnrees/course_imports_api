@@ -1767,4 +1767,38 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Strongparams", course.title
     assert_equal "owner", course.github_owner
   end
+
+  # --- favouriting integration in courses controller ---
+
+  test "show does not set public cache headers for approved course when signed in" do
+    course = Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/cache-signedin/cache-repo",
+      github_owner: "cache-signedin",
+      github_repo: "cache-repo",
+      title: "Signed In Cache Course",
+      status: "approved"
+    )
+    sign_in_as(@user)
+
+    get course_path(course.github_owner, course.github_repo)
+    assert_response :success
+    cache_control = response.headers["Cache-Control"] || ""
+    refute_match(/public/, cache_control)
+  end
+
+  test "index renders successfully for unauthenticated user with no favourites" do
+    Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/idx-fav/idx-repo",
+      github_owner: "idx-fav",
+      github_repo: "idx-repo",
+      title: "Index Fav Course",
+      status: "approved"
+    )
+
+    get courses_path
+    assert_response :success
+    assert_select "a", text: "Index Fav Course"
+  end
 end

@@ -9,7 +9,10 @@
   </div>
 
   <div class="mb-6">
-    <h1 class="font-heading text-3xl text-walnut tracking-wide mb-2"><%= @course.title %></h1>
+    <div class="flex items-start justify-between gap-3">
+      <h1 class="font-heading text-3xl text-walnut tracking-wide mb-2"><%= @course.title %></h1>
+      <%= render "course_favourites/button", course: @course, favourited: @favourited %>
+    </div>
     <a href="<%= @course.github_repo_url %>" target="_blank" rel="noopener noreferrer" class="text-sm text-walnut/50 hover:text-rose transition-colors">
       <%= @course.github_owner %>/<%= @course.github_repo %>
     </a>

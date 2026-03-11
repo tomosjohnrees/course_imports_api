@@ -58,3 +58,4 @@
 | 0034 | [Add course authoring guide page with downloadable skill](0034-course-authoring-page.md) | — | `complete` |
 | 0035 | [Track course loads via Open in App clicks](0035-track-course-loads.md) | — | `complete` |
 | 0036 | [Use GitHub username/repo as course URL path](0036-slug-based-course-urls.md) | — | `complete` |
+| 0037 | [Add course favouriting](0037-favourite-courses.md) | — | `complete` |

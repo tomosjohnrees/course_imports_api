@@ -207,6 +207,63 @@ class UserTest < ActiveSupport::TestCase
     end
   end
 
+  test "has many course_favourites" do
+    user = User.create!(github_id: "fav-has-many", github_username: "favhasmany")
+    course1 = Course.create!(
+      user: user,
+      github_repo_url: "https://github.com/fav-hm/repo1",
+      github_owner: "fav-hm", github_repo: "repo1",
+      title: "Fav Course 1", status: "approved"
+    )
+    course2 = Course.create!(
+      user: user,
+      github_repo_url: "https://github.com/fav-hm/repo2",
+      github_owner: "fav-hm", github_repo: "repo2",
+      title: "Fav Course 2", status: "approved"
+    )
+    CourseFavourite.create!(user: user, course: course1)
+    CourseFavourite.create!(user: user, course: course2)
+
+    assert_equal 2, user.course_favourites.count
+  end
+
+  test "has many favourited_courses through course_favourites" do
+    user = User.create!(github_id: "fav-through", github_username: "favthrough")
+    course1 = Course.create!(
+      user: user,
+      github_repo_url: "https://github.com/fav-through/repo1",
+      github_owner: "fav-through", github_repo: "repo1",
+      title: "Through Course 1", status: "approved"
+    )
+    course2 = Course.create!(
+      user: user,
+      github_repo_url: "https://github.com/fav-through/repo2",
+      github_owner: "fav-through", github_repo: "repo2",
+      title: "Through Course 2", status: "approved"
+    )
+    CourseFavourite.create!(user: user, course: course1)
+    CourseFavourite.create!(user: user, course: course2)
+
+    assert_equal 2, user.favourited_courses.count
+    assert_includes user.favourited_courses, course1
+    assert_includes user.favourited_courses, course2
+  end
+
+  test "destroying user deletes associated course_favourites" do
+    user = User.create!(github_id: "fav-destroy", github_username: "favdestroy")
+    course = Course.create!(
+      user: user,
+      github_repo_url: "https://github.com/fav-destroy/repo",
+      github_owner: "fav-destroy", github_repo: "repo",
+      title: "Fav Destroy Test", status: "approved"
+    )
+    CourseFavourite.create!(user: user, course: course)
+
+    assert_difference "CourseFavourite.count", -1 do
+      user.destroy
+    end
+  end
+
   test "find_or_create_from_omniauth does not change banned status on update" do
     existing = User.create!(github_id: "66666", github_username: "banned_user", banned: true)
 

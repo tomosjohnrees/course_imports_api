@@ -1,6 +1,4 @@
 class CoursesController < ApplicationController
-  include Pagy::Method
-
   before_action :authenticate_user!, except: %i[index show track_load]
 
   def index
@@ -9,6 +7,7 @@ class CoursesController < ApplicationController
     scope = Course.publicly_visible.search(@search_query).with_tag(@tag).includes(:user)
     scope = scope.order(created_at: :desc) if @search_query.blank?
     @pagy, @courses = pagy(scope, limit: 20)
+    @favourited_course_ids = current_user&.favourited_course_ids_among(@courses) || Set.new
   end
 
   def new
@@ -30,7 +29,8 @@ class CoursesController < ApplicationController
     @course = find_course
     raise ActiveRecord::RecordNotFound unless @course.viewable_by?(current_user)
 
-    expires_in 5.minutes, public: true if @course.approved?
+    @favourited = user_signed_in? && current_user.favourited_course?(@course)
+    expires_in 5.minutes, public: true if @course.approved? && !user_signed_in?
   end
 
   def destroy
@@ -55,10 +55,6 @@ class CoursesController < ApplicationController
   end
 
   private
-
-  def find_course
-    Course.find_by!(github_owner: params[:github_owner], github_repo: params[:github_repo])
-  end
 
   def find_current_user_course
     current_user.courses.find_by!(github_owner: params[:github_owner], github_repo: params[:github_repo])
