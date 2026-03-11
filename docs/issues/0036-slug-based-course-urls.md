@@ -19,17 +19,17 @@ Course URLs currently expose internal database IDs (e.g. `/courses/1`), which is
 ## Acceptance criteria
 
 ### Functionality
-- [ ] Course show page is accessible at `/courses/:username/:repo`
-- [ ] All internal links to courses (index, detail, edit, API) use the owner/repo path
-- [ ] Numeric ID URLs no longer resolve (or redirect to the canonical owner/repo URL)
-- [ ] The owner and repo pair is unique — no two course records share the same combination
+- [x] Course show page is accessible at `/courses/:username/:repo`
+- [x] All internal links to courses (index, detail, edit, API) use the owner/repo path
+- [x] Numeric ID URLs no longer resolve (or redirect to the canonical owner/repo URL)
+- [x] The owner and repo pair is unique — no two course records share the same combination
 
 ### Security
-- [ ] Route parameters are validated to prevent path traversal or injection via username/repo values
-- [ ] Authorization checks still apply correctly when looking up courses by owner/repo
+- [x] Route parameters are validated to prevent path traversal or injection via username/repo values
+- [x] Authorization checks still apply correctly when looking up courses by owner/repo
 
 ### Performance
-- [ ] Database lookups by owner and repo name use an index and perform comparably to ID-based lookups
+- [x] Database lookups by owner and repo name use an index and perform comparably to ID-based lookups
 
 ### Testing
 - [ ] Controller tests verify courses are accessible at the new URL scheme and that old numeric paths are handled

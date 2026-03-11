@@ -27,7 +27,7 @@ class CourseSubmissionFlowTest < ActionDispatch::IntegrationTest
 
     post courses_path, params: { course: { github_repo_url: "https://github.com/flowowner/flowrepo" } }
     course = Course.last
-    assert_redirected_to course_path(course)
+    assert_redirected_to course_path(course.github_owner, course.github_repo)
     follow_redirect!
 
     assert_response :success
@@ -45,7 +45,7 @@ class CourseSubmissionFlowTest < ActionDispatch::IntegrationTest
 
     post courses_path, params: { course: { github_repo_url: "https://github.com/resubmit-owner/resubmit-repo" } }
     course = Course.last
-    assert_redirected_to course_path(course)
+    assert_redirected_to course_path(course.github_owner, course.github_repo)
     follow_redirect!
 
     assert_response :success
@@ -65,7 +65,7 @@ class CourseSubmissionFlowTest < ActionDispatch::IntegrationTest
     get new_course_path
     assert_redirected_to root_path
 
-    get course_path(course)
+    get course_path(course.github_owner, course.github_repo)
     assert_response :success
     assert_select "h1", "Viewable Course"
   end
@@ -80,7 +80,7 @@ class CourseSubmissionFlowTest < ActionDispatch::IntegrationTest
     assert_select "button", "Remove Course"
 
     assert_difference "Course.count", -1 do
-      delete course_path(course)
+      delete course_path(course.github_owner, course.github_repo)
     end
     assert_redirected_to dashboard_path
     follow_redirect!
@@ -132,13 +132,13 @@ class CourseSubmissionFlowTest < ActionDispatch::IntegrationTest
     )
     sign_in_as(@user)
 
-    get course_path(course)
+    get course_path(course.github_owner, course.github_repo)
     assert_response :success
     assert_select "button", text: "Resubmit for Validation"
     assert_select "p.text-terracotta", "Repo not found"
 
-    post resubmit_course_path(course)
-    assert_redirected_to course_path(course)
+    post resubmit_course_path(course.github_owner, course.github_repo)
+    assert_redirected_to course_path(course.github_owner, course.github_repo)
     follow_redirect!
 
     assert_response :success

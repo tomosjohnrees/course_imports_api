@@ -6,15 +6,22 @@ Rails.application.routes.draw do
   resource :dashboard, only: :show
   resource :account, only: %i[show destroy]
 
-  resources :courses, only: %i[index new create show destroy] do
-    post :resubmit, on: :member
-    post :track_load, on: :member
+  resources :courses, only: %i[index new create]
+
+  scope "/courses/:github_owner/:github_repo",
+        constraints: { github_owner: /[a-zA-Z0-9][a-zA-Z0-9\-]*/, github_repo: /[a-zA-Z0-9_][a-zA-Z0-9._\-]*/ } do
+    get "", to: "courses#show", as: :course
+    delete "", to: "courses#destroy"
+    post "resubmit", to: "courses#resubmit", as: :resubmit_course
+    post "track_load", to: "courses#track_load", as: :track_load_course
   end
 
   get "privacy", to: "pages#privacy"
   get "terms", to: "pages#terms"
   get "authoring-guide", to: "pages#authoring_guide", as: :authoring_guide
   get "authoring-guide/skill", to: "pages#download_skill", as: :download_skill
+
+  resolve("Course") { |course| route_for(:course, github_owner: course.github_owner, github_repo: course.github_repo) }
 
   get "up" => "rails/health#show", as: :rails_health_check
 

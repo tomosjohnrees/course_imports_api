@@ -34,7 +34,7 @@ class MetaTagsAndLayoutTest < ActionDispatch::IntegrationTest
       status: "approved"
     )
 
-    get course_path(course)
+    get course_path(course.github_owner, course.github_repo)
     assert_select "title", text: /Learn Testing — Course Imports/
   end
 
@@ -67,7 +67,7 @@ class MetaTagsAndLayoutTest < ActionDispatch::IntegrationTest
       status: "approved"
     )
 
-    get course_path(course)
+    get course_path(course.github_owner, course.github_repo)
     assert_select "meta[name='description']" do |elements|
       content = elements.first["content"]
       assert_match(/wonderful course about testing/, content)
@@ -84,7 +84,7 @@ class MetaTagsAndLayoutTest < ActionDispatch::IntegrationTest
       status: "approved"
     )
 
-    get course_path(course)
+    get course_path(course.github_owner, course.github_repo)
     assert_select "meta[name='description']" do |elements|
       content = elements.first["content"]
       assert_match(/Course Imports/, content)
@@ -103,7 +103,7 @@ class MetaTagsAndLayoutTest < ActionDispatch::IntegrationTest
       status: "approved"
     )
 
-    get course_path(course)
+    get course_path(course.github_owner, course.github_repo)
     assert_select "meta[name='description']" do |elements|
       content = elements.first["content"]
       assert content.length <= 160, "Meta description should be truncated to 160 characters, got #{content.length}"
@@ -172,7 +172,7 @@ class MetaTagsAndLayoutTest < ActionDispatch::IntegrationTest
       status: "approved"
     )
 
-    get course_path(course)
+    get course_path(course.github_owner, course.github_repo)
     assert_response :success
     assert_no_match(/<script>alert/, response.body)
   end

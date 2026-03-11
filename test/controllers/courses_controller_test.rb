@@ -54,7 +54,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
     assert_equal "pending", course.status
     assert_equal @user.id, course.user_id
 
-    assert_redirected_to course_path(course)
+    assert_redirected_to course_path(course.github_owner, course.github_repo)
     assert_equal "Course submitted! Validation is in progress.", flash[:notice]
   end
 
@@ -176,7 +176,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
       version: "1.0.0"
     )
 
-    get course_path(course)
+    get course_path(course.github_owner, course.github_repo)
     assert_response :success
     assert_select "h1", "Show Test Course"
     assert_select "a[href='https://github.com/show-owner/show-repo']", text: /show-owner\/show-repo/
@@ -196,7 +196,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
       tags: [ "ruby", "rails" ]
     )
 
-    get course_path(course)
+    get course_path(course.github_owner, course.github_repo)
     assert_response :success
     assert_select "a[href='#{courses_path(tag: "ruby")}']", text: "ruby"
     assert_select "a[href='#{courses_path(tag: "rails")}']", text: "rails"
@@ -212,7 +212,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
       status: "approved"
     )
 
-    get course_path(course)
+    get course_path(course.github_owner, course.github_repo)
     assert_response :success
     assert_select "h1", "Public Course"
   end
@@ -228,7 +228,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
     )
     sign_in_as(@user)
 
-    get course_path(course)
+    get course_path(course.github_owner, course.github_repo)
     assert_response :success
     assert_select "span.bg-mustard-light", "Pending"
   end
@@ -245,7 +245,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
     )
     sign_in_as(@user)
 
-    get course_path(course)
+    get course_path(course.github_owner, course.github_repo)
     assert_response :success
     assert_select "p.text-terracotta", "Repository not found"
   end
@@ -260,7 +260,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
       status: "approved"
     )
 
-    get course_path(course)
+    get course_path(course.github_owner, course.github_repo)
     assert_response :success
     assert_select "h2", { text: "Description", count: 0 }
     assert_select "h2", { text: "Author", count: 0 }
@@ -279,7 +279,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
     )
     sign_in_as(@user)
 
-    get course_path(course)
+    get course_path(course.github_owner, course.github_repo)
     assert_response :success
     assert_select "button", "Remove Course"
   end
@@ -296,7 +296,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
     )
     sign_in_as(@user)
 
-    get course_path(course)
+    get course_path(course.github_owner, course.github_repo)
     assert_response :success
     assert_select "button", { text: "Remove Course", count: 0 }
   end
@@ -311,13 +311,13 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
       status: "approved"
     )
 
-    get course_path(course)
+    get course_path(course.github_owner, course.github_repo)
     assert_response :success
     assert_select "button", { text: "Remove Course", count: 0 }
   end
 
   test "show returns 404 for nonexistent course" do
-    get course_path(id: 999999)
+    get course_path("nonexistent-owner", "nonexistent-repo")
     assert_response :not_found
   end
 
@@ -331,7 +331,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
       status: "pending"
     )
 
-    get course_path(course)
+    get course_path(course.github_owner, course.github_repo)
     assert_response :not_found
   end
 
@@ -346,7 +346,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
       validation_error: "Something went wrong"
     )
 
-    get course_path(course)
+    get course_path(course.github_owner, course.github_repo)
     assert_response :not_found
   end
 
@@ -360,7 +360,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
       status: "validating"
     )
 
-    get course_path(course)
+    get course_path(course.github_owner, course.github_repo)
     assert_response :not_found
   end
 
@@ -375,7 +375,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
     )
     sign_in_as(@user)
 
-    get course_path(course)
+    get course_path(course.github_owner, course.github_repo)
     assert_response :success
     assert_select "h1", "My Pending Course"
   end
@@ -392,7 +392,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
     )
     sign_in_as(@user)
 
-    get course_path(course)
+    get course_path(course.github_owner, course.github_repo)
     assert_response :success
     assert_select "h1", "My Failed Course"
   end
@@ -409,7 +409,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
     )
     sign_in_as(@user)
 
-    get course_path(course)
+    get course_path(course.github_owner, course.github_repo)
     assert_response :not_found
   end
 
@@ -423,7 +423,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
       status: "approved"
     )
 
-    get course_path(course)
+    get course_path(course.github_owner, course.github_repo)
     assert_response :success
     assert_match(/max-age=300/, response.headers["Cache-Control"])
     assert_match(/public/, response.headers["Cache-Control"])
@@ -440,7 +440,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
     )
     sign_in_as(@user)
 
-    get course_path(course)
+    get course_path(course.github_owner, course.github_repo)
     assert_response :success
     cache_control = response.headers["Cache-Control"] || ""
     refute_match(/public/, cache_control)
@@ -456,7 +456,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
       status: "approved"
     )
 
-    get course_path(course)
+    get course_path(course.github_owner, course.github_repo)
     assert_response :success
     assert_select "a[href='courseimports://import/deep-owner/deep-repo']", text: "Open in app"
   end
@@ -471,10 +471,10 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
       status: "approved"
     )
 
-    get course_path(course)
+    get course_path(course.github_owner, course.github_repo)
     assert_response :success
     assert_select "a[data-controller='track-load'][data-action='click->track-load#track']", text: "Open in app"
-    assert_select "a[data-track-load-url-value='#{track_load_course_path(course)}']"
+    assert_select "a[data-track-load-url-value='#{track_load_course_path(course.github_owner, course.github_repo)}']"
   end
 
   test "show hides deep link button for non-approved course" do
@@ -488,7 +488,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
     )
     sign_in_as(@user)
 
-    get course_path(course)
+    get course_path(course.github_owner, course.github_repo)
     assert_response :success
     assert_select "a", { text: "Open in app", count: 0 }
   end
@@ -503,7 +503,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
       status: "approved"
     )
 
-    get course_path(course)
+    get course_path(course.github_owner, course.github_repo)
     assert_response :success
     assert_select "a[href='#{courses_path}']", text: /Back to courses/
   end
@@ -518,7 +518,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
       status: "approved"
     )
 
-    get course_path(course)
+    get course_path(course.github_owner, course.github_repo)
     assert_response :success
     assert_select "a[href='https://github.com/ghbtn-owner/ghbtn-repo'][target='_blank'][rel='noopener noreferrer']", text: "View on GitHub"
   end
@@ -534,7 +534,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
       topic_count: 12
     )
 
-    get course_path(course)
+    get course_path(course.github_owner, course.github_repo)
     assert_response :success
     assert_select "p", text: "12 topics"
   end
@@ -550,7 +550,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
       topic_count: nil
     )
 
-    get course_path(course)
+    get course_path(course.github_owner, course.github_repo)
     assert_response :success
     assert_select "h2", { text: "Topics", count: 0 }
   end
@@ -566,7 +566,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
       load_count: 7
     )
 
-    get course_path(course)
+    get course_path(course.github_owner, course.github_repo)
     assert_response :success
     assert_select "p", text: "7 loads"
   end
@@ -581,7 +581,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
       status: "approved"
     )
 
-    get course_path(course)
+    get course_path(course.github_owner, course.github_repo)
     assert_response :success
     assert_select "p", text: "0 loads"
   end
@@ -597,7 +597,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
       topic_count: 1
     )
 
-    get course_path(course)
+    get course_path(course.github_owner, course.github_repo)
     assert_response :success
     assert_select "p", text: "1 topic"
   end
@@ -613,7 +613,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
       load_count: 1
     )
 
-    get course_path(course)
+    get course_path(course.github_owner, course.github_repo)
     assert_response :success
     assert_select "p", text: "1 load"
   end
@@ -632,7 +632,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
     sign_in_as(@user)
 
     assert_difference "Course.count", -1 do
-      delete course_path(course)
+      delete course_path(course.github_owner, course.github_repo)
     end
 
     assert_redirected_to dashboard_path
@@ -653,7 +653,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
     sign_in_as(@user)
 
     assert_no_difference "Course.count" do
-      delete course_path(course)
+      delete course_path(course.github_owner, course.github_repo)
     end
     assert_response :not_found
   end
@@ -669,7 +669,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
     )
 
     assert_no_difference "Course.count" do
-      delete course_path(course)
+      delete course_path(course.github_owner, course.github_repo)
     end
     assert_redirected_to root_path
     assert_equal "You must sign in to continue.", flash[:alert]
@@ -952,7 +952,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
     sign_in_as(@user)
 
     assert_difference "CourseLoad.count", 1 do
-      post track_load_course_path(course)
+      post track_load_course_path(course.github_owner, course.github_repo)
     end
 
     assert_response :no_content
@@ -971,7 +971,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
     )
 
     assert_difference "CourseLoad.count", 1 do
-      post track_load_course_path(course)
+      post track_load_course_path(course.github_owner, course.github_repo)
     end
 
     assert_response :no_content
@@ -990,12 +990,12 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
     )
     sign_in_as(@user)
 
-    post track_load_course_path(course)
+    post track_load_course_path(course.github_owner, course.github_repo)
     assert_response :no_content
     assert_equal 1, course.reload.load_count
 
     assert_no_difference "CourseLoad.count" do
-      post track_load_course_path(course)
+      post track_load_course_path(course.github_owner, course.github_repo)
     end
 
     assert_response :no_content
@@ -1012,12 +1012,12 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
       status: "approved"
     )
 
-    post track_load_course_path(course)
+    post track_load_course_path(course.github_owner, course.github_repo)
     assert_response :no_content
     assert_equal 1, course.reload.load_count
 
     assert_no_difference "CourseLoad.count" do
-      post track_load_course_path(course)
+      post track_load_course_path(course.github_owner, course.github_repo)
     end
 
     assert_response :no_content
@@ -1036,17 +1036,17 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
     other_user = User.create!(github_id: "cc_track_other", github_username: "trackother", avatar_url: "https://example.com/other.png")
 
     sign_in_as(@user)
-    post track_load_course_path(course)
+    post track_load_course_path(course.github_owner, course.github_repo)
     assert_equal 1, course.reload.load_count
 
     sign_in_as(other_user)
-    post track_load_course_path(course)
+    post track_load_course_path(course.github_owner, course.github_repo)
     assert_equal 2, course.reload.load_count
     assert_equal 2, course.course_loads.count
   end
 
   test "track_load returns 404 for nonexistent course" do
-    post track_load_course_path(id: 999999)
+    post track_load_course_path("nonexistent-owner", "nonexistent-repo")
     assert_response :not_found
   end
 
@@ -1060,7 +1060,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
       status: "approved"
     )
 
-    post track_load_course_path(course)
+    post track_load_course_path(course.github_owner, course.github_repo)
     assert_response :no_content
   end
 
@@ -1075,8 +1075,8 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
     )
     sign_in_as(@user)
 
-    post track_load_course_path(course)
-    post track_load_course_path(course)
+    post track_load_course_path(course.github_owner, course.github_repo)
+    post track_load_course_path(course.github_owner, course.github_repo)
 
     assert_response :no_content
   end
@@ -1096,10 +1096,10 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
     sign_in_as(@user)
 
     assert_enqueued_with(job: CourseValidationJob) do
-      post resubmit_course_path(course)
+      post resubmit_course_path(course.github_owner, course.github_repo)
     end
 
-    assert_redirected_to course_path(course)
+    assert_redirected_to course_path(course.github_owner, course.github_repo)
     assert_equal "Course resubmitted for validation.", flash[:notice]
   end
 
@@ -1114,9 +1114,9 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
     )
     sign_in_as(@user)
 
-    post resubmit_course_path(course)
+    post resubmit_course_path(course.github_owner, course.github_repo)
 
-    assert_redirected_to course_path(course)
+    assert_redirected_to course_path(course.github_owner, course.github_repo)
     assert_equal "Only failed courses can be resubmitted.", flash[:alert]
   end
 
@@ -1131,9 +1131,9 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
     )
     sign_in_as(@user)
 
-    post resubmit_course_path(course)
+    post resubmit_course_path(course.github_owner, course.github_repo)
 
-    assert_redirected_to course_path(course)
+    assert_redirected_to course_path(course.github_owner, course.github_repo)
     assert_equal "Only failed courses can be resubmitted.", flash[:alert]
   end
 
@@ -1150,7 +1150,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
     )
     sign_in_as(@user)
 
-    post resubmit_course_path(course)
+    post resubmit_course_path(course.github_owner, course.github_repo)
     assert_response :not_found
   end
 
@@ -1165,7 +1165,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
       validation_error: "Some error"
     )
 
-    post resubmit_course_path(course)
+    post resubmit_course_path(course.github_owner, course.github_repo)
     assert_redirected_to root_path
     assert_equal "You must sign in to continue.", flash[:alert]
   end
@@ -1184,7 +1184,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
     )
     sign_in_as(@user)
 
-    get course_path(course)
+    get course_path(course.github_owner, course.github_repo)
     assert_response :success
     assert_select "button", text: "Resubmit for Validation"
   end
@@ -1200,7 +1200,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
     )
     sign_in_as(@user)
 
-    get course_path(course)
+    get course_path(course.github_owner, course.github_repo)
     assert_response :success
     assert_select "button", { text: "Resubmit for Validation", count: 0 }
   end
@@ -1680,14 +1680,14 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
                    { controller: "courses", action: "create" })
   end
 
-  test "routes GET /courses/:id to courses#show" do
-    assert_routing({ path: "/courses/1", method: :get },
-                   { controller: "courses", action: "show", id: "1" })
+  test "routes GET /courses/:github_owner/:github_repo to courses#show" do
+    assert_routing({ path: "/courses/octocat/my-repo", method: :get },
+                   { controller: "courses", action: "show", github_owner: "octocat", github_repo: "my-repo" })
   end
 
-  test "routes DELETE /courses/:id to courses#destroy" do
-    assert_routing({ path: "/courses/1", method: :delete },
-                   { controller: "courses", action: "destroy", id: "1" })
+  test "routes DELETE /courses/:github_owner/:github_repo to courses#destroy" do
+    assert_routing({ path: "/courses/octocat/my-repo", method: :delete },
+                   { controller: "courses", action: "destroy", github_owner: "octocat", github_repo: "my-repo" })
   end
 
   test "routes root path to courses#index" do
@@ -1699,14 +1699,53 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
                    { controller: "courses", action: "index" })
   end
 
-  test "routes POST /courses/:id/track_load to courses#track_load" do
-    assert_routing({ path: "/courses/1/track_load", method: :post },
-                   { controller: "courses", action: "track_load", id: "1" })
+  test "routes POST /courses/:github_owner/:github_repo/track_load to courses#track_load" do
+    assert_routing({ path: "/courses/octocat/my-repo/track_load", method: :post },
+                   { controller: "courses", action: "track_load", github_owner: "octocat", github_repo: "my-repo" })
   end
 
-  test "routes POST /courses/:id/resubmit to courses#resubmit" do
-    assert_routing({ path: "/courses/1/resubmit", method: :post },
-                   { controller: "courses", action: "resubmit", id: "1" })
+  test "routes POST /courses/:github_owner/:github_repo/resubmit to courses#resubmit" do
+    assert_routing({ path: "/courses/octocat/my-repo/resubmit", method: :post },
+                   { controller: "courses", action: "resubmit", github_owner: "octocat", github_repo: "my-repo" })
+  end
+
+  test "routes with owner containing dots are rejected by constraints" do
+    assert_raises(ActionController::UrlGenerationError) do
+      get course_path(".bad-owner", "repo")
+    end
+  end
+
+  test "routes with repo starting with dot are rejected by constraints" do
+    assert_raises(ActionController::UrlGenerationError) do
+      get course_path("owner", ".hidden-repo")
+    end
+  end
+
+  test "routes with owner containing special characters are rejected" do
+    assert_raises(ActionController::UrlGenerationError) do
+      get course_path("owner/../../etc", "repo")
+    end
+  end
+
+  test "old numeric ID route does not match" do
+    get "/courses/1"
+    assert_response :not_found
+  end
+
+  test "old numeric ID route for track_load does not match" do
+    post "/courses/1/track_load"
+    assert_response :not_found
+  end
+
+  test "old numeric ID route for resubmit does not match" do
+    post "/courses/1/resubmit"
+    assert_response :not_found
+  end
+
+  test "routes with owner containing underscores are rejected" do
+    assert_raises(ActionController::UrlGenerationError) do
+      get course_path("owner_name", "repo")
+    end
   end
 
   # --- strong parameters ---

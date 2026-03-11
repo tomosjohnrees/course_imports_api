@@ -27,27 +27,27 @@ class CoursesController < ApplicationController
   end
 
   def show
-    @course = Course.find(params[:id])
+    @course = find_course
     raise ActiveRecord::RecordNotFound unless @course.viewable_by?(current_user)
 
     expires_in 5.minutes, public: true if @course.approved?
   end
 
   def destroy
-    @course = current_user.courses.find(params[:id])
+    @course = find_current_user_course
     @course.destroy!
     redirect_to dashboard_path, notice: "Course removed."
   end
 
   def track_load
-    course = Course.find(params[:id])
+    course = find_course
     identifier = current_user ? "user_#{current_user.id}" : "session_#{session.id}"
     course.record_load(identifier)
     head :no_content
   end
 
   def resubmit
-    @course = current_user.courses.find(params[:id])
+    @course = find_current_user_course
     @course.resubmit!
     redirect_to @course, notice: "Course resubmitted for validation."
   rescue Course::Validatable::InvalidTransition
@@ -55,6 +55,14 @@ class CoursesController < ApplicationController
   end
 
   private
+
+  def find_course
+    Course.find_by!(github_owner: params[:github_owner], github_repo: params[:github_repo])
+  end
+
+  def find_current_user_course
+    current_user.courses.find_by!(github_owner: params[:github_owner], github_repo: params[:github_repo])
+  end
 
   def course_params
     params.require(:course).permit(:github_repo_url)
