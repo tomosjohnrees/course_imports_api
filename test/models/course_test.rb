@@ -335,6 +335,108 @@ class CourseTest < ActiveSupport::TestCase
     assert_equal title_match, result.first
   end
 
+  test "search scope matches partial words with prefix matching" do
+    matching = Course.create!(@valid_attributes.merge(
+      title: "Rails Programming Guide", github_owner: "search-partial1", github_repo: "rails-guide",
+      github_repo_url: "https://github.com/search-partial1/rails-guide", status: "approved"
+    ))
+    non_matching = Course.create!(@valid_attributes.merge(
+      title: "Python Basics", github_owner: "search-partial2", github_repo: "python-basics",
+      github_repo_url: "https://github.com/search-partial2/python-basics", status: "approved"
+    ))
+
+    result = Course.search("rail")
+    assert_includes result, matching
+    assert_not_includes result, non_matching
+  end
+
+  test "search scope matches partial words in description" do
+    matching = Course.create!(@valid_attributes.merge(
+      title: "Web Course", description: "Learn programming fundamentals",
+      github_owner: "search-partial-desc1", github_repo: "web-prog",
+      github_repo_url: "https://github.com/search-partial-desc1/web-prog", status: "approved"
+    ))
+
+    result = Course.search("progr")
+    assert_includes result, matching
+  end
+
+  test "search scope is case-insensitive" do
+    matching = Course.create!(@valid_attributes.merge(
+      title: "Python for Data Science", github_owner: "search-case1", github_repo: "python-ds",
+      github_repo_url: "https://github.com/search-case1/python-ds", status: "approved"
+    ))
+
+    assert_includes Course.search("PYTHON"), matching
+    assert_includes Course.search("python"), matching
+    assert_includes Course.search("PyThOn"), matching
+  end
+
+  test "search scope matches multiple partial words with AND logic" do
+    both_terms = Course.create!(@valid_attributes.merge(
+      title: "Ruby Programming Guide", github_owner: "search-multi1", github_repo: "ruby-prog-guide",
+      github_repo_url: "https://github.com/search-multi1/ruby-prog-guide", status: "approved"
+    ))
+    one_term = Course.create!(@valid_attributes.merge(
+      title: "Ruby Basics", github_owner: "search-multi2", github_repo: "ruby-basics",
+      github_repo_url: "https://github.com/search-multi2/ruby-basics", status: "approved"
+    ))
+
+    result = Course.search("rub prog")
+    assert_includes result, both_terms
+    assert_not_includes result, one_term
+  end
+
+  test "search scope returns all when query contains only special characters" do
+    course = Course.create!(@valid_attributes.merge(
+      title: "Any Course", github_owner: "search-special-only1", github_repo: "any-course",
+      github_repo_url: "https://github.com/search-special-only1/any-course", status: "approved"
+    ))
+
+    result = Course.search("!@#$%")
+    assert_includes result, course
+  end
+
+  test "search scope handles extra whitespace in query" do
+    matching = Course.create!(@valid_attributes.merge(
+      title: "Rails Application Development", github_owner: "search-ws1", github_repo: "rails-app",
+      github_repo_url: "https://github.com/search-ws1/rails-app", status: "approved"
+    ))
+
+    result = Course.search("  rail   ")
+    assert_includes result, matching
+  end
+
+  test "search scope handles query with mixed valid and special-character-only terms" do
+    matching = Course.create!(@valid_attributes.merge(
+      title: "Python Machine Learning", github_owner: "search-mixed1", github_repo: "python-ml",
+      github_repo_url: "https://github.com/search-mixed1/python-ml", status: "approved"
+    ))
+
+    result = Course.search("pyth !!! learn")
+    assert_includes result, matching
+  end
+
+  test "partial search does not return non-approved courses" do
+    approved = Course.create!(@valid_attributes.merge(
+      title: "Rails Development", github_owner: "search-vis1", github_repo: "rails-dev",
+      github_repo_url: "https://github.com/search-vis1/rails-dev", status: "approved"
+    ))
+    pending_course = Course.create!(@valid_attributes.merge(
+      title: "Rails Beginner", github_owner: "search-vis2", github_repo: "rails-begin",
+      github_repo_url: "https://github.com/search-vis2/rails-begin", status: "pending"
+    ))
+    failed_course = Course.create!(@valid_attributes.merge(
+      title: "Rails Advanced", github_owner: "search-vis3", github_repo: "rails-adv",
+      github_repo_url: "https://github.com/search-vis3/rails-adv", status: "failed"
+    ))
+
+    result = Course.publicly_visible.search("rail")
+    assert_includes result, approved
+    assert_not_includes result, pending_course
+    assert_not_includes result, failed_course
+  end
+
   test "search scope returns empty relation for non-matching query" do
     Course.create!(@valid_attributes.merge(
       title: "Ruby Programming", github_owner: "search-nomatch1", github_repo: "ruby-prog",

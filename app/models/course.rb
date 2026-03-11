@@ -9,8 +9,16 @@ class Course < ApplicationRecord
   scope :search, ->(query) {
     return all if query.blank?
 
-    where("search_vector @@ websearch_to_tsquery('english', ?)", query)
-      .order(Arel.sql(sanitize_sql_array([ "ts_rank(search_vector, websearch_to_tsquery('english', ?)) DESC", query ])))
+    terms = query.squish.split.filter_map { |term|
+      cleaned = term.gsub(/\W/, "")
+      "#{cleaned}:*" if cleaned.present?
+    }
+    return all if terms.empty?
+
+    tsquery = terms.join(" & ")
+
+    where("search_vector @@ to_tsquery('english', ?)", tsquery)
+      .order(Arel.sql(sanitize_sql_array([ "ts_rank(search_vector, to_tsquery('english', ?)) DESC", tsquery ])))
   }
   scope :with_tag, ->(tag) {
     return all if tag.blank?

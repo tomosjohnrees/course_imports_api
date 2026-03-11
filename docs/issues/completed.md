@@ -42,3 +42,9 @@
 | 0017 | [Tag filtering and tag cloud](0017-tag-filtering.md) | Milestone 4 — Browse & Search | `complete` |
 | 0018 | [Public course detail page](0018-course-detail-page.md) | Milestone 4 — Browse & Search | `complete` |
 | 0019 | [UI polish, responsive layout, and meta tags](0019-ui-polish-responsive-meta.md) | Milestone 4 — Browse & Search | `complete` |
+
+## Standalone
+
+| # | Title | Phase | Status |
+|---|-------|-------|--------|
+| 0026 | [Make search flexible with partial and case-insensitive matching](0026-flexible-search.md) | — | `complete` |
