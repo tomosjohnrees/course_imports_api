@@ -13,7 +13,7 @@
 
   <%= form_with url: courses_path, method: :get, class: "mb-6" do |f| %>
     <div class="flex gap-2">
-      <%= f.search_field :q, value: @search_query, placeholder: "Search courses…", class: "flex-1 rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 placeholder-gray-400 focus:border-gray-500 focus:ring-1 focus:ring-gray-500 focus:outline-none" %>
+      <%= f.search_field :q, value: @search_query, placeholder: "Search courses…", autofocus: true, class: "flex-1 rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 placeholder-gray-400 focus:border-gray-500 focus:ring-1 focus:ring-gray-500 focus:outline-none" %>
       <%= f.hidden_field :tag, value: @tag if @tag.present? %>
       <%= f.submit "Search", class: "rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700 cursor-pointer" %>
     </div>
