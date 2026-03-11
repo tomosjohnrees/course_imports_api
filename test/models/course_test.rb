@@ -62,7 +62,7 @@ class CourseTest < ActiveSupport::TestCase
   end
 
   test "statuses enum contains expected values" do
-    assert_equal %w[pending validating approved failed removed], Course.statuses.keys
+    assert_equal %w[pending validating approved failed], Course.statuses.keys
   end
 
   test "validates github_repo_url format accepts valid GitHub URLs" do
@@ -189,18 +189,6 @@ class CourseTest < ActiveSupport::TestCase
     assert_equal 1, result.count
   end
 
-  test "removed scope returns only removed courses" do
-    Course.create!(@valid_attributes)
-    removed_course = Course.create!(@valid_attributes.merge(
-      status: "removed", github_owner: "other", github_repo: "removed-repo",
-      github_repo_url: "https://github.com/other/removed-repo"
-    ))
-
-    result = Course.removed
-    assert_includes result, removed_course
-    assert_equal 1, result.count
-  end
-
   test "publicly_visible scope returns only approved courses" do
     pending_course = Course.create!(@valid_attributes)
     approved_course = Course.create!(@valid_attributes.merge(
@@ -243,17 +231,11 @@ class CourseTest < ActiveSupport::TestCase
     assert course.failed?
   end
 
-  test "removed? returns true for removed status" do
-    course = Course.new(status: "removed")
-    assert course.removed?
-  end
-
   test "status query methods return false for non-matching statuses" do
     course = Course.new(status: "pending")
     assert_not course.validating?
     assert_not course.approved?
     assert_not course.failed?
-    assert_not course.removed?
   end
 
   test "requires a user association" do

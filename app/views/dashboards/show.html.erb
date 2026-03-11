@@ -19,9 +19,7 @@
             <div class="flex items-center gap-3 shrink-0">
               <%= status_badge(course) %>
 
-              <% unless course.removed? %>
-                <%= button_to "Remove", course, method: :delete, class: "text-sm text-terracotta hover:text-terracotta/70 font-medium tracking-wide transition-colors cursor-pointer", data: { turbo_confirm: "Are you sure you want to remove this course?" } %>
-              <% end %>
+              <%= button_to "Remove", course, method: :delete, class: "text-sm text-terracotta hover:text-terracotta/70 font-medium tracking-wide transition-colors cursor-pointer", data: { turbo_confirm: "Are you sure you want to remove this course?" } %>
             </div>
           </div>
         </div>

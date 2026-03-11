@@ -3,7 +3,7 @@ class Course < ApplicationRecord
 
   GITHUB_REPO_URL_PATTERN = %r{\Ahttps://github\.com/(?<owner>[a-zA-Z0-9\-_.]+)/(?<repo>[a-zA-Z0-9\-_.]+)\z}
 
-  enum :status, { pending: "pending", validating: "validating", approved: "approved", failed: "failed", removed: "removed" }, validate: true
+  enum :status, { pending: "pending", validating: "validating", approved: "approved", failed: "failed" }, validate: true
 
   scope :publicly_visible, -> { approved }
   scope :search, ->(query) {
@@ -44,10 +44,6 @@ class Course < ApplicationRecord
 
   def deep_link_url
     "courseimports://import/#{github_owner}/#{github_repo}"
-  end
-
-  def remove!
-    update!(status: :removed)
   end
 
   private

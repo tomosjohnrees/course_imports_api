@@ -2,7 +2,6 @@
 
 | # | Title | Phase | Status |
 |---|-------|-------|--------|
-| 0033 | Hard-delete courses on removal | None | todo |
 | 0034 | Add course authoring guide page with downloadable skill | None | todo |
 | 0035 | Track course loads via Open in App clicks | None | todo |
 | 0036 | Use GitHub username/repo as course URL path | None | todo |

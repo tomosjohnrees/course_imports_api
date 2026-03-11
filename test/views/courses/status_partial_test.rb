@@ -62,13 +62,6 @@ class StatusPartialTest < ActionView::TestCase
     assert_select "p.text-terracotta", count: 0
   end
 
-  test "renders removed status badge" do
-    course = build_course(status: "removed")
-    render partial: "courses/status", locals: { course: course }
-
-    assert_select "span.bg-parchment", text: "Removed"
-  end
-
   test "renders status heading" do
     course = build_course(status: "pending")
     render partial: "courses/status", locals: { course: course }

@@ -3,8 +3,7 @@ module CoursesHelper
     "pending" => { bg: "bg-mustard-light", text: "text-mustard", border: "border-mustard/30", label: "Pending" },
     "validating" => { bg: "bg-sky-light", text: "text-sky", border: "border-sky/30", label: "Validating&hellip;" },
     "approved" => { bg: "bg-sage-light", text: "text-sage", border: "border-sage/30", label: "Approved" },
-    "failed" => { bg: "bg-terracotta-light", text: "text-terracotta", border: "border-terracotta/30", label: "Failed" },
-    "removed" => { bg: "bg-parchment", text: "text-walnut/50", border: "border-walnut/10", label: "Removed" }
+    "failed" => { bg: "bg-terracotta-light", text: "text-terracotta", border: "border-terracotta/30", label: "Failed" }
   }.freeze
 
   def status_badge(course)

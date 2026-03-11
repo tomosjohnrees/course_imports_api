@@ -79,12 +79,13 @@ class CourseSubmissionFlowTest < ActionDispatch::IntegrationTest
 
     assert_select "button", "Remove Course"
 
-    delete course_path(course)
+    assert_difference "Course.count", -1 do
+      delete course_path(course)
+    end
     assert_redirected_to dashboard_path
     follow_redirect!
 
     assert_select "div.bg-sage-light", /Course removed/
-    assert_equal "removed", course.reload.status
   end
 
   test "navbar shows my courses link when signed in" do

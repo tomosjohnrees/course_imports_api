@@ -35,7 +35,7 @@ class CoursesController < ApplicationController
 
   def destroy
     @course = current_user.courses.find(params[:id])
-    @course.remove!
+    @course.destroy!
     redirect_to dashboard_path, notice: "Course removed."
   end
 

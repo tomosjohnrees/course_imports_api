@@ -91,7 +91,7 @@ class DashboardsControllerTest < ActionDispatch::IntegrationTest
     assert_select "span.bg-sage-light", text: "Approved"
   end
 
-  test "dashboard shows remove button for non-removed courses" do
+  test "dashboard shows remove button for courses" do
     Course.create!(
       user: @user,
       github_repo_url: "https://github.com/dash-rm/active-repo",
@@ -105,22 +105,6 @@ class DashboardsControllerTest < ActionDispatch::IntegrationTest
     get dashboard_path
     assert_response :success
     assert_select "button", text: "Remove"
-  end
-
-  test "dashboard hides remove button for removed courses" do
-    Course.create!(
-      user: @user,
-      github_repo_url: "https://github.com/dash-rm/removed-repo",
-      github_owner: "dash-rm",
-      github_repo: "removed-repo",
-      title: "Removed Course",
-      status: "removed"
-    )
-    sign_in_as(@user)
-
-    get dashboard_path
-    assert_response :success
-    assert_select "button", { text: "Remove", count: 0 }
   end
 
   test "dashboard displays github owner and repo for each course" do

@@ -20,17 +20,17 @@ When a user removes a course, the app currently soft-deletes it by setting the s
 ## Acceptance criteria
 
 ### Functionality
-- [ ] Removing a course deletes the course record and its associated validation attempts from the database
-- [ ] The "removed" status is removed from the status enum
-- [ ] After removal, the user is redirected with a confirmation message
-- [ ] Course index and search results no longer need to exclude a "removed" status
+- [x] Removing a course deletes the course record and its associated validation attempts from the database
+- [x] The "removed" status is removed from the status enum
+- [x] After removal, the user is redirected with a confirmation message
+- [x] Course index and search results no longer need to exclude a "removed" status
 
 ### Security
-- [ ] Only the course owner can delete their own course (existing authorisation is preserved)
+- [x] Only the course owner can delete their own course (existing authorisation is preserved)
 
 ### Performance
-- [ ] Deletion uses a single transaction with cascading deletes rather than loading associations into memory
+- [x] Deletion uses a single transaction with cascading deletes rather than loading associations into memory
 
 ### Testing
-- [ ] Controller tests verify that destroy actually removes the record from the database
-- [ ] Controller tests verify that non-owners cannot delete another user's course
+- [x] Controller tests verify that destroy actually removes the record from the database
+- [x] Controller tests verify that non-owners cannot delete another user's course

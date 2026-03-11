@@ -316,22 +316,6 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
     assert_select "button", { text: "Remove Course", count: 0 }
   end
 
-  test "show hides remove button for already removed course" do
-    course = Course.create!(
-      user: @user,
-      github_repo_url: "https://github.com/removed-owner/removed-repo",
-      github_owner: "removed-owner",
-      github_repo: "removed-repo",
-      title: "Removed Course",
-      status: "removed"
-    )
-    sign_in_as(@user)
-
-    get course_path(course)
-    assert_response :success
-    assert_select "button", { text: "Remove Course", count: 0 }
-  end
-
   test "show returns 404 for nonexistent course" do
     get course_path(id: 999999)
     assert_response :not_found
@@ -374,20 +358,6 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
       github_repo: "validating-noview",
       title: "Hidden Validating",
       status: "validating"
-    )
-
-    get course_path(course)
-    assert_response :not_found
-  end
-
-  test "show returns 404 for removed course when not signed in" do
-    course = Course.create!(
-      user: @user,
-      github_repo_url: "https://github.com/noview-owner/removed-noview",
-      github_owner: "noview-owner",
-      github_repo: "removed-noview",
-      title: "Hidden Removed",
-      status: "removed"
     )
 
     get course_path(course)
@@ -634,7 +604,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
 
   # --- destroy action ---
 
-  test "destroy sets course status to removed and redirects" do
+  test "destroy deletes the course record and redirects" do
     course = Course.create!(
       user: @user,
       github_repo_url: "https://github.com/destroy-owner/destroy-repo",
@@ -645,27 +615,13 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
     )
     sign_in_as(@user)
 
-    delete course_path(course)
+    assert_difference "Course.count", -1 do
+      delete course_path(course)
+    end
 
     assert_redirected_to dashboard_path
     assert_equal "Course removed.", flash[:notice]
-    assert_equal "removed", course.reload.status
-  end
-
-  test "destroy does not delete the course record" do
-    course = Course.create!(
-      user: @user,
-      github_repo_url: "https://github.com/nodelete-owner/nodelete-repo",
-      github_owner: "nodelete-owner",
-      github_repo: "nodelete-repo",
-      title: "Still Exists",
-      status: "approved"
-    )
-    sign_in_as(@user)
-
-    assert_no_difference "Course.count" do
-      delete course_path(course)
-    end
+    assert_not Course.exists?(course.id)
   end
 
   test "destroy returns 404 for another users course" do
@@ -680,9 +636,10 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
     )
     sign_in_as(@user)
 
-    delete course_path(course)
+    assert_no_difference "Course.count" do
+      delete course_path(course)
+    end
     assert_response :not_found
-    assert_equal "approved", course.reload.status
   end
 
   test "destroy redirects to root when not signed in" do
@@ -695,10 +652,11 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
       status: "approved"
     )
 
-    delete course_path(course)
+    assert_no_difference "Course.count" do
+      delete course_path(course)
+    end
     assert_redirected_to root_path
     assert_equal "You must sign in to continue.", flash[:alert]
-    assert_equal "approved", course.reload.status
   end
 
   # --- index action (public browse) ---
@@ -739,14 +697,6 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
     )
     Course.create!(
       user: @user,
-      github_repo_url: "https://github.com/vis-owner/removed-vis",
-      github_owner: "vis-owner",
-      github_repo: "removed-vis",
-      title: "Removed Course",
-      status: "removed"
-    )
-    Course.create!(
-      user: @user,
       github_repo_url: "https://github.com/vis-owner/approved-vis",
       github_owner: "vis-owner",
       github_repo: "approved-vis",
@@ -759,7 +709,6 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
     assert_select "a", text: "Approved Course"
     assert_select "a", { text: "Pending Course", count: 0 }
     assert_select "a", { text: "Failed Course", count: 0 }
-    assert_select "a", { text: "Removed Course", count: 0 }
   end
 
   test "index shows courses from all users" do

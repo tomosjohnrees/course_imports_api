@@ -85,7 +85,7 @@ class CourseValidationJobTest < ActiveSupport::TestCase
   end
 
   test "skips validation for non-pending and non-failed courses" do
-    %i[validating approved removed].each do |status|
+    %i[validating approved].each do |status|
       @course.update!(status: status)
       run_validation
       assert_equal status.to_s, @course.reload.status
@@ -115,7 +115,7 @@ class CourseValidationJobTest < ActiveSupport::TestCase
   end
 
   test "submit_for_validation! rejects non-pending and non-failed courses" do
-    %i[validating approved removed].each do |status|
+    %i[validating approved].each do |status|
       @course.update!(status: status)
       assert_no_enqueued_jobs do
         assert_raises(Course::Validatable::InvalidTransition) { @course.submit_for_validation! }
