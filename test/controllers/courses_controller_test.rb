@@ -1365,7 +1365,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
     assert_select "a", { text: "Ruby Data Science", count: 0 }
   end
 
-  test "index displays tag cloud with unique tags from approved courses" do
+  test "index does not display standalone tag cloud" do
     Course.create!(
       user: @user,
       github_repo_url: "https://github.com/tag-cloud/repo1",
@@ -1375,51 +1375,14 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
       status: "approved",
       tags: [ "ruby", "web" ]
     )
-    Course.create!(
-      user: @user,
-      github_repo_url: "https://github.com/tag-cloud/repo2",
-      github_owner: "tag-cloud",
-      github_repo: "repo2",
-      title: "Course Two",
-      status: "approved",
-      tags: [ "python" ]
-    )
 
     get courses_path
     assert_response :success
-    assert_select "span", text: "Tags:"
-    assert_select "a[href*='tag=ruby']", text: "ruby"
-    assert_select "a[href*='tag=python']", text: "python"
-    assert_select "a[href*='tag=web']", text: "web"
+    assert_select "span", { text: "Tags:", count: 0 }
+    assert_select "span", { text: "Filtered by:", count: 0 }
   end
 
-  test "index tag cloud does not include tags from non-approved courses" do
-    Course.create!(
-      user: @user,
-      github_repo_url: "https://github.com/tag-cloud-vis/approved",
-      github_owner: "tag-cloud-vis",
-      github_repo: "approved",
-      title: "Approved Course",
-      status: "approved",
-      tags: [ "visible" ]
-    )
-    Course.create!(
-      user: @user,
-      github_repo_url: "https://github.com/tag-cloud-vis/pending",
-      github_owner: "tag-cloud-vis",
-      github_repo: "pending",
-      title: "Pending Course",
-      status: "pending",
-      tags: [ "hidden" ]
-    )
-
-    get courses_path
-    assert_response :success
-    assert_select "a[href*='tag=visible']", text: "visible"
-    assert_select "a[href*='tag=hidden']", count: 0
-  end
-
-  test "index highlights the active tag filter" do
+  test "index shows filtered-by indicator with active tag" do
     Course.create!(
       user: @user,
       github_repo_url: "https://github.com/tag-active/repo1",
@@ -1432,8 +1395,8 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
 
     get courses_path, params: { tag: "ruby" }
     assert_response :success
-    assert_select "a.bg-gray-900.text-white", text: "ruby"
-    assert_select "a.bg-gray-100", text: "python"
+    assert_select "span", text: "Filtered by:"
+    assert_select "span.bg-gray-900.text-white", text: "ruby"
   end
 
   test "index shows clear filter link when tag is active" do
@@ -1466,6 +1429,22 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
     get courses_path
     assert_response :success
     assert_select "a", { text: "Clear filter", count: 0 }
+  end
+
+  test "index filtered-by clear link preserves search query" do
+    Course.create!(
+      user: @user,
+      github_repo_url: "https://github.com/tag-clear-q/repo1",
+      github_owner: "tag-clear-q",
+      github_repo: "repo1",
+      title: "Clear Query Course",
+      status: "approved",
+      tags: [ "ruby" ]
+    )
+
+    get courses_path, params: { tag: "ruby", q: "clear" }
+    assert_response :success
+    assert_select "a[href='#{courses_path(q: "clear")}']", text: "Clear filter"
   end
 
   test "index tag filter strips whitespace and downcases" do
@@ -1565,7 +1544,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
     assert_select "p", /tagged "faketag"/
   end
 
-  test "index without tag cloud section when no tags exist" do
+  test "index does not show filtered-by indicator without active tag" do
     Course.create!(
       user: @user,
       github_repo_url: "https://github.com/no-tags/repo1",
@@ -1578,7 +1557,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
 
     get courses_path
     assert_response :success
-    assert_select "span", { text: "Tags:", count: 0 }
+    assert_select "span", { text: "Filtered by:", count: 0 }
   end
 
   # --- routing ---

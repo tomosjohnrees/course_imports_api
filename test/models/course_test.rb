@@ -554,61 +554,6 @@ class CourseTest < ActiveSupport::TestCase
     assert_not_includes result, wrong_tag
   end
 
-  test "unique_tags returns sorted unique tags from approved courses" do
-    Course.create!(@valid_attributes.merge(
-      github_owner: "utag1", github_repo: "repo-utag1",
-      github_repo_url: "https://github.com/utag1/repo-utag1",
-      tags: [ "ruby", "web" ], status: "approved"
-    ))
-    Course.create!(@valid_attributes.merge(
-      github_owner: "utag2", github_repo: "repo-utag2",
-      github_repo_url: "https://github.com/utag2/repo-utag2",
-      tags: [ "python", "web" ], status: "approved"
-    ))
-
-    result = Course.unique_tags
-    assert_equal %w[python ruby web], result
-  end
-
-  test "unique_tags excludes tags from non-approved courses" do
-    Course.create!(@valid_attributes.merge(
-      github_owner: "utag-excl1", github_repo: "repo-excl1",
-      github_repo_url: "https://github.com/utag-excl1/repo-excl1",
-      tags: [ "ruby" ], status: "approved"
-    ))
-    Course.create!(@valid_attributes.merge(
-      github_owner: "utag-excl2", github_repo: "repo-excl2",
-      github_repo_url: "https://github.com/utag-excl2/repo-excl2",
-      tags: [ "hidden" ], status: "pending"
-    ))
-    Course.create!(@valid_attributes.merge(
-      github_owner: "utag-excl3", github_repo: "repo-excl3",
-      github_repo_url: "https://github.com/utag-excl3/repo-excl3",
-      tags: [ "removed-tag" ], status: "removed"
-    ))
-
-    result = Course.unique_tags
-    assert_includes result, "ruby"
-    assert_not_includes result, "hidden"
-    assert_not_includes result, "removed-tag"
-  end
-
-  test "unique_tags returns empty array when no approved courses have tags" do
-    Course.create!(@valid_attributes.merge(
-      github_owner: "utag-empty1", github_repo: "repo-empty1",
-      github_repo_url: "https://github.com/utag-empty1/repo-empty1",
-      tags: [], status: "approved"
-    ))
-    Course.create!(@valid_attributes.merge(
-      github_owner: "utag-empty2", github_repo: "repo-empty2",
-      github_repo_url: "https://github.com/utag-empty2/repo-empty2",
-      tags: [ "hidden" ], status: "pending"
-    ))
-
-    result = Course.unique_tags
-    assert_equal [], result
-  end
-
   test "deep_link_url generates correct protocol URL" do
     course = Course.new(github_owner: "myorg", github_repo: "mycourse")
     assert_equal "courseimports://import/myorg/mycourse", course.deep_link_url
@@ -643,22 +588,5 @@ class CourseTest < ActiveSupport::TestCase
     other_user = User.create!(github_id: "viewable-other", github_username: "viewableother")
     course = Course.new(@valid_attributes.merge(status: "pending", user: other_user))
     assert_not course.viewable_by?(@user)
-  end
-
-  test "unique_tags deduplicates tags across multiple courses" do
-    Course.create!(@valid_attributes.merge(
-      github_owner: "utag-dedup1", github_repo: "repo-dedup1",
-      github_repo_url: "https://github.com/utag-dedup1/repo-dedup1",
-      tags: [ "ruby", "rails" ], status: "approved"
-    ))
-    Course.create!(@valid_attributes.merge(
-      github_owner: "utag-dedup2", github_repo: "repo-dedup2",
-      github_repo_url: "https://github.com/utag-dedup2/repo-dedup2",
-      tags: [ "ruby", "web" ], status: "approved"
-    ))
-
-    result = Course.unique_tags
-    assert_equal result.uniq, result
-    assert_equal 1, result.count { |t| t == "ruby" }
   end
 end

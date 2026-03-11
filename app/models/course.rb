@@ -26,10 +26,6 @@ class Course < ApplicationRecord
     where("tags @> ARRAY[?]::varchar[]", tag)
   }
 
-  def self.unique_tags
-    publicly_visible.where("array_length(tags, 1) > 0").pluck(Arel.sql("DISTINCT unnest(tags)")).sort
-  end
-
   belongs_to :user
   has_many :validation_attempts, dependent: :destroy
 

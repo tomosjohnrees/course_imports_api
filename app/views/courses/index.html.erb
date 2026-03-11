@@ -19,18 +19,11 @@
     </div>
   <% end %>
 
-  <% if @tags.any? %>
-    <div class="mb-6 flex flex-wrap gap-2 items-center">
-      <span class="text-xs font-medium text-gray-500 mr-1">Tags:</span>
-      <% @tags.each do |tag| %>
-        <% active = @tag == tag %>
-        <%= link_to tag,
-              courses_path(tag: tag, q: @search_query.presence),
-              class: "inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium transition-colors #{active ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}" %>
-      <% end %>
-      <% if @tag.present? %>
-        <%= link_to "Clear filter", courses_path(q: @search_query.presence), class: "text-xs text-gray-500 hover:text-gray-700 underline ml-1" %>
-      <% end %>
+  <% if @tag.present? %>
+    <div class="mb-6 flex items-center gap-2">
+      <span class="text-xs font-medium text-gray-500">Filtered by:</span>
+      <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-900 text-white"><%= @tag %></span>
+      <%= link_to "Clear filter", courses_path(q: @search_query.presence), class: "text-xs text-gray-500 hover:text-gray-700 underline" %>
     </div>
   <% end %>
 

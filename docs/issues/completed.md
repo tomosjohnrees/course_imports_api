@@ -48,3 +48,4 @@
 | # | Title | Phase | Status |
 |---|-------|-------|--------|
 | 0026 | [Make search flexible with partial and case-insensitive matching](0026-flexible-search.md) | — | `complete` |
+| 0027 | [Simplify tag filtering to inline links only](0027-simplify-tag-filtering.md) | — | `complete` |

@@ -20,20 +20,20 @@ The standalone tag filter UI (tag cloud/sidebar) will become overwhelming as the
 ## Acceptance criteria
 
 ### Functionality
-- [ ] No standalone tag filter UI (cloud, sidebar, or dropdown) appears on the courses index
-- [ ] Each tag on a course card links to the courses index filtered by that tag
-- [ ] When viewing a tag-filtered index, the active tag is visually indicated
-- [ ] A clear-filter control is available to return to the unfiltered index
-- [ ] Existing URL-based tag filtering (`?tag=value`) still works correctly
-- [ ] Combined search and tag filter (`?q=python&tag=beginner`) still works correctly
+- [x] No standalone tag filter UI (cloud, sidebar, or dropdown) appears on the courses index
+- [x] Each tag on a course card links to the courses index filtered by that tag
+- [x] When viewing a tag-filtered index, the active tag is visually indicated
+- [x] A clear-filter control is available to return to the unfiltered index
+- [x] Existing URL-based tag filtering (`?tag=value`) still works correctly
+- [x] Combined search and tag filter (`?q=python&tag=beginner`) still works correctly
 
 ### Security
-- [ ] Tag parameter sanitisation and validation remain unchanged
+- [x] Tag parameter sanitisation and validation remain unchanged
 
 ### Performance
-- [ ] Removing the tag cloud eliminates the aggregation query on every index page load
+- [x] Removing the tag cloud eliminates the aggregation query on every index page load
 
 ### Testing
-- [ ] Tests verify the tag cloud / filter sidebar is no longer rendered
-- [ ] Tests verify course card tags link to the filtered index
-- [ ] Tests verify filtered results display correctly when accessed via tag link
+- [x] Tests verify the tag cloud / filter sidebar is no longer rendered
+- [x] Tests verify course card tags link to the filtered index
+- [x] Tests verify filtered results display correctly when accessed via tag link
