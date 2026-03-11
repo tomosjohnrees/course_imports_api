@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   end
 
   get "privacy", to: "pages#privacy"
+  get "terms", to: "pages#terms"
 
   get "up" => "rails/health#show", as: :rails_health_check
 

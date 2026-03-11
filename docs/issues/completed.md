@@ -52,3 +52,4 @@
 | 0028 | [Add cookie consent banner](0028-cookie-consent-banner.md) | — | `complete` |
 | 0029 | [Audit and categorise all cookies](0029-cookie-audit.md) | — | `complete` |
 | 0030 | [Add privacy policy page](0030-privacy-policy.md) | — | `complete` |
+| 0031 | [Add terms of use page](0031-terms-of-use.md) | — | `complete` |

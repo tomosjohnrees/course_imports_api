@@ -19,15 +19,15 @@ The site needs a terms of use page setting out the rules for using the service, 
 ## Acceptance criteria
 
 ### Functionality
-- [ ] A terms of use page is accessible at `/terms`
-- [ ] The terms cover: acceptable use, user responsibilities, intellectual property, liability limitations, and governing law (England and Wales)
-- [ ] A link to the terms appears in the site footer on every page
+- [x] A terms of use page is accessible at `/terms`
+- [x] The terms cover: acceptable use, user responsibilities, intellectual property, liability limitations, and governing law (England and Wales)
+- [x] A link to the terms appears in the site footer on every page
 
 ### Security
-- [ ] The terms page does not expose any internal system information
+- [x] The terms page does not expose any internal system information
 
 ### Performance
-- [ ] The terms page is a static-content page with no database queries
+- [x] The terms page is a static-content page with no database queries
 
 ### Testing
-- [ ] The terms page renders correctly and is reachable from the footer link
+- [x] The terms page renders correctly and is reachable from the footer link

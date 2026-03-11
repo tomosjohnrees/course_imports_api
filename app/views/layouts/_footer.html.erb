@@ -2,6 +2,7 @@
   <div class="container mx-auto px-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-walnut/60">
     <span>&copy; <%= Date.current.year %> Course Imports</span>
     <div class="flex items-center gap-4">
+      <%= link_to "Terms of Use", terms_path, class: "hover:text-walnut transition-colors" %>
       <%= link_to "Privacy Policy", privacy_path, class: "hover:text-walnut transition-colors" %>
     </div>
   </div>
