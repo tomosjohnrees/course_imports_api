@@ -9,6 +9,7 @@
 | 0022 | [Provision Hetzner VPS and configure networking](0022-provision-hetzner-vps.md) | Milestone 1 — Project Setup & Deployment Pipeline | `complete` |
 | 0023 | [Configure Kamal deployment pipeline](0023-configure-kamal-deployment.md) | Milestone 1 — Project Setup & Deployment Pipeline | `complete` |
 | 0024 | [Deploy application to production and verify](0024-deploy-to-production.md) | Milestone 1 — Project Setup & Deployment Pipeline | `complete` |
+| 0025 | [Make courses page the homepage](0025-courses-as-homepage.md) | None | `complete` |
 
 ## Milestone 2 — GitHub Authentication
 

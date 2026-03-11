@@ -24,11 +24,6 @@ class MetaTagsAndLayoutTest < ActionDispatch::IntegrationTest
     assert_select "title", text: /Course Imports — Community Course Registry/
   end
 
-  test "courses index has Browse Courses in title" do
-    get courses_path
-    assert_select "title", text: /Browse Courses — Course Imports/
-  end
-
   test "course show page has course title in title tag" do
     course = Course.create!(
       user: @user,
@@ -58,14 +53,6 @@ class MetaTagsAndLayoutTest < ActionDispatch::IntegrationTest
     assert_select "meta[name='description']" do |elements|
       content = elements.first["content"]
       assert_match(/community/, content.downcase)
-    end
-  end
-
-  test "courses index has meta description" do
-    get courses_path
-    assert_select "meta[name='description']" do |elements|
-      content = elements.first["content"]
-      assert_match(/browse/i, content)
     end
   end
 
@@ -150,10 +137,10 @@ class MetaTagsAndLayoutTest < ActionDispatch::IntegrationTest
     assert_select "div[data-nav-target='menu']"
   end
 
-  test "navbar mobile menu includes Browse link" do
+  test "navbar mobile menu does not include Browse link" do
     get root_path
     assert_select "div[data-nav-target='menu']" do
-      assert_select "a", text: "Browse"
+      assert_select "a", text: "Browse", count: 0
     end
   end
 

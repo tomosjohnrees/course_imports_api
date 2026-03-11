@@ -3,7 +3,6 @@
     <%= link_to "Course Imports", root_path, class: "text-lg font-semibold text-gray-900 hover:text-gray-700" %>
 
     <div class="hidden md:flex items-center gap-4">
-      <%= link_to "Browse", courses_path, class: "text-sm text-gray-600 hover:text-gray-900 font-medium transition-colors" %>
       <% if user_signed_in? %>
         <%= link_to "My Courses", dashboard_path, class: "text-sm text-gray-600 hover:text-gray-900 font-medium transition-colors" %>
         <%= link_to "Submit Course", new_course_path, class: "text-sm text-gray-600 hover:text-gray-900 font-medium transition-colors" %>
@@ -25,7 +24,6 @@
   </div>
 
   <div class="hidden md:hidden border-t border-gray-200 bg-white px-5 pb-4 pt-2 space-y-2" data-nav-target="menu">
-    <%= link_to "Browse", courses_path, class: "block text-sm text-gray-600 hover:text-gray-900 font-medium py-2", data: { action: "nav#close" } %>
     <% if user_signed_in? %>
       <%= link_to "My Courses", dashboard_path, class: "block text-sm text-gray-600 hover:text-gray-900 font-medium py-2", data: { action: "nav#close" } %>
       <%= link_to "Submit Course", new_course_path, class: "block text-sm text-gray-600 hover:text-gray-900 font-medium py-2", data: { action: "nav#close" } %>

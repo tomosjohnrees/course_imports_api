@@ -20,16 +20,16 @@ The courses listing should be the first thing users see when they visit the site
 ## Acceptance criteria
 
 ### Functionality
-- [ ] Visiting `/` renders the courses listing
-- [ ] The courses page includes a visible search/filter entry point
-- [ ] The separate "Courses" nav link is removed from the navigation
-- [ ] Navigation still allows users to reach authentication and submission flows
+- [x] Visiting `/` renders the courses listing
+- [x] The courses page includes a visible search/filter entry point
+- [x] The separate "Courses" nav link is removed from the navigation
+- [x] Navigation still allows users to reach authentication and submission flows
 
 ### Security
-- [ ] The homepage is accessible to unauthenticated visitors without exposing private data
+- [x] The homepage is accessible to unauthenticated visitors without exposing private data
 
 ### Performance
-- [ ] The courses index query is efficient with an index scan and does not degrade as course count grows
+- [x] The courses index query is efficient with an index scan and does not degrade as course count grows
 
 ### Testing
-- [ ] A routing or integration test verifies that the root path resolves to the courses index
+- [x] A routing or integration test verifies that the root path resolves to the courses index

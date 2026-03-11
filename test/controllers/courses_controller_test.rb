@@ -715,7 +715,7 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
 
     get courses_path
     assert_response :success
-    assert_select "h1", "Browse Courses"
+    assert_select "h1", "Course Imports"
     assert_select "a", text: "Public Course"
   end
 
@@ -956,7 +956,21 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
 
     get courses_path
     assert_response :success
-    assert_select "h1", "Browse Courses"
+    assert_select "h1", "Course Imports"
+  end
+
+  test "index shows sign-in button when not authenticated" do
+    get root_path
+    assert_select "form[action='/auth/github']" do
+      assert_select "button", text: /Sign in with GitHub/
+    end
+  end
+
+  test "index hides sign-in call-to-action when signed in" do
+    sign_in_as(@user)
+
+    get root_path
+    assert_select "div.mb-8 form[action='/auth/github']", count: 0
   end
 
   # --- resubmit action ---
@@ -1587,6 +1601,10 @@ class CoursesControllerTest < ActionDispatch::IntegrationTest
   test "routes DELETE /courses/:id to courses#destroy" do
     assert_routing({ path: "/courses/1", method: :delete },
                    { controller: "courses", action: "destroy", id: "1" })
+  end
+
+  test "routes root path to courses#index" do
+    assert_recognizes({ controller: "courses", action: "index" }, { path: "/", method: :get })
   end
 
   test "routes GET /courses to courses#index" do
