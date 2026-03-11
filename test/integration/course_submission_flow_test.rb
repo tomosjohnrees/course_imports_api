@@ -87,19 +87,6 @@ class CourseSubmissionFlowTest < ActionDispatch::IntegrationTest
     assert_equal "removed", course.reload.status
   end
 
-  test "navbar shows submit course link when signed in" do
-    sign_in_as(@user)
-    follow_redirect!
-
-    get root_path
-    assert_select "nav a[href='#{new_course_path}']", "Submit Course"
-  end
-
-  test "navbar hides submit course link when not signed in" do
-    get root_path
-    assert_select "nav a[href='#{new_course_path}']", count: 0
-  end
-
   test "navbar shows my courses link when signed in" do
     sign_in_as(@user)
     follow_redirect!
@@ -108,9 +95,11 @@ class CourseSubmissionFlowTest < ActionDispatch::IntegrationTest
     assert_select "nav a[href='#{dashboard_path}']", "My Courses"
   end
 
-  test "navbar shows browse link when not signed in" do
+  test "navbar shows sign-in button when not signed in" do
     get root_path
-    assert_select "nav a[href='#{courses_path}']", "Browse"
+    assert_select "nav form[action='/auth/github']" do
+      assert_select "button", text: /Sign in with GitHub/
+    end
   end
 
   test "navbar hides my courses link when not signed in" do

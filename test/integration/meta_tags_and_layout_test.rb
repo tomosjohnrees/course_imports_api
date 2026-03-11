@@ -119,52 +119,35 @@ class MetaTagsAndLayoutTest < ActionDispatch::IntegrationTest
 
   # --- responsive navbar ---
 
-  test "navbar has stimulus nav controller" do
-    get root_path
-    assert_select "nav[data-controller='nav']"
-  end
-
-  test "navbar has mobile toggle button" do
-    get root_path
-    assert_select "button[data-action='nav#toggle']" do |buttons|
-      button = buttons.first
-      assert_equal "Toggle menu", button["aria-label"]
-    end
-  end
-
-  test "navbar has mobile menu container with nav target" do
-    get root_path
-    assert_select "div[data-nav-target='menu']"
-  end
-
-  test "navbar mobile menu does not include Browse link" do
-    get root_path
-    assert_select "div[data-nav-target='menu']" do
-      assert_select "a", text: "Browse", count: 0
-    end
-  end
-
-  test "navbar mobile menu includes sign-in when not authenticated" do
-    get root_path
-    assert_select "div[data-nav-target='menu']" do
-      assert_select "button", text: /Sign in with GitHub/
-    end
-  end
-
-  test "navbar mobile menu includes user links when authenticated" do
+  test "navbar has stimulus dropdown controller when signed in" do
     sign_in_as(@user)
 
     get root_path
-    assert_select "div[data-nav-target='menu']" do
-      assert_select "a", text: "My Courses"
-      assert_select "a", text: "Submit Course"
+    assert_select "div[data-controller='dropdown']"
+  end
+
+  test "navbar dropdown contains username and sign out" do
+    sign_in_as(@user)
+
+    get root_path
+    assert_select "div[data-dropdown-target='menu']" do
       assert_select "span", text: "metatester"
+      assert_select "button", text: /Sign out/
     end
   end
 
-  test "navbar mobile menu links have close action" do
+  test "navbar shows my courses link when signed in" do
+    sign_in_as(@user)
+
     get root_path
-    assert_select "div[data-nav-target='menu'] a[data-action='nav#close']"
+    assert_select "nav a[href='#{dashboard_path}']", text: "My Courses"
+  end
+
+  test "navbar shows sign-in button when not authenticated" do
+    get root_path
+    assert_select "nav form[action='/auth/github']" do
+      assert_select "button", text: /Sign in with GitHub/
+    end
   end
 
   # --- lazy loading on avatars ---
@@ -174,13 +157,6 @@ class MetaTagsAndLayoutTest < ActionDispatch::IntegrationTest
 
     get root_path
     assert_select "nav img[loading='lazy']"
-  end
-
-  test "navbar mobile menu avatar uses lazy loading when signed in" do
-    sign_in_as(@user)
-
-    get root_path
-    assert_select "div[data-nav-target='menu'] img[loading='lazy']"
   end
 
   # --- meta description does not leak user-generated XSS ---

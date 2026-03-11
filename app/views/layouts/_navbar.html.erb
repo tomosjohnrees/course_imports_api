@@ -1,39 +1,25 @@
-<nav class="fixed top-0 inset-x-0 bg-cream border-b-2 border-rose z-50" data-controller="nav" data-action="click@window->nav#clickOutside">
+<nav class="fixed top-0 inset-x-0 bg-cream border-b-2 border-rose z-50">
   <div class="container mx-auto px-5 h-16 flex items-center justify-between">
     <%= link_to "Course Imports", root_path, class: "font-heading text-xl tracking-wide text-walnut hover:text-rose-dark transition-colors" %>
 
-    <div class="hidden md:flex items-center gap-6">
-      <% if user_signed_in? %>
-        <%= link_to "My Courses", dashboard_path, class: "text-sm text-walnut/70 hover:text-walnut font-medium tracking-wide uppercase transition-colors" %>
-        <%= link_to "Submit Course", new_course_path, class: "text-sm text-walnut/70 hover:text-walnut font-medium tracking-wide uppercase transition-colors" %>
-        <div class="flex items-center gap-3">
-          <%= image_tag current_user.avatar_url, alt: current_user.github_username, class: "w-8 h-8 rounded-full border-2 border-parchment", size: "32x32", loading: "lazy" %>
-          <span class="text-sm font-medium text-walnut"><%= current_user.github_username %></span>
-        </div>
-        <%= button_to "Sign out", sign_out_path, method: :delete, class: "text-sm text-walnut/50 hover:text-rose-dark tracking-wide uppercase transition-colors" %>
-      <% else %>
-        <%= button_to "Sign in with GitHub", "/auth/github", method: :post, data: { turbo: false }, class: "text-sm px-5 py-2 bg-rose text-white rounded-lg hover:bg-rose-dark tracking-wide transition-colors" %>
-      <% end %>
-    </div>
-
-    <button class="md:hidden p-2 text-walnut/70 hover:text-walnut" data-action="nav#toggle" aria-label="Toggle menu">
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-      </svg>
-    </button>
-  </div>
-
-  <div class="hidden md:hidden border-t-2 border-rose/30 bg-cream px-5 pb-4 pt-2 space-y-2" data-nav-target="menu">
     <% if user_signed_in? %>
-      <%= link_to "My Courses", dashboard_path, class: "block text-sm text-walnut/70 hover:text-walnut font-medium tracking-wide uppercase py-2", data: { action: "nav#close" } %>
-      <%= link_to "Submit Course", new_course_path, class: "block text-sm text-walnut/70 hover:text-walnut font-medium tracking-wide uppercase py-2", data: { action: "nav#close" } %>
-      <div class="flex items-center gap-3 py-2">
-        <%= image_tag current_user.avatar_url, alt: current_user.github_username, class: "w-8 h-8 rounded-full border-2 border-parchment", size: "32x32", loading: "lazy" %>
-        <span class="text-sm font-medium text-walnut"><%= current_user.github_username %></span>
+      <div class="flex items-center gap-6">
+        <%= link_to "My Courses", dashboard_path, class: "text-sm text-walnut/70 hover:text-walnut font-medium tracking-wide uppercase transition-colors" %>
+        <div class="relative" data-controller="dropdown" data-action="click@window->dropdown#clickOutside">
+        <button data-action="dropdown#toggle" class="flex items-center focus:outline-none cursor-pointer">
+          <%= image_tag current_user.avatar_url, alt: current_user.github_username, class: "w-9 h-9 rounded-full border-2 border-parchment hover:border-rose transition-colors", size: "36x36", loading: "lazy" %>
+        </button>
+
+        <div class="hidden absolute right-0 mt-2 w-48 bg-cream border-2 border-rose/30 rounded-lg shadow-lg py-1" data-dropdown-target="menu">
+          <div class="px-4 py-2 border-b border-rose/20">
+            <span class="text-sm font-medium text-walnut"><%= current_user.github_username %></span>
+          </div>
+          <%= button_to "Sign out", sign_out_path, method: :delete, class: "w-full text-left px-4 py-2 text-sm text-walnut/50 hover:text-rose-dark hover:bg-parchment/50 tracking-wide uppercase transition-colors cursor-pointer" %>
+        </div>
+        </div>
       </div>
-      <%= button_to "Sign out", sign_out_path, method: :delete, class: "block text-sm text-walnut/50 hover:text-rose-dark tracking-wide uppercase py-2" %>
     <% else %>
-      <%= button_to "Sign in with GitHub", "/auth/github", method: :post, data: { turbo: false }, class: "block text-sm px-5 py-2 bg-rose text-white rounded-lg hover:bg-rose-dark tracking-wide transition-colors text-center" %>
+      <%= button_to "Sign in with GitHub", "/auth/github", method: :post, data: { turbo: false }, class: "text-sm px-5 py-2 bg-rose text-white rounded-lg hover:bg-rose-dark tracking-wide transition-colors" %>
     <% end %>
   </div>
 </nav>
