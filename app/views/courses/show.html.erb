@@ -13,7 +13,7 @@
       <h1 class="font-heading text-3xl text-walnut tracking-wide mb-2"><%= @course.title %></h1>
       <%= render "course_favourites/button", course: @course, favourited: @favourited %>
     </div>
-    <a href="<%= @course.github_repo_url %>" target="_blank" rel="noopener noreferrer" class="text-sm text-walnut/50 hover:text-rose transition-colors">
+    <a href="<%= @course.github_repo_url %>" target="_blank" rel="noopener noreferrer" class="text-sm text-walnut/70 hover:text-rose transition-colors">
       <%= @course.github_owner %>/<%= @course.github_repo %>
     </a>
   </div>

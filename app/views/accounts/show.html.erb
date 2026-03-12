@@ -8,7 +8,7 @@
       <%= image_tag current_user.avatar_url, alt: current_user.github_username, class: "w-16 h-16 rounded-full border-2 border-parchment", size: "64x64", loading: "lazy" %>
       <div>
         <p class="text-lg font-medium text-walnut"><%= current_user.display_name || current_user.github_username %></p>
-        <p class="text-sm text-walnut/50">@<%= current_user.github_username %></p>
+        <p class="text-sm text-walnut/70">@<%= current_user.github_username %></p>
       </div>
     </div>
   </div>

@@ -2,7 +2,7 @@
 
 <div class="w-full max-w-lg mx-auto">
   <h1 class="font-heading text-3xl text-walnut tracking-wide mb-2">Submit a Course</h1>
-  <p class="text-walnut/60 mb-8">Add a public GitHub repository to the course registry. Your repo will be validated automatically.</p>
+  <p class="text-walnut/70 mb-8">Add a public GitHub repository to the course registry. Your repo will be validated automatically.</p>
 
   <%= form_with model: @course, url: courses_path, class: "space-y-6" do |f| %>
     <% if @course.errors.any? %>
@@ -16,7 +16,7 @@
     <div>
       <%= f.label :github_repo_url, "GitHub Repository URL", class: "block text-sm font-medium text-walnut/80 mb-1 uppercase tracking-wider" %>
       <%= f.url_field :github_repo_url, placeholder: "https://github.com/owner/repo", class: "w-full px-3 py-2.5 border-2 border-parchment bg-white rounded-lg focus:outline-none focus:border-rose focus:ring-1 focus:ring-rose transition-colors" %>
-      <p class="mt-1.5 text-sm text-walnut/50">Enter the full URL of a public GitHub repository.</p>
+      <p class="mt-1.5 text-sm text-walnut/70">Enter the full URL of a public GitHub repository.</p>
     </div>
 
     <div class="bg-parchment/50 border-2 border-mustard/30 rounded-lg px-4 py-3 text-sm text-walnut/70 space-y-1">

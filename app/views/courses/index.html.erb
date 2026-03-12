@@ -3,7 +3,7 @@
 <div class="w-full max-w-4xl mx-auto">
   <div class="mb-10 text-center">
     <h1 class="font-heading text-4xl sm:text-5xl text-walnut tracking-wide">Course Imports</h1>
-    <p class="mt-3 text-base sm:text-lg text-walnut/60 font-light">A community registry for public course repositories on GitHub.</p>
+    <p class="mt-3 text-base sm:text-lg text-walnut/70 font-light">A community registry for public course repositories on GitHub.</p>
     <% unless user_signed_in? %>
       <div class="mt-6">
         <%= button_to "Sign in with GitHub", "/auth/github", method: :post, data: { turbo: false }, class: "inline-flex items-center px-8 py-3 bg-rose text-white font-medium rounded-lg hover:bg-rose-dark tracking-wide transition-colors" %>
@@ -21,7 +21,7 @@
 
   <% if @tag.present? %>
     <div class="mb-6 flex items-center gap-2">
-      <span class="text-xs font-medium text-walnut/50 uppercase tracking-wider">Filtered by:</span>
+      <span class="text-xs font-medium text-walnut/70 uppercase tracking-wider">Filtered by:</span>
       <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-rose text-white"><%= @tag %></span>
       <%= link_to "Clear filter", courses_path(q: @search_query.presence), class: "text-xs text-rose hover:text-rose-dark underline" %>
     </div>
@@ -41,10 +41,10 @@
     <div class="bg-white rounded-lg border-2 border-parchment p-12 text-center">
       <% if @search_query.present? || @tag.present? %>
         <p class="text-walnut/70 mb-2">No courses found<%= %Q[ for "#{@search_query}"] if @search_query.present? %><%= %Q[ tagged "#{@tag}"] if @tag.present? %>.</p>
-        <p class="text-sm text-walnut/50"><%= link_to "Clear filters", courses_path, class: "text-rose font-medium hover:text-rose-dark" %></p>
+        <p class="text-sm text-walnut/70"><%= link_to "Clear filters", courses_path, class: "text-rose font-medium hover:text-rose-dark" %></p>
       <% else %>
         <p class="text-walnut/70 mb-2">No courses have been approved yet.</p>
-        <p class="text-sm text-walnut/50">Be the first to <%= link_to "submit a course", new_course_path, class: "text-rose font-medium hover:text-rose-dark" %>!</p>
+        <p class="text-sm text-walnut/70">Be the first to <%= link_to "submit a course", new_course_path, class: "text-rose font-medium hover:text-rose-dark" %>!</p>
       <% end %>
     </div>
   <% end %>
