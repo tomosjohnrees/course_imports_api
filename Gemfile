@@ -51,7 +51,7 @@ gem "thruster", require: false
 gem "image_processing", "~> 1.2"
 
 group :test do
-  gem "rubyzip", "~> 2.4"
+  gem "rubyzip", "~> 3.2"
 end
 
 group :development, :test do
