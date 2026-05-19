@@ -24,7 +24,7 @@ gem "tailwindcss-rails"
 gem "omniauth-github", "~> 2.0"
 gem "omniauth-rails_csrf_protection", "~> 2.0"
 
-gem "faraday", "~> 2.0"
+gem "faraday", "~> 2.14"
 
 gem "rack-attack", "~> 6.7"
 
